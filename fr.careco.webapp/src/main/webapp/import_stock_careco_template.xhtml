@@ -1,0 +1,247 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<!-- 
+	<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+-->
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+
+			<p:growl id="growl" showDetail="true" />
+
+			<!--  
+			<h:form id="form_upload_stock" enctype="multipart/form-data">
+
+				<p:messages showDetail="true" />
+
+				<p:fileUpload value="#{devBean.fichierStockUpload}" mode="simple" />
+
+				<p:commandButton value="Import stock CSV" ajax="false"  
+					actionListener="#{devBean.importStockCSV}" />
+			</h:form>
+			-->
+			<p:panel id="id_importation" header="Importation de stock Moteur Club"
+				toggleable="true" toggleSpeed="500" closeSpeed="500"
+				widgetVar="panel4">
+				<p:accordionPanel id="main_panel_result" rendered="#{empty devBean.importStock}">
+
+					<!--  
+					<p:tab
+						title="Importation de stock à partir d'un fichier CSV (format legrain)">
+
+						<h:outputText value="" />
+						<h:form>
+							<p:fileUpload fileUploadListener="#{devBean.importStockCSV}"
+								uploadLabel="Envoyer" cancelLabel="Annuler"
+								label="Sélection fichier" mode="advanced"
+								update=":form:growl, :form:dataTableImportation, :form:id_label_preview_import"
+								auto="false" sizeLimit="100000" />
+						</h:form>
+					</p:tab>
+					-->
+					
+					<p:tab
+						title="Importation de stock à partir d'une exportation Moteur Club (fichier .csv)">
+						<h:outputText value="" />
+						<h:form>
+							<p:fileUpload
+								fileUploadListener="#{devBean.importStockMoteurClub}" 
+								uploadLabel="Envoyer" cancelLabel="Annuler"
+								label="Sélection fichier"
+								mode="advanced"
+								update=":form:growl, :form:dataTableImportation, :form:id_label_preview_import, :form:id_importation"
+								auto="false" sizeLimit="500000" /><!-- 500Ko -->
+							<!-- auto="true"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" -->
+						</h:form>
+					</p:tab>
+				</p:accordionPanel>
+				
+				<h:outputText
+					value="Attention, première importation à partir d'un fichier texte Moteur Club, tout votre stock actuel sera effacé et 
+					remplacé par le contenu du fichier."  
+					styleClass="infosAAARed"
+					rendered="#{devBean.premiereImportationTexte and !empty devBean.importStock}"/><br/>
+
+				<h:outputText id="id_label_preview_import"
+					value="Prévisualisation du stock à importer (#{devBean.importStock.size()} pièces)" rendered="#{!empty devBean.importStock}"/>
+				<br />
+				<p:commandButton value="Valider importation du stock" rendered="#{!empty devBean.importStock}"
+					actionListener="#{devBean.validerImportationStock}"
+					update=":form:growl, :form:dataTableImportation, :form:id_label_preview_import, :form:id_importation" />
+				<p:commandButton value="Annuler l'importation du stock" rendered="#{!empty devBean.importStock}"
+					actionListener="#{devBean.annulerImportationStock}"
+					update=":form:growl, :form:dataTableImportation, :form:id_label_preview_import, :form:id_importation" />
+					
+				<p:dataTable id="dataTableImportation" var="ligneResultat" rendered="#{!empty devBean.importStock}"
+					resizableColumns="true" value="#{devBean.importStock}"
+					rowKey="#{ligneResultat.id}" paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="3,6,30">
+
+
+					<p:column sortBy="#{ligneResultat.numLivrePolice}">
+						<f:facet name="header">
+							<h:outputText value="N° Livre de police" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.numLivrePolice}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.export}">
+						<f:facet name="header">
+							<h:outputText value="Export" />
+						</f:facet>
+						<p:selectBooleanCheckbox value="#{ligneResultat.export}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.demonte}">
+						<f:facet name="header">
+							<h:outputText value="Démonté" />
+						</f:facet>
+						<p:selectBooleanCheckbox value="#{ligneResultat.demonte}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.typeDepiece}">
+						<f:facet name="header">
+							<h:outputText value="Type de pièce" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.typeDePiece}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.refConstructeur}">
+						<f:facet name="header">
+							<h:outputText value="Ref constructeur" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.refConstructeur}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.marque}">
+						<f:facet name="header">
+							<h:outputText value="Marque" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.marque}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.modele}">
+						<f:facet name="header">
+							<h:outputText value="Modèle" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.modele}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.date1erMiseEnCirculation}">
+						<f:facet name="header">
+							<h:outputText value="Date de 1er mise en circulation" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.date1erMiseEnCirculation}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.kms}"
+						filterBy="#{ligneResultat.kms}">
+						<f:facet name="header">
+							<h:outputText value="Kms" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.kms}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.emplacementCasier}">
+						<f:facet name="header">
+							<h:outputText value="Empl." />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.emplacementCasier}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.garantie}">
+						<f:facet name="header">
+							<h:outputText value="Garantie (mois)" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.garantie}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.prixAchat}">
+						<f:facet name="header">
+							<h:outputText value="Prix achat" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.prixAchat}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.prixCareco}">
+						<f:facet name="header">
+							<p:graphicImage library="images" name="favicon.ico" />
+							<h:outputText value="Prix caréco " />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.prixCareco}" />
+					</p:column>
+
+					<p:column sortBy="#{ligneResultat.prixVente}">
+						<f:facet name="header">
+							<h:outputText value="Prix vente" />
+						</f:facet>
+						<h:outputText value="#{ligneResultat.prixVente}" />
+					</p:column>
+
+					<!-- 
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Actions" />
+					</f:facet>
+					
+					<p:commandLink>
+						<f:setPropertyActionListener value="#{ligneResultat}"
+							target="#{ligneResultatController.selectedligneResultat}" />
+							<p:graphicImage library="images" name="update.gif" title="Mettre à jour PO" alt="Mettre à jour PO" height="16"/>
+					</p:commandLink>
+					
+					<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+						<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+					</p:commandLink>
+					
+					<p:commandLink actionListener="#{monStockBean.supprimer}" update=":form">
+						<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+						<p:graphicImage library="images" name="delete.png" title="Supprimer une partie" alt="Supprimer une partie" height="16"/>
+					</p:commandLink>
+					
+				</p:column>
+				 -->
+				</p:dataTable>
+
+
+
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,178 @@
+<ui:composition template="../index_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        Gestion des type de tiers
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newTTiersDialog.hide(); 
+	            ttiersDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+	<ui:define name="content">
+
+
+		<br />
+		<br />
+		<p:commandButton value="Logout" actionListener="#{auth.logout}"
+			icon="ui-icon-extlink" />
+
+		<br />
+		<br />
+
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="taTTiers"
+				value="#{typeTiersController.values}" rowKey="#{taTTiers.idTTiers}"
+				selection="#{typeTiersController.selectedTaTTierss}"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				lazy="true" rowsPerPageTemplate="3,6,30">
+
+				<f:facet name="header">  
+           			Type tiers
+        		</f:facet>
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{taTTiers.idTTiers}">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{taTTiers.idTTiers}"
+						update=":detailForm:display" oncomplete="ttiersDialog.show()"
+						title="View">
+						<f:setPropertyActionListener value="#{taTTiers}"
+							target="#{typeTiersController.selectedTaTTiers}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column sortBy="#{taTTiers.codeTTiers}">
+					<f:facet name="header">
+						<h:outputText value="Code" />
+					</f:facet>
+					<h:outputText value="#{taTTiers.codeTTiers}" />
+				</p:column>
+
+				<p:column sortBy="#{taTTiers.libelleTTiers}">
+					<f:facet name="header">
+						<h:outputText value="Libelle" />
+					</f:facet>
+					<h:outputText value="#{taTTiers.libelleTTiers}" />
+				</p:column>
+
+				<p:column sortBy="#{taTTiers.compteTTiers}">
+					<f:facet name="header">
+						<h:outputText value="Compte" />
+					</f:facet>
+					<h:outputText value="#{taTTiers.compteTTiers}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newTTiersDialog.show()" icon="ui-icon-star"
+						title="Céer un nouveau type tiers" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{typeTiersController.doDeleteTypeTiers}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="ttiersDialog" resizable="false"
+			id="ttiersDlg">
+			<h:form id="detailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+
+					<f:validateBean disabled="true">
+						<h:outputText value="ID :"></h:outputText>
+						<h:outputText
+							value="#{typeTiersController.selectedTaTTiers.idTTiers}" />
+
+						<h:outputText value="Code :"></h:outputText>
+						<h:inputText
+							value="#{typeTiersController.selectedTaTTiers.codeTTiers}"
+							required="true" requiredMessage="Code obligatoire!" />
+
+						<h:outputText value="Libelle :"></h:outputText>
+						<h:inputText
+							value="#{typeTiersController.selectedTaTTiers.libelleTTiers}"
+							required="true" requiredMessage="Libelle obligatoire!" />
+
+						<h:outputText value="Compte :"></h:outputText>
+						<h:inputText
+							value="#{typeTiersController.selectedTaTTiers.compteTTiers}"
+							required="true" requiredMessage="Compte obligatoire!" />
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'ttiersDlg','newTTiersForm'); "
+							actionListener="#{typeTiersController.doUpdateTypeTiers}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newTTiersDialog" resizable="false" id="newTTiersDlg">
+			<h:form id="newTTiersForm">
+				<h:messages style="color:red" />
+				<p:panelGrid id="displayNewUser" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText value="#{typeTiersController.newTaTTiers.idTTiers}"
+							required="true" requiredMessage="ID obligatoire!" />
+
+						<h:outputText value="Code :"></h:outputText>
+						<p:inputText value="#{typeTiersController.newTaTTiers.codeTTiers}"
+							required="true" requiredMessage="Code obligatoire!"
+							valueChangeListener="#{typeTiersController.valueChanged}">
+
+							<!-- <f:validator validatorId="myValidator" > -->
+							<!-- <f:ajax /> -->
+						</p:inputText>
+
+						<h:outputText value="Libelle :"></h:outputText>
+						<h:inputText
+							value="#{typeTiersController.newTaTTiers.libelleTTiers}"
+							required="true" requiredMessage="Libelle obligatoire!" />
+
+						<h:outputText value="Compte :"></h:outputText>
+						<h:inputText
+							value="#{typeTiersController.newTaTTiers.compteTTiers}"
+							required="true" requiredMessage="Compte obligatoire!" />
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newTTiersDlg','newTTiersForm');"
+							actionListener="#{typeTiersController.doCreateTypeTiers}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

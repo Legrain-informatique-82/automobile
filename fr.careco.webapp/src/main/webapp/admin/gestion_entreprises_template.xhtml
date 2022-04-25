@@ -1,0 +1,272 @@
+<ui:composition template="./index_admin_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        Gestion des entreprises utilisateurs
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newEntrepriseDialog.hide(); 
+	            entrepriseDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="entreprise"
+				value="#{entrepriseBean.listeEntreprise}"
+				rowKey="#{entreprise.id}"
+				selection="#{entrepriseBean.selectedEntreprises}"
+				paginator="true" rows="30"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="3,6,30">
+
+				<f:facet name="header">  
+           			Entreprises
+        		</f:facet>
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{entreprise.id}">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{entreprise.id}"
+						update=":entrepriseDetailForm:display"
+						oncomplete="entrepriseDialog.show()" title="View">
+						<f:setPropertyActionListener value="#{entreprise}"
+							target="#{entrepriseBean.selectedEntreprise}" />
+					</p:commandLink>
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.nom}">
+					<f:facet name="header">
+						<h:outputText value="Nom" />
+					</f:facet>
+					<h:outputText value="#{entreprise.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.idGroupeEntreprise.nom}">
+					<f:facet name="header">
+						<h:outputText value="Nom Réseau" />
+					</f:facet>
+					<h:outputText value="#{entreprise.idGroupeEntreprise.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.idAdherent.nom}">
+					<f:facet name="header">
+						<h:outputText value="Adhérent" />
+					</f:facet>
+					<h:outputText value="#{entreprise.idAdherent.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.adresse1}">
+					<f:facet name="header">
+						<h:outputText value="Adresse 1" />
+					</f:facet>
+					<h:outputText value="#{entreprise.adresse1}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.adresse2}">
+					<f:facet name="header">
+						<h:outputText value="Adresse 2" />
+					</f:facet>
+					<h:outputText value="#{entreprise.adresse2}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.codePostal}">
+					<f:facet name="header">
+						<h:outputText value="Code postal" />
+					</f:facet>
+					<h:outputText value="#{entreprise.codePostal}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.ville}">
+					<f:facet name="header">
+						<h:outputText value="Ville" />
+					</f:facet>
+					<h:outputText value="#{entreprise.ville}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.departement}">
+					<f:facet name="header">
+						<h:outputText value="Département" />
+					</f:facet>
+					<h:outputText value="#{entreprise.departement}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.region}">
+					<f:facet name="header">
+						<h:outputText value="Région" />
+					</f:facet>
+					<h:outputText value="#{entreprise.region}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.longitude}">
+					<f:facet name="header">
+						<h:outputText value="Coordonnées GPS" />
+					</f:facet>
+					<h:outputText value="Latitude  : #{entreprise.latitude}" /><br/>
+					<h:outputText value="Longitude : #{entreprise.longitude}" />
+					
+					<p:commandButton type="button" icon="ui-icon-pin-s" value="Voir carte" onclick="PF('dlg#{entreprise.id}').show()" />  
+					<p:dialog widgetVar="dlg#{entreprise.id}" width="625" height="400" header="#{entreprise.nom}"> 
+					    <p:gmap center="#{entreprise.latitude}, #{entreprise.longitude}" zoom="15" type="HYBRID" style="width:600px;height:400px" />
+					</p:dialog>  
+					
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.telephone}">
+					<f:facet name="header">
+						<h:outputText value="Téléphone" />
+					</f:facet>
+					<h:outputText value="#{entreprise.telephone}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.fax}">
+					<f:facet name="header">
+						<h:outputText value="Fax" />
+					</f:facet>
+					<h:outputText value="#{entreprise.fax}" />
+				</p:column>
+				
+				<p:column sortBy="#{entreprise.email}">
+					<f:facet name="header">
+						<h:outputText value="Email" />
+					</f:facet>
+					<h:outputText value="#{entreprise.email}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newEntrepriseDialog.show()" icon="ui-icon-star"
+						title="Céer un nouvel utilisateur" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{entrepriseBean.doDeleteEntreprises}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="entrepriseDialog" resizable="false"
+			id="entrepriseDlg">
+			<h:form id="entrepriseDetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID"></h:outputText>
+						<h:outputText
+							value="#{entrepriseBean.selectedEntreprise.id}" />
+
+						<h:outputText value="Nom"/>
+						<h:inputText
+							value="#{entrepriseBean.selectedEntreprise.nom}"
+							required="true" requiredMessage="Nom obligatoire!" />
+							
+						<h:outputText value="Réseau" />
+						<p:selectOneMenu value="#{entrepriseBean.selectedEntreprise.idGroupeEntreprise}">
+							<f:selectItems value="#{entrepriseBean.listeGroupeEntreprise}"
+								var="uc" itemLabel="#{uc.nom}" itemValue="#{uc}" />
+						</p:selectOneMenu>
+						
+						<h:outputText value="Adhérent" />
+						<p:selectOneMenu value="#{entrepriseBean.selectedEntreprise.idAdherent}">
+							<f:selectItems value="#{entrepriseBean.listeAdherent}"
+								var="uc" itemLabel="#{uc.nom}" itemValue="#{uc}" />
+						</p:selectOneMenu>
+						
+						<h:outputText value="Adresse 1"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.adresse1}" />
+						
+						<h:outputText value="Adresse 2"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.adresse2}" />
+						
+						<h:outputText value="Code postal"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.codePostal}" />
+						
+						<h:outputText value="Ville"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.ville}" />
+						
+						<h:outputText value="Département"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.departement}" />
+						
+						<h:outputText value="Région"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.region}" />
+						
+						<h:outputText value="Longitude"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.longitude}" />
+						
+						<h:outputText value="Latitude"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.latitude}" />
+						
+						<h:outputText value="Téléphone"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.telephone}" />
+						
+						<h:outputText value="Fax"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.fax}" />
+						
+						<h:outputText value="EMail"/>
+						<h:inputText value="#{entrepriseBean.selectedEntreprise.email}" />
+
+							
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'entrepriseDlg','newEntrepriseForm'); "
+							actionListener="#{entrepriseBean.doUpdateEntreprise}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newEntrepriseDialog" resizable="false" id="newEntrepriseDlg">
+			<h:form id="newEntrepriseForm">
+				<p:panelGrid id="displayNewEntreprise" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<!--  
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText
+							value="#{entrepriseBean.newEntreprise.id}"
+							required="true" requiredMessage="ID obligatoire!" />
+					-->
+						<h:outputText value="Nom :"></h:outputText>
+						<p:inputText value="#{entrepriseBean.newEntreprise.nom}"
+							required="true" requiredMessage="Nom obligatoire!" />
+
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newEntrepriseDlg','newEntrepriseForm');"
+							actionListener="#{entrepriseBean.doCreateEntreprise}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

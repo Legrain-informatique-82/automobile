@@ -1,0 +1,133 @@
+<ui:composition template="./index_admin_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        Gestion du cache AAA
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newCacheAAADialog.hide(); 
+	            cacheAAADialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="cacheAAA" resizableColumns="true" 
+				value="#{cacheAAABean.listeCacheAAA}"
+				rowKey="#{cacheAAA.code_Immat}"
+				selection="#{cacheAAABean.selectedVehiculeCacheAAAs}"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				lazy="true" rowsPerPageTemplate="10,30,50,100,500">
+
+				<f:facet name="header">  
+           			Fiche du cache AAA (#{cacheAAABean.listeCacheAAA.rowCount} )
+        		</f:facet>
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{cacheAAA.code_Immat}">
+					<f:facet name="header">
+						<h:outputText value="code_Immat" />
+					</f:facet>
+					<p:commandLink value="#{cacheAAA.code_Immat}"
+						update=":cacheAAADetailForm:display"
+						oncomplete="cacheAAADialog.show()" title="View">
+						<f:setPropertyActionListener value="#{cacheAAA}"
+							target="#{cacheAAABean.selectedVehiculeCacheAAA}" />
+					</p:commandLink>
+				</p:column>
+				
+				<p:column sortBy="#{cacheAAA.immat_SIV}">
+					<f:facet name="header">
+						<h:outputText value="Immat_SIV" />
+					</f:facet>
+					<h:outputText value="#{cacheAAA.immat_SIV}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newCacheAAADialog.show()" icon="ui-icon-star"
+						title="Céer une nouvelle fiche" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{cacheAAABean.doDeleteVehiculeCacheAAA}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="cacheAAADialog" resizable="false"
+			id="cacheAAADlg">
+			<h:form id="cacheAAADetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="code_Immat "></h:outputText>
+						<h:outputText
+							value="#{cacheAAABean.selectedVehiculeCacheAAA.code_Immat}" />
+
+						<h:outputText value="code_Immat "></h:outputText>
+						<h:inputText
+							value="#{cacheAAABean.selectedVehiculeCacheAAA.code_Immat}" />
+							
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'cacheAAADlg','newCacheAAAForm'); "
+							actionListener="#{cacheAAABean.doUpdatecacheAAA}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newCacheAAADialog" resizable="false" id="newCacheAAADlg">
+			<h:form id="newCacheAAAForm">
+				<p:panelGrid id="displaynewCacheAAA" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<!--  
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText
+							value="#{cacheAAABean.newCacheAAA.id}"
+							required="true" requiredMessage="ID obligatoire!" />
+					-->
+						<h:outputText value="code_Immat "></h:outputText>
+						<p:inputText value="#{cacheAAABean.newVehiculeCacheAAA.code_Immat}" />
+
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newCacheAAADlg','newCacheAAAForm');"
+							actionListener="#{cacheAAABean.doCreateVehiculeCacheAAA}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

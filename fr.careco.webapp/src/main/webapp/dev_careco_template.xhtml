@@ -1,0 +1,176 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<!-- 
+	<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+-->
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+
+		function handleMessage(msg) {
+			msg.severity = 'info';
+			PF('growl').show([msg]);
+		}
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+
+			<p:growl id="growl" showDetail="true" widgetVar="growl" />
+
+			<h:inputText value="#{devBean.valeur1}" />
+		
+			<p:hotkey bind="a" handler="alert(‘Pressed a’);" process="@this"/>
+
+
+			<p:commandButton value="Test" actionListener="#{devBean.test}"
+				update=":form:growl" />
+
+			<hr />
+			
+			<h:outputText value="Versions : #{devBean.versionProg()}" />
+			<hr />
+			
+			<h:outputText value="Icones : famfamfam silk icons v1.3" />
+			<hr />
+
+			<h:outputText value="Immatriculation cache pour TEST" />
+			<p:autoComplete minQueryLength="2" value="#{devBean.valeur1}"
+				completeMethod="#{devBean.autoCompleteImmatCache}" />
+			3868NL12<br />1231px40<br />CG004KZ<br />CL961NK<br />CY019VF<br />1968TS56
+			<hr />
+
+			<p:commandButton value="Test Immat"
+				actionListener="#{devBean.testImmat}" update=":form:growl" />
+			<p:commandButton value="Test Birt"
+				onclick="window.open('#{request.contextPath}/output?__report=/reports/test.rptdesign&amp;__format=pdf')"
+				update=":form:growl" />
+
+			<br />
+			<p:commandLink value="test2" actionListener="#{devBean.test2}"
+				update=":form:growl">
+				<f:attribute name="idPiece" value="1" />
+			</p:commandLink>
+			<hr />
+
+			<p:commandButton value="Select DATA V1"
+				actionListener="#{devBean.selectDataV1}" update=":form:growl" >
+				<p:confirm header="Confirmation" message="Etes vous sur ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+			<br />
+			<p:commandButton value="Import V1"
+				actionListener="#{devBean.immportV1}" update=":form:growl" >
+				<p:confirm header="Confirmation" message="Etes vous sur ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+			<br />
+			<p:commandButton value="MAJ Stock depuis V1"
+				actionListener="#{devBean.updateStockWithV1}" update=":form:growl" >
+				<p:confirm header="Confirmation" message="Etes vous sur ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+			<!-- 
+			<p:commandButton value="Import V1 New"
+				actionListener="#{devBean.updateStockWithV1}" update=":form:growl" onclick="PF('pbAjax').start();PF('startButton1').disable();" widgetVar="startButton1"/>
+				
+			<p:progressBar widgetVar="pbAjax" ajax="true" value="#{progressBean.progress}" labelTemplate="{value}%" styleClass="animated">  
+        		<p:ajax event="complete" listener="#{progressBean.onComplete}" update="growl" oncomplete="PF('startButton1').enable()"/>  
+    		</p:progressBar>
+    		 -->
+			<br />
+			<p:commandButton value="MAJ Stock avec Dump Moteur Club"
+				actionListener="#{devBean.updateStockWithDumpMoteurClub}"
+				update=":form:growl" >
+				<p:confirm header="Confirmation" message="Etes vous sur ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+			<br />
+			<p:commandButton value="MAJ Stock avec cache et WS AAA"
+				actionListener="#{devBean.updateStockWithAAA}" update=":form:growl" >
+				<p:confirm header="Confirmation" message="Etes vous sur ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+
+			<hr />
+			<h:inputText value="#{devBean.nomDumpMysql}" />
+			<p:commandButton value="DumpMysql"
+				actionListener="#{devBean.mysqldump}" update=":form:growl" >
+				<p:confirm header="Confirmation" message="Etes vous sur ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+			<hr />
+
+			<h:panelGrid columns="2">
+				<p:outputLabel for="summary" value="Summary: " />
+				<p:inputText id="summary" value="#{pushMessageBean.summary}"/>
+				<p:outputLabel for="detail" value="Detail: " />
+				<p:inputText id="detail" value="#{pushMessageBean.detail}" />
+			</h:panelGrid>
+			<p:commandButton value="Send" actionListener="#{pushMessageBean.send}" >
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir envoyer ce message à tous les utilisateurs ?" icon="ui-icon-alert" />  
+			</p:commandButton>
+			
+			<hr />
+				
+			<p:socket onMessage="handleMessage" channel="/notifications" />
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			<!--  
+			 <p:autoComplete value="#{messageBean.messageEnCours.a}" placeholder="Destinataire"
+                        id="basicPojo" completeMethod="#{messageBean.autoCompleteUser}"  
+                        required="true" requiredMessage="Veuillez sélectionner un destinataire"
+                        var="u" itemLabel="#{u.nom}" itemValue="#{u}" forceSelection="true" cache="true">  
+                        <p:column>#{u.nom}</p:column>
+                        <p:column>#{u.prenom}</p:column>
+ 
+                <f:facet name="itemtip">  
+                   <h:panelGrid  columns="2" cellpadding="5">  
+                        <f:facet name="header">  
+                        	
+                        </f:facet>  
+  
+                        <h:outputText value="Nom " />  
+                        <h:outputText value="#{u.nom}" />  
+  
+                        <h:outputText value="Prénom " />  
+                        <h:outputText value="#{u.prenom}" />  
+  
+                        <h:outputText value="Entreprise " />  
+                        <h:outputText value="#{u.userCompany.nom}"/>  
+                    </h:panelGrid>  
+                </f:facet>  
+
+            </p:autoComplete>  
+			-->	
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

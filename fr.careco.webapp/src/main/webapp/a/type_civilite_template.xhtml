@@ -1,0 +1,141 @@
+<ui:composition template="../index_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        Gestion des type de civilité
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newCiviliteDialog.hide(); 
+	            civiliteDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+
+		<br />
+		<br />
+		<p:commandButton value="Logout" actionListener="#{auth.logout}"
+			icon="ui-icon-extlink" />
+
+		<br />
+		<br />
+
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="taTCivilite"
+				value="#{typeCiviliteController.values}"
+				rowKey="#{taTCivilite.idTCivilite}"
+				selection="#{typeCiviliteController.selectedTaTCivilites}"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				lazy="true" rowsPerPageTemplate="3,6,30">
+
+				<f:facet name="header">  
+           			Type civilité
+        		</f:facet>
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{taTCivilite.idTCivilite}">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{taTCivilite.idTCivilite}"
+						update=":civiliteDetailForm:display"
+						oncomplete="civiliteDialog.show()" title="View">
+						<f:setPropertyActionListener value="#{taTCivilite}"
+							target="#{typeCiviliteController.selectedTaTCivilite}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column sortBy="#{taTCivilite.codeTCivilite}">
+					<f:facet name="header">
+						<h:outputText value="Code" />
+					</f:facet>
+					<h:outputText value="#{taTCivilite.codeTCivilite}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newCiviliteDialog.show()" icon="ui-icon-star"
+						title="Céer une nouvelle civilité" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{typeCiviliteController.doDeleteCivilites}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="civiliteDialog" resizable="false"
+			id="civiliteDlg">
+			<h:form id="civiliteDetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID :"></h:outputText>
+						<h:outputText
+							value="#{typeCiviliteController.selectedTaTCivilite.idTCivilite}" />
+
+						<h:outputText value="Code :"></h:outputText>
+						<h:inputText
+							value="#{typeCiviliteController.selectedTaTCivilite.codeTCivilite}"
+							required="true" requiredMessage="Code obligatoire!" />
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'civiliteDlg','newCiviliteForm'); "
+							actionListener="#{typeCiviliteController.doUpdateCivilite}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newCiviliteDialog" resizable="false" id="newCiviliteDlg">
+			<h:form id="newCiviliteForm">
+				<p:panelGrid id="displayNewUser" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText
+							value="#{typeCiviliteController.newTaTCivilite.idTCivilite}"
+							required="true" requiredMessage="ID obligatoire!" />
+
+						<h:outputText value="Code :"></h:outputText>
+						<p:inputText
+							value="#{typeCiviliteController.newTaTCivilite.codeTCivilite}"
+							required="true" requiredMessage="Code obligatoire!" />
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newCiviliteDlg','newCiviliteForm');"
+							actionListener="#{typeCiviliteController.doCreateCivilite}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

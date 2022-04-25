@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+			<p:commandButton value="Choisir un panier" oncomplete="PF('dialogPanierWidget').show()" 
+				process="@this" update=":form:growl, :form:id_dialogPanierWidget, :id_form_cart" rendered="#{tagLine == null ? true : false}">	
+			</p:commandButton> <br/>
+	
+			<h:outputText value="Liste des paniers professionnel (BtoB)" />
+			
+			<p:dataTable var="ligneResultat" resizableColumns="true"
+				value="#{panierBean.listePanierActifB2B}" 
+				rowKey="#{ligneResultat.id}"
+				selection="#{panierBean.selectedPanierActifAccueil}"
+				selectionMode="single"
+				emptyMessage="#{msg.message_datatable_vide}">
+				
+				<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectPanierActifAccueilB2B}" 
+                    						update=":form:growl, @this, :form:id_detail_panier_actif, :form:id_complements" />
+				
+				<p:column selectionMode="single" style="width:18px" />
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="ID panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.id}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Client" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.societe}" /><br />
+					<h:outputText value="#{ligneResultat.client.nom}" />
+					<br />
+					<h:outputText value="#{ligneResultat.client.prenom}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Date panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.datePanier}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Immat" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.immatriculation}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Vendeur" />
+					</f:facet>
+					<!-- probleme de lazy loading -->
+					<!--  <h:outputText value="#{ligneResultat.vendeur.username}" /> -->
+					<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+				</p:column>
+
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Prix HT" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.prixHT}" />
+				</p:column>
+
+				<!--  
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Actif" />
+					</f:facet>
+					<h:outputText value="X" rendered="#{panierBean.detailPanier.id == ligneResultat.id}"/>
+				</p:column>
+				-->
+
+			</p:dataTable>
+			<br /> <br /> 
+			<h:outputText value="Liste des paniers particulier (BtoC)" />
+			
+			<p:dataTable var="ligneResultat" resizableColumns="true"
+				value="#{panierBean.listePanierActif}" 
+				rowKey="#{ligneResultat.id}" 
+				selection="#{panierBean.selectedPanierActifAccueil}"
+				selectionMode="single"
+				emptyMessage="#{msg.message_datatable_vide}">
+				
+				<!--
+				form:tabView:tab_contact 
+				 -->
+				
+				<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectPanierActifAccueilB2C}" 
+                    	update=" :form:growl, @this, :form:id_detail_panier_actif, :form:id_complements" />
+				
+				<p:column selectionMode="single" style="width:18px" />
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="ID panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.id}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Client" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.nom}" />
+					<br />
+					<h:outputText value="#{ligneResultat.client.prenom}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Date panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.datePanier}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Immat" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.immatriculation}" />
+				</p:column>
+
+				<p:column >
+					<f:facet name="header">
+						<h:outputText value="Vendeur" />
+					</f:facet>
+					<!-- probleme de lazy loading -->
+					<!--  <h:outputText value="#{ligneResultat.vendeur.username}" /> -->
+					<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+				</p:column>
+
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="TTC" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.totalTTC}" />
+				</p:column>
+
+				<!--  
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Actif" />
+					</f:facet>
+					<h:outputText value="X" rendered="#{panierBean.detailPanier.id == ligneResultat.id}"/>
+				</p:column>
+				-->
+
+			</p:dataTable>
+			<br /> 
+			<p:commandLink value="Voir les paniers" onclick="window.open('#{request.contextPath}/panier_careco_template.xhtml')" rendered="#{tagLine == null ? true : false}"/>
+			<!--
+			<p:commandButton value="Nouveau panier vide" oncomplete="dialogPanierWidget.show()" 
+				actionListener="#{panierBean.nouveauPanierVide}" update=":form:growl, :form:id_dialogPanierWidget, :id_form_cart">	
+			</p:commandButton> 
+			 -->
+			<br /> 
+		
+
+</ui:composition>

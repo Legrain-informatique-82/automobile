@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+<h:body>
+
+	
+	<form method="post" action="j_security_check">
+		<h:panelGrid id="panel" columns="2" border="0">
+		
+			<h:outputLabel value="Username" />
+			<input type="text" name="j_username" size="25" />
+			
+			<h:outputLabel value="Password" />
+			<input type="password" size="15" name="j_password" />
+			
+			<h:commandButton value="Login" />
+		</h:panelGrid>
+	</form>
+	
+
+<!-- 
+	<h:form id="login" 
+	action="j_security_check"
+		onsubmit="document.getElementById('login').action='j_security_check';"
+		prependId="false">
+		<h:panelGrid columns="2">
+			<p:outputLabel for="j_username" value="Username" />
+			<p:inputText id="j_username" name="j_username" />
+			<p:outputLabel for="j_password" value="Password" />
+			<p:password id="j_password" name="j_password" />
+			<p:commandButton id="submit" value="Login" ajax="false" />
+		</h:panelGrid>
+	</h:form>
+ -->
+ 
+</h:body>
+</html>

@@ -1,0 +1,252 @@
+Base et utilisateur mysql
+bd : careco
+user : careco
+pass : xxxx
+nouveau mot de passe : xxxxx
+
+********************************************************************************************************************************
+curl -d @ws2.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+curl --header "content-type: text/soap+xml; charset=utf-8" --data @ws2.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+curl --header "content-type: text/xml; charset=utf-8" --data @ws2.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+curl --header "content-type: text/xml" --data-binary @ws2.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+curl --header "content-type: text/xml" --data @ws2.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+curl --data @ws3.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+*********************************************************
+CURL OK depuis server prod
+**************
+curl --header "content-type: xml" -d @ws4.xml http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter
+****
+Fichier ws4.xml
+****************
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+<soap:Header><aaa:N_SIRET xmlns:aaa="http://web.service.aaa.asso.fr">00000000000000000000</aaa:N_SIRET>
+<aaa:NOM_UTIL xmlns:aaa="http://web.service.aaa.asso.fr">d2pneu</aaa:NOM_UTIL>
+<aaa:MDP_UTIL xmlns:aaa="http://web.service.aaa.asso.fr">d2pneu</aaa:MDP_UTIL>
+</soap:Header>
+<soap:Body>
+<WS_SiVin_Consulter_VehiculeParImmat xmlns="http://aaa.asso.fr/sivin/schemas" xmlns:ns2="http://aaa.asso.fr/sivin/xsd">
+<immat>56XD7639</immat>
+</WS_SiVin_Consulter_VehiculeParImmat>
+</soap:Body>
+</soap:Envelope>
+***************************************************************************
+
+*****************************************************************************************************
+<subsystem xmlns="urn:jboss:domain:web:1.1"
+ 
+and in the section find and set "enable-welcome-root="false" instead of "true".
+
+ROOT.war
+*****************************************************************************************************
+
+******************************************************************************************************
+Vider entièrement les tables actuelles
+iptables -t filter -F
+iptables -t filter -X
+iptables -t nat -F
+iptables -t nat -X
+
+Redirection du port 8180 vers le port 80 de la machine courante
+
+sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8180 -j REDIRECT --to-port 80
+
+Pour sauvegarder et restaurer les règles, tapez la commande :
+
+iptables-save > le_fichier_txt
+iptables-restore < le_fichier_txt
+ou installer le package "iptables-persistent" 
+
+Pour voir la liste des règles:
+sudo iptables --list
+
+Pour voir la liste des règles NAT:
+iptables -t nat -L
+
+****************************************************************************************************
+Problème trop de fichier ouvert (too many open files)
+
+=> Limite système trop basse => augmenter pour un unitlisateur ou tout le système
+Pour l'instant l'utilisateur qui lance le java de jboss est root
+
+http://www.cyberciti.biz/faq/linux-increase-the-maximum-number-of-open-files/
+
+=> récupérer le PID de jboss : 
+ps -ae | grep java;ps -ae | grep sh
+
+=> liste des fichier ouverts par un processus
+ls -l /proc/{mon_pid}/fd
+=> nombre de fichier ouvert
+ls -1 /proc/{mon_pid}/fd | wc -w
+
+=> Voir les limites utilisateur
+limite soft : ulimit -Sn
+limite hard : ulimit -Hn
+toute les limite : ulimit -a
+=> Voir le limite système :
+cat /proc/sys/fs/file-max
+
+=> Modifier les limites pour un utilisateur (ici root)
+Modifier le fichier : /etc/security/limits.conf
+root soft nofile 4096
+root hard nofile 10240
+===========> ma modif :
+#legrain 19/03/2014
+root soft nofile 16384
+root hard nofile 16384
+****************************************************************************************************
+
+
+/****************************************************************************************************************/
+            <datasources>
+                <datasource jndi-name="java:/BDGFirebirdDS" pool-name="BDGFirebirdDS" enabled="true" use-java-context="true">
+                    <connection-url>jdbc:firebirdsql:localhost:/home/nicolas/public/lgrdoss/BureauDeGestion/demo/Bd/GEST_COM.FDB</connection-url>
+                    <driver>firebirdsqlDriver</driver>
+                    <security>
+                        <user-name>admin</user-name>
+                        <password>lgr82admin</password>
+                    </security>
+                </datasource>
+                <xa-datasource jndi-name="java:/CarecoMYSQLDS" pool-name="CarecoMYSQLDS" enabled="true" use-java-context="true">
+                	<xa-datasource-property name="ServerName">localhost</xa-datasource-property> 
+                	<xa-datasource-property name="DatabaseName">careco</xa-datasource-property> 
+                	<xa-datasource-property name="User">careco</xa-datasource-property> 
+                	<xa-datasource-property name="Password">carecopass</xa-datasource-property> 
+                	<driver>mysqlDriver</driver>
+				<!--
+                    <connection-url>jdbc:mysql://localhost:3306/careco</connection-url>
+                    <driver>mysqlDriver</driver>
+                    <security>
+                        <user-name>careco</user-name>
+                        <password>carecopass</password>
+                    </security>
+                -->
+                </xa-datasource>
+                <drivers>
+                    <driver name="firebirdsqlDriver" module="org.firebirdsql">
+                        <xa-datasource-class>org.firebirdsql.jdbc.FBDriver</xa-datasource-class>
+                    </driver>
+                    <driver name="mysqlDriver" module="org.mysql">
+                        <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+                    </driver>
+                </drivers>
+            </datasources>
+/****************************************************************************************************************/
+
+http://ws.auto-mra.com/mra/services/WS_SiVin_Consulter?wsdl
+Utilisateur: xxxxxx
+Mot de passe: xxxxx
+SIRET: xxxxxxxxxxxxxxx
+Adresses IP autorisées: 88.190.230.9, 88.190.230.22, 88.190.230.23
+
+erreur fichier FicheCareco
+ligne : 17653 et 21930 sur les dates
+
+JBOSS JVM param Eclipse pour importation FicheCareco:
+"-Dprogram.name=JBossTools: jboss-as-7.1.3.Final_careco Runtime Server" -server -Xms64m -Xmx512m -XX:MaxPermSize=256m -Dorg.jboss.resolver.warning=true -Djava.net.preferIPv4Stack=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true "-Dorg.jboss.boot.log.file=/donnees/j2ee/jboss-as-7.1.3.Final_careco/standalone/log/boot.log" "-Dlogging.configuration=file:/donnees/j2ee/jboss-as-7.1.3.Final_careco/standalone/configuration/logging.properties" "-Djboss.home.dir=/donnees/j2ee/jboss-as-7.1.3.Final_careco" 
+
+JBOSS JVM param Eclipse original:
+"-Dprogram.name=JBossTools: jboss-as-7.1.3.Final_careco Runtime Server" -server -Xms64m -Xmx512m -XX:MaxPermSize=256m -Dorg.jboss.resolver.warning=true -Djava.net.preferIPv4Stack=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true "-Dorg.jboss.boot.log.file=/donnees/j2ee/jboss-as-7.1.3.Final_careco/standalone/log/boot.log" "-Dlogging.configuration=file:/donnees/j2ee/jboss-as-7.1.3.Final_careco/standalone/configuration/logging.properties" "-Djboss.home.dir=/donnees/j2ee/jboss-as-7.1.3.Final_careco"
+
+
+*****************************************************************************************
+**** 
+
+SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checking.
+TRUNCATE `Adherent`;
+TRUNCATE `Client`;
+TRUNCATE `ImagePiece`;
+TRUNCATE `ImportationV1`;
+TRUNCATE `LignePanier`;
+TRUNCATE `Message`;
+TRUNCATE `Panier`;
+TRUNCATE `Stock`;
+TRUNCATE `TransactionAchatVente`;
+TRUNCATE `UserCompany`;
+TRUNCATE `UserRoles`;
+TRUNCATE `Users`;
+SET FOREIGN_KEY_CHECKS = 1; -- Enable foreign key checking. 
+
+*****************************************************************************************
+**** supprimer infos saisies par utilisateurs sauf les stocks
+
+SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checking.
+TRUNCATE `Client`;
+TRUNCATE `ImagePiece`;
+TRUNCATE `LignePanier`;
+TRUNCATE `Message`;
+TRUNCATE `Panier`;
+TRUNCATE `TransactionAchatVente`;
+SET FOREIGN_KEY_CHECKS = 1; -- Enable foreign key checking. 
+
+*****************************************************************************************
+**** supprimer panier
+
+SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checking.
+TRUNCATE `Client`;
+TRUNCATE `LignePanier`;
+TRUNCATE `Panier`;
+TRUNCATE `TransactionAchatVente`;
+SET FOREIGN_KEY_CHECKS = 1; -- Enable foreign key checking. 
+***********************************************
+*** plusieurs ligne pour la même immat dans le cache
+SELECT *
+FROM Immatriculation i
+GROUP BY i.Immat_SIV
+HAVING count( i.Immat_SIV ) >1
+
+*****************************************************************************************
+
+update Stock s set s.vendeur=empl, s.empl=null;
+
+update Stock s set s.vendeur= (select c.nom from UserCompany c where s.idStockOrigine=c.id) where s.vendeur is null;
+
+*****************************************************************************************
+*** supprimer stock V1 pour id companie sauf saisie V2 ou import texte
+delete from Stock where idStock=? and (idOrigine is not null or importTypeFichier is not null);
+
+*** supprimer stock import texte pour id companie
+delete from Stock where idStock=? and importTypeFichier is not null;
+
+*** supprimer tous les stocks pour id companie
+delete from Stock where idStock=?;
+
+*****************************************************************************************
+update Stock s set s.status='available' where s.status is null;
+*****************************************************************************************
+select a.id, a.status, a.nogo, a.typeDePiece from Stock a where status='available' and (select count(nogo) from Stock s where count(s.nogo)>2 where s.nogo=a.nogo) order by a.nogo
+
+*****************************************************************************************
+*** liste des paniers qui contiennent des lignes qui ont une pièce appartenant au stock de ? entreprise
+SELECT p . *
+FROM Panier p
+WHERE EXISTS (
+
+SELECT *
+FROM LignePanier l
+WHERE l.idPanier = p.id
+AND EXISTS (
+
+SELECT *
+FROM Stock s
+WHERE s.id = l.idPiece
+AND s.idStock =?
+)
+)
+
+*****************************************************************************************
+*** liste des lignes paniers qui contiennent une pièce appartenant au stock de ? entreprise
+SELECT *
+FROM LignePanier l
+WHERE EXISTS (
+
+SELECT *
+FROM Stock s
+WHERE s.id = l.idPiece
+AND s.idStock = ?
+)
+
+*****************************************************************************************************************
+--delete from Stock where idStock=21 and id<>95580 and (idOrigine is not null or importTypeFichier is not null);
+**********************************************************************************************************************
+-- update careco.Stock v2 set v2.dateAchat=(select v1.publishDate from  careco_dump_extranetcareco.CarPart v1 where v2.idOrigine=v1.id) where v2.tableOrigine='CarPart'
+********************************************************************

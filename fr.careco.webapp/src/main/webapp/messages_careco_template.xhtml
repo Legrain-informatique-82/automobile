@@ -1,0 +1,165 @@
+<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+		<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+			
+			<p:panel  header="Mes messages"
+					toggleable="true" toggleSpeed="500" closeSpeed="500">
+				<p:accordionPanel>
+					<p:tab title="Messages reçus">
+						<p:dataTable var="ligneResultat"
+							value="#{messageBean.mesMessagesRecu}"
+							rowKey="#{ligneResultat.id}"
+							selectionMode="single"
+							selection="#{messageBean.messageEnCours}"
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								
+							<p:ajax event="rowSelect"  listener="#{messageBean.lireMessage}" 
+                    						update=":form:growl, @this, :form:id_affiche_message"/>
+
+							<p:column sortBy="#{ligneResultat.de.nom}" filterBy="#{ligneResultat.de.nom}">
+								<f:facet name="header">
+									<h:outputText value="De" />
+								</f:facet>
+								<h:outputText value="#{ligneResultat.de.nom} #{ligneResultat.de.prenom}" />
+							</p:column>
+
+							<p:column sortBy="#{ligneResultat.sujet}" filterBy="#{ligneResultat.sujet}">
+								<f:facet name="header">
+									<h:outputText value="Objet" />
+								</f:facet>
+								<h:outputText value="#{ligneResultat.sujet}" />
+							</p:column>
+							
+							<p:column sortBy="#{ligneResultat.quanCree}">
+								<f:facet name="header">
+									<h:outputText value="Date" />
+								</f:facet>
+								<h:outputText value="#{ligneResultat.quanCree}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column sortBy="#{ligneResultat.nouveau}" filterBy="#{ligneResultat.nouveau}">
+								<f:facet name="header">
+									<h:outputText value="Nouveau" />
+								</f:facet>
+								<h:outputText value="X" rendered="#{ligneResultat.nouveau}"/>
+							</p:column>
+							
+						</p:dataTable>
+					</p:tab>
+					<p:tab title="Messages envoyés">
+					<p:dataTable var="ligneResultat"
+							value="#{messageBean.mesMessagesEnvoyes}"
+							rowKey="#{ligneResultat.id}"
+							selectionMode="single"
+							selection="#{messageBean.messageEnCours}"
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								
+							<p:ajax event="rowSelect"  
+                    						update=":form:growl, @this, :form:id_affiche_message"/>
+
+							<p:column sortBy="#{ligneResultat.a.nom}" filterBy="#{ligneResultat.a.nom}">
+								<f:facet name="header">
+									<h:outputText value="A" />
+								</f:facet>
+								<h:outputText value="#{ligneResultat.a.nom} #{ligneResultat.a.prenom}" />
+							</p:column>
+
+							<p:column sortBy="#{ligneResultat.sujet}" filterBy="#{ligneResultat.sujet}">
+								<f:facet name="header">
+									<h:outputText value="Objet" />
+								</f:facet>
+								<h:outputText value="#{ligneResultat.sujet}" />
+							</p:column>
+
+							<p:column sortBy="#{ligneResultat.quanCree}">
+								<f:facet name="header">
+									<h:outputText value="Date" />
+								</f:facet>
+								<h:outputText value="#{ligneResultat.quanCree}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+					</p:tab>
+				</p:accordionPanel>
+				
+				<br/>
+				<p:panelGrid id="id_affiche_message" columns="2">
+				
+					<h:outputText value="De" />
+					<h:outputText  value="#{messageBean.messageEnCours.de.nom} #{messageBean.messageEnCours.de.prenom}"/>
+					
+					<h:outputText value="A" />
+					<h:outputText  value="#{messageBean.messageEnCours.a.nom} #{messageBean.messageEnCours.a.prenom}"/>
+					
+					<h:outputText value="Date" />
+					<h:outputText value="#{messageBean.messageEnCours.quanCree}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" />
+					</h:outputText>
+					
+					<h:outputText value="Objet" />
+					<h:outputText  value="#{messageBean.messageEnCours.sujet}"/>
+								
+					<h:outputText value="Message" />
+					<h:outputText value="#{messageBean.messageEnCours.message}" escape="false"/>  
+					
+					<p:commandButton process="@this" value="Répondre" actionListener="#{messageBean.repondreMessage}" 
+						update=":form:growl" rendered="#{messageBean.messageEnCours.de != null}">
+						<f:attribute name="idMessage" value="#{messageBean.messageEnCours.id}" />
+					</p:commandButton>
+					<h:outputText value=" " rendered="#{messageBean.messageEnCours.de != null}"/>
+				
+				</p:panelGrid>
+				
+				 
+				
+			</p:panel>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

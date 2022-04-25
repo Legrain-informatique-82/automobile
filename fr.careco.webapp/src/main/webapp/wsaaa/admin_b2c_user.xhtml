@@ -1,0 +1,219 @@
+<ui:composition template="./index_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            dialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+		
+		<p:growl id="growl" showDetail="true" />
+
+			<p:dataTable id="dataTable" var="user" widgetVar="dataTableW"
+				value="#{wsB2cUserBean.values}"
+				resizableColumns="true"
+				rowKey="#{user.codeAuthen}"
+				selection="#{wsB2cUserBean.selectedAutorisationB2Cs}"
+				paginator="true" rows="30"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				 rowsPerPageTemplate="5,10,30,50,100"
+				emptyMessage="Aucun utilisateur." >
+				<!--
+				lazy="true"
+				enlever car sinon empeche les filtres de fonctionner 
+				 -->
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Utilisateur B2C (#{wsB2cUserBean.values.size()} utilisateurs)" />
+						<br />
+						<h:outputText value="Rechercher : " />
+						<p:inputText id="globalFilter" onkeyup="dataTableW.filter()"
+							style="width:150px" />
+					</p:outputPanel>
+				</f:facet>
+
+				<!--  
+				<f:facet name="header">  
+           			Utilisateur
+        		</f:facet>
+        		-->
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{user.codeAuthen}" filterBy="#{user.codeAuthen} ">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{user.codeAuthen}"
+						update=":userDetailForm:display"
+						oncomplete="userDialog.show()" title="View">
+						<f:setPropertyActionListener value="#{user}"
+							target="#{wsB2cUserBean.selectedAutorisationB2C}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column sortBy="#{user.nomAuthen}" filterBy="#{user.nomAuthen}">
+					<f:facet name="header">
+						<h:outputText value="Nom" />
+					</f:facet>
+					<h:outputText value="#{user.nomAuthen}" />
+				</p:column>
+				
+				<p:column sortBy="#{user.loginAuthen}" filterBy="#{user.loginAuthen}">
+					<f:facet name="header">
+						<h:outputText value="Identifiant" />
+					</f:facet>
+					<h:outputText value="#{user.loginAuthen}" />
+				</p:column>
+	
+					<p:column sortBy="#{user.mdpAuthen}" filterBy="#{user.mdpAuthen}">
+					<f:facet name="header">
+						<h:outputText value="Mot de passe" />
+					</f:facet>
+					<h:outputText value="#{user.mdpAuthen}" />
+				</p:column>
+	
+					<p:column sortBy="#{user.nbAppelMin}" filterBy="#{user.nbAppelMin}">
+					<f:facet name="header">
+						<h:outputText value="NB appel/min" />
+					</f:facet>
+					<h:outputText value="#{user.nbAppelMin}" />
+				</p:column>
+	
+					<p:column sortBy="#{user.time}" filterBy="#{user.time}">
+					<f:facet name="header">
+						<h:outputText value="Dernier appel" />
+					</f:facet>
+					<h:outputText value="#{user.time}" />
+				</p:column>
+	
+					<p:column sortBy="#{user.activer}" filterBy="#{user.activer}">
+					<f:facet name="header">
+						<h:outputText value="Actif" />
+					</f:facet>
+					<h:outputText value="#{user.activer}" />
+				</p:column>
+				
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newAutorisationB2CDialog.show()" icon="ui-icon-star"
+						title="Céer un nouvel utilisateur" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{wsB2cUserBean.doDeleteAutorisationB2Cs}"
+						update="dataTable" icon="ui-icon-trash">
+						<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet utilisateur ?" icon="ui-icon-alert" />
+					</p:commandButton>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="userDialog" resizable="false"
+			id="userDlg">
+			<h:form id="userDetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4">
+
+					<f:validateBean disabled="true">
+						<h:outputText value="ID "/>
+						<h:outputText
+							value="#{wsB2cUserBean.selectedAutorisationB2C.codeAuthen}" />
+							
+						<h:outputText value="Nom" />
+						<p:inputText value="#{wsB2cUserBean.selectedAutorisationB2C.nomAuthen}" />
+
+						<h:outputText value="Identifiant :"/>
+						<p:inputText
+							value="#{wsB2cUserBean.selectedAutorisationB2C.loginAuthen}"
+							required="true" requiredMessage="Identifiant obligatoire!" />
+						
+						<h:outputText value="Mot de passe" />
+						<p:inputText value="#{wsB2cUserBean.selectedAutorisationB2C.mdpAuthen}" />
+						
+						<h:outputText value="Actif" />
+						<p:inputText value="#{wsB2cUserBean.selectedAutorisationB2C.activer}" />
+					
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'userDlg','newAutorisationB2CForm'); "
+							actionListener="#{wsB2cUserBean.doUpdateAutorisationB2C}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newAutorisationB2CDialog" resizable="false" id="newAutorisationB2CDlg">
+			<h:form id="newAutorisationB2CForm">
+				<p:panelGrid id="displayNewAutorisationB2C" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					
+					<f:validateBean disabled="true">
+						<h:outputText value="ID "/>
+						<h:outputText
+							value="#{wsB2cUserBean.newAutorisationB2C.codeAuthen}" />
+							
+						<h:outputText value="Nom" />
+						<p:inputText value="#{wsB2cUserBean.newAutorisationB2C.nomAuthen}" />
+
+						<h:outputText value="Identifiant :"/>
+						<p:inputText
+							value="#{wsB2cUserBean.newAutorisationB2C.loginAuthen}"
+							required="true" requiredMessage="Identifiant obligatoire!" />
+						
+						<h:outputText value="Mot de passe" />
+						<p:inputText value="#{wsB2cUserBean.newAutorisationB2C.mdpAuthen}" />
+						
+						<!--  
+						<h:outputText value="Actif" />
+						<p:inputText value="#{wsB2cUserBean.newAutorisationB2C.activer}" />
+						-->
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newAutorisationB2CDlg','newAutorisationB2CForm');"
+							actionListener="#{wsB2cUserBean.doCreateAutorisationB2C}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+				
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+			<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

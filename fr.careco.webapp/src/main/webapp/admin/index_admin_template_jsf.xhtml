@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title><ui:insert name="title">Default title</ui:insert></title>
+    </h:head>
+    <h:body>
+        <div id="header">Header ADMIN</div>
+        
+        <!-- <div id="menu">Menu</div>-->
+        <ui:include src="../menu_careco.xhtml" />
+        
+        <br/>
+        <div id="content"><ui:insert name="content">Default content</ui:insert></div>
+        
+        <div id="footer">Footer</div>
+    </h:body>
+</html>

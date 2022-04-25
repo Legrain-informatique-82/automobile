@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<h:form>
+
+		<p:growl id="messages" />
+		
+		<p:menubar id="menu_ws">
+		
+			<p:menuitem value="Recherche WS" url="/wsaaa/index.xhtml" />
+			
+			<p:submenu label="Gestion WS" icon="ui-icon-gear">
+				<p:submenu label="B2B" icon="ui-icon-gear">
+					<p:menuitem value="Utilisateurs" url="/wsaaa/admin_b2b_user.xhtml" />
+					<p:menuitem value="Log" url="/wsaaa/admin_b2b_log.xhtml" />
+				</p:submenu>
+				<p:submenu label="B2C" icon="ui-icon-gear">
+					<p:menuitem value="Utilisateurs" url="/wsaaa/admin_b2c_user.xhtml" />
+					<p:menuitem value="Log" url="/wsaaa/admin_b2c_log.xhtml" />
+				</p:submenu>
+			</p:submenu>
+			
+			<p:submenu label="Administration" icon="ui-icon-gear">
+			
+				<p:menuitem value="Infos" url="/wsaaa/infos.xhtml" />
+				<p:menuitem value="Déconnexion" actionListener="#{auth.logout}" icon="ui-icon-extlink" />
+
+			</p:submenu>
+			
+		</p:menubar>
+
+	</h:form>
+	
+</ui:composition>

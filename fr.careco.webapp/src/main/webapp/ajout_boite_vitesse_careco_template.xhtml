@@ -1,0 +1,162 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+		<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+
+			<p:dashboard id="board2" model="#{dashboardPopUpBean.model}">
+				
+				<p:panel id="id_complements"
+					header=""
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel1">
+
+					<p:accordionPanel id="accordionPiece" disabled="true">
+						
+						<p:tab id="tabAjoutBoite" title="Ajout rapide d'une boite à vitesse en stock">
+							<p:panelGrid columns="2">
+
+								<h:outputText value="La boite est elle démontée ?" />
+								<p:selectBooleanCheckbox value="#{expertiseVHUBean.boite.demonte}" />
+								
+								<h:outputText value="Boite de plus de 79Kg ?" />
+							    <p:selectBooleanCheckbox value="#{expertiseVHUBean.boite.pieceLourde}" />  
+
+								<h:outputText value="Eplacement casier" />
+								<!--  
+								<h:inputText value="#{expertiseVHUBean.boite.emplacementCasier}" />
+								-->
+								<p:autoComplete value="#{expertiseVHUBean.boite.emplacementCasier}"
+									completeMethod="#{expertiseVHUBean.autoCompleteCasier}" />
+
+								<h:outputText value="Code/Type Boite " />
+								<!--  
+								<h:inputText id="typeBoite" value="#{expertiseVHUBean.boite.refConstructeur}" readonly="true"/>
+								-->
+								<p:autoComplete value="#{expertiseVHUBean.boite.refConstructeur}"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteTypeBoite}" />
+
+								<h:outputText value="Pour: Export/Multirex ?" />
+								<p:selectBooleanCheckbox value="#{expertiseVHUBean.boite.export}" />
+
+								<h:outputText value="Garantie" />
+								<p:selectOneMenu value="#{expertiseVHUBean.boite.garantie}">
+									<f:selectItem itemLabel="0" itemValue="0" />
+									<f:selectItem itemLabel="3" itemValue="3" />
+									<f:selectItem itemLabel="6" itemValue="6" />
+									<f:selectItem itemLabel="12" itemValue="12" />
+									<f:selectItem itemLabel="24" itemValue="24" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Disponibilité" />
+								<p:selectBooleanCheckbox value="#{expertiseVHUBean.boite.disponibilite}" />
+
+								<h:outputText value="N° de série de la boite " />
+								<h:inputText value="#{expertiseVHUBean.boite.numeroDeSeriePiece}" />
+
+								<h:outputText value="Prix minima *" />
+								<h:inputText value="#{expertiseVHUBean.boite.prixMinimum}" />
+
+								<h:outputText value="N° de livre de police VHU" />
+								<h:inputText value="#{expertiseVHUBean.boite.numLivrePolice}" />
+
+								<h:outputText value="Kilométrage moteur *" />
+								<h:inputText value="#{expertiseVHUBean.boite.kms}" />
+
+								<h:outputText value="Prix de vente conseillé HT *" />
+								<h:inputText value="#{expertiseVHUBean.boite.prixVente}" >
+									<p:ajax event="blur" update="id_prix_careco_boite" />  
+								</h:inputText>
+
+								<h:outputText value="Prix Caréco" />
+								<h:inputText id="id_prix_careco_boite" value="#{expertiseVHUBean.boite.prixCareco}" readonly="true" />
+
+								<h:outputText value="Commentaire interne pour Boite" />
+								<p:editor value="#{expertiseVHUBean.boite.commentaireInterne}" />
+
+								<h:outputText value="Commentaire commercial pour cette boite (visible par l'acheteur)" />
+								<p:editor value="#{expertiseVHUBean.boite.commentaireCommercial}" />
+
+							</p:panelGrid>
+							
+							
+							<p:accordionPanel>
+								
+							</p:accordionPanel>
+							
+							
+							<p:commandButton value="Je valide ma mise en stock de cette boite de vitesse"
+								actionListener="#{expertiseVHUBean.stockBoiteOrpheline}" update=":form:accordionPiece:id_photo_boite, :form:growl"/>
+						</p:tab>
+						
+						<p:tab id="id_photo_boite" title="Photo de la boite">
+								
+								<p:panel rendered="#{expertiseVHUBean.boiteEnregistre}">
+							<!--  
+									<p:photoCam widgetVar="pc" listener="#{photoCamBean.oncapture}" update="photos"/>  
+        							<p:commandButton type="button" value="Photo" onclick="pc.capture()"/>  
+        					-->
+        							<p:fileUpload fileUploadListener="#{photoCamBean.handleFileUpload}" 
+        							mode="advanced" dragDropSupport="true" auto="true" label="Choisir"
+            						update=":form:growl, :form:accordionPiece:photos_boite"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" >  
+            							<f:attribute name="idPiece" value="#{expertiseVHUBean.boite.id}" />
+            						</p:fileUpload>
+        						
+        							<h:outputText value="Images de la boite (visible dans le détail de la pièce)" />
+        							<!--
+        							rendered="#{photoCamBean.piece.images != null}" 
+        							 -->
+									<p:galleria id="photos_boite" value="#{photoCamBean.piece.images}" 
+										var="image" panelWidth="500" panelHeight="313"
+										showCaption="true">
+										<p:graphicImage value="/images_piece/#{image.chemin}"
+											alt="Image Description for #{image.description}" title="#{image.chemin}" />
+									</p:galleria>
+								</p:panel>
+								
+						</p:tab>
+	
+					</p:accordionPanel>
+
+				</p:panel>
+
+			</p:dashboard>
+			
+			
+			
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- CART -->
+
+	<div id="cadre-menu">
+	<h:form id="id_form_cart">
+		<div id="bordure-menu">
+				<ui:include src="/tables_panier_careco_dyn.xhtml"/>
+			<!--  
+			<h:outputText value="Liste des paniers professionnel (BtoB)" />
+				
+			<p:dataTable var="ligneResultat" resizableColumns="true"
+				value="#{panierBean.listePanierActifB2B}" rowKey="#{ligneResultat.id}"
+				selectionMode="single"
+				emptyMessage="#{msg.message_datatable_vide}">
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="ID panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.id}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Client" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.nom}" />
+					<br />
+					<h:outputText value="#{ligneResultat.client.prenom}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Date panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.datePanier}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Immat" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.immatriculation}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Vendeur" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+				</p:column>
+
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Prix HT" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.prixHT}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Actif" />
+					</f:facet>
+					<h:outputText value="X" rendered="#{panierBean.detailPanier.id == ligneResultat.id}"/>
+				</p:column>
+
+			</p:dataTable>
+			<br /> <br /> 
+			<h:outputText value="Liste des paniers particulier (BtoC)" />
+			
+			<p:dataTable var="ligneResultat" resizableColumns="true"
+				value="#{panierBean.listePanierActif}" rowKey="#{ligneResultat.id}" selectionMode="single"
+				emptyMessage="#{msg.message_datatable_vide}">
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="ID panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.id}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Client" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.nom}" />
+					<br />
+					<h:outputText value="#{ligneResultat.client.prenom}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Date panier" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.datePanier}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Immat" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.client.immatriculation}" />
+				</p:column>
+
+				<p:column >
+					<f:facet name="header">
+						<h:outputText value="Vendeur" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+				</p:column>
+
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="TTC" />
+					</f:facet>
+					<h:outputText value="#{ligneResultat.totalTTC}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Actif" />
+					</f:facet>
+					<h:outputText value="X" rendered="#{panierBean.detailPanier.id == ligneResultat.id}"/>
+				</p:column>
+
+			</p:dataTable>
+			<br /> 
+			<a href="#" onclick="window.open('#{request.contextPath}/panier_careco_template.xhtml')">
+			Voir le panier</a> 
+			<br /> 
+			-->	
+		</div>
+		<div id="bouton-menu">
+			<span><h:outputText value="(#{panierBean.nbPanierActif})" /></span>
+		</div>
+		</h:form>
+	</div>
+
+	<!-- END CART -->
+
+</ui:composition>

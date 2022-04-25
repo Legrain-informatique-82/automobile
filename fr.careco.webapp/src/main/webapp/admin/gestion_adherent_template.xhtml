@@ -1,0 +1,178 @@
+<ui:composition template="./index_admin_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        Gestion des adhérents
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newAdherentDialog.hide(); 
+	            adherentDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="adherent"
+				value="#{adherentBean.listeAdherent}"
+				rowKey="#{adherent.id}"
+				selection="#{adherentBean.selectedAdherents}"
+				paginator="true" rows="30"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				lazy="true" rowsPerPageTemplate="3,6,30">
+
+				<f:facet name="header">  
+           			Adherents
+        		</f:facet>
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{adherent.id}">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{adherent.id}"
+						update=":adherentDetailForm:display"
+						oncomplete="adherentDialog.show()" title="View">
+						<f:setPropertyActionListener value="#{adherent}"
+							target="#{adherentBean.selectedAdherent}" />
+					</p:commandLink>
+				</p:column>
+				
+				<p:column sortBy="#{adherent.code}">
+					<f:facet name="header">
+						<h:outputText value="Code" />
+					</f:facet>
+					<h:outputText value="#{adherent.code}" />
+				</p:column>
+				
+				<p:column sortBy="#{adherent.nom}">
+					<f:facet name="header">
+						<h:outputText value="Nom" />
+					</f:facet>
+					<h:outputText value="#{adherent.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{adherent.adresse1}">
+					<f:facet name="header">
+						<h:outputText value="Adresse 1" />
+					</f:facet>
+					<h:outputText value="#{adherent.adresse1}" />
+				</p:column>
+				
+				<p:column sortBy="#{adherent.adresse2}">
+					<f:facet name="header">
+						<h:outputText value="Adresse 2" />
+					</f:facet>
+					<h:outputText value="#{adherent.adresse2}" />
+				</p:column>
+				
+				<p:column sortBy="#{adherent.codePostal}">
+					<f:facet name="header">
+						<h:outputText value="Code postal" />
+					</f:facet>
+					<h:outputText value="#{adherent.codePostal}" />
+				</p:column>
+				
+				<p:column sortBy="#{adherent.ville}">
+					<f:facet name="header">
+						<h:outputText value="Ville" />
+					</f:facet>
+					<h:outputText value="#{adherent.ville}" />
+				</p:column>
+				
+				<p:column sortBy="#{adherent.pays}">
+					<f:facet name="header">
+						<h:outputText value="Pays" />
+					</f:facet>
+					<h:outputText value="#{adherent.pays}" />
+				</p:column>
+
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newAdherentDialog.show()" icon="ui-icon-star"
+						title="Céer un nouvel utilisateur" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{adherentBean.doDeleteAdherents}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="adherentDialog" resizable="false"
+			id="adherentDlg">
+			<h:form id="adherentDetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID :"></h:outputText>
+						<h:outputText
+							value="#{adherentBean.selectedAdherent.id}" />
+
+						<h:outputText value="Nom :"></h:outputText>
+						<h:inputText
+							value="#{adherentBean.selectedAdherent.nom}"
+							required="true" requiredMessage="Nom obligatoire!" />
+							
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'adherentDlg','newAdherentForm'); "
+							actionListener="#{adherentBean.doUpdateAdherent}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newAdherentDialog" resizable="false" id="newAdherentDlg">
+			<h:form id="newAdherentForm">
+				<p:panelGrid id="displayNewAdherent" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<!--  
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText
+							value="#{adherentBean.newAdherent.id}"
+							required="true" requiredMessage="ID obligatoire!" />
+					-->
+						<h:outputText value="Nom :"></h:outputText>
+						<p:inputText value="#{adherentBean.newAdherent.nom}"
+							required="true" requiredMessage="Nom obligatoire!" />
+
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newAdherentDlg','newAdherentForm');"
+							actionListener="#{adherentBean.doCreateAdherent}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

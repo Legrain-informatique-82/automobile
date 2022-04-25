@@ -1,0 +1,309 @@
+<ui:composition template="./index_admin_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        Gestion des fiches infos
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newFicheInfosDialog.hide(); 
+	            ficheInfosDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="ficheInfos" resizableColumns="true"
+				value="#{ficheInfosBean.listeFicheInfos}"
+				rowKey="#{ficheInfos.id}"
+				selection="#{ficheInfosBean.selectedFicheInfoss}"
+				paginator="true" rows="30"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				lazy="true" rowsPerPageTemplate="3,6,30">
+
+				<f:facet name="header">  
+           			Fiche Infos (#{ficheInfosBean.listeFicheInfos.size()} fiches)
+        		</f:facet>
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{ficheInfos.id}">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{ficheInfos.id}"
+						update=":ficheInfosDetailForm:display"
+						oncomplete="ficheInfosDialog.show()" title="View">
+						<f:setPropertyActionListener value="#{ficheInfos}"
+							target="#{ficheInfosBean.selectedFicheInfos}" />
+					</p:commandLink>
+				</p:column>
+				
+				<p:column sortBy="#{ficheInfos.idCareco}">
+					<f:facet name="header">
+						<h:outputText value="ID Careco" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.idCareco}" />
+				</p:column>
+				
+				<p:column sortBy="#{ficheInfos.marque}">
+					<f:facet name="header">
+						<h:outputText value="Marque" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.marque}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.modele}">
+					<f:facet name="header">
+						<h:outputText value="Modele" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.modele}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.mode}">
+					<f:facet name="header">
+						<h:outputText value="mode" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.mode}" />
+				</p:column>	
+
+				<p:column sortBy="#{ficheInfos.genre}">
+					<f:facet name="header">
+						<h:outputText value="genre" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.genre}" />
+				</p:column>	
+	
+				<p:column sortBy="#{ficheInfos.cm3}">
+					<f:facet name="header">
+						<h:outputText value="cm3" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.cm3}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.cyl}">
+					<f:facet name="header">
+						<h:outputText value="cyl" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.cyl}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.sppes}">
+					<f:facet name="header">
+						<h:outputText value="sppes" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.sppes}" />
+				</p:column>	
+	
+				<p:column sortBy="#{ficheInfos.cvDin}">
+					<f:facet name="header">
+						<h:outputText value="cvDin" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.cvDin}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.dateDe}">
+					<f:facet name="header">
+						<h:outputText value="dateDe" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.dateDe}" />
+				</p:column>	
+
+				<p:column sortBy="#{ficheInfos.dateA}">
+					<f:facet name="header">
+						<h:outputText value="dateA" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.dateA}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.typeCG}">
+					<f:facet name="header">
+						<h:outputText value="typeCG" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.typeCG}" />
+				</p:column>	
+	
+				<p:column sortBy="#{ficheInfos.typeMot}">
+					<f:facet name="header">
+						<h:outputText value="typeMot" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.typeMot}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.codeMot}">
+					<f:facet name="header">
+						<h:outputText value="codeMot" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.codeMot}" />
+				</p:column>
+		
+				<p:column sortBy="#{ficheInfos.obsMot}">
+					<f:facet name="header">
+						<h:outputText value="obsMot" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.obsMot}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.refBte}">
+					<f:facet name="header">
+						<h:outputText value="refBte" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.refBte}" />
+				</p:column>
+	
+				<p:column sortBy="#{ficheInfos.codeBte}">
+					<f:facet name="header">
+						<h:outputText value="codeBte" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.codeBte}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.genreBte}">
+					<f:facet name="header">
+						<h:outputText value="genreBte" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.genreBte}" />
+				</p:column>	
+
+				<p:column sortBy="#{ficheInfos.obsBte}">
+					<f:facet name="header">
+						<h:outputText value="obsBte" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.obsBte}" />
+				</p:column>
+	
+
+				<p:column sortBy="#{ficheInfos.cetteBoite}">
+					<f:facet name="header">
+						<h:outputText value="cetteBoite" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.cetteBoite}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.avecCetteBoite}">
+					<f:facet name="header">
+						<h:outputText value="avecCetteBoite" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.avecCetteBoite}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.avecCetteAutreBoite}">
+					<f:facet name="header">
+						<h:outputText value="avecCetteAutreBoite" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.avecCetteAutreBoite}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.pivotBoiteDeVitesse}">
+					<f:facet name="header">
+						<h:outputText value="pivotBoiteDeVitesse" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.pivotBoiteDeVitesse}" />
+				</p:column>
+	
+				<p:column sortBy="#{ficheInfos.ceTypeMoteurEstCompatibleAvec}">
+					<f:facet name="header">
+						<h:outputText value="ceTypeMoteurEstCompatibleAvec" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.ceTypeMoteurEstCompatibleAvec}" />
+				</p:column>
+
+				<p:column sortBy="#{ficheInfos.ceMoteur}">
+					<f:facet name="header">
+						<h:outputText value="Ce Moteur" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.ceMoteur}" />
+				</p:column>	
+
+				<p:column sortBy="#{ficheInfos.pivotMoteurs}">
+					<f:facet name="header">
+						<h:outputText value="Pivot Moteurs" />
+					</f:facet>
+					<h:outputText value="#{ficheInfos.pivotMoteurs}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newFicheInfosDialog.show()" icon="ui-icon-star"
+						title="Céer une nouvelle fiche" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{ficheInfosBean.doDeleteFicheInfos}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="ficheInfosDialog" resizable="false"
+			id="ficheInfosDlg">
+			<h:form id="ficheInfosDetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID "></h:outputText>
+						<h:outputText
+							value="#{ficheInfosBean.selectedFicheInfos.id}" />
+
+						<h:outputText value="ID Careco "></h:outputText>
+						<h:inputText
+							value="#{ficheInfosBean.selectedFicheInfos.idCareco}" />
+							
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'ficheInfosDlg','newFicheInfosForm'); "
+							actionListener="#{ficheInfosBean.doUpdateFicheInfos}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newFicheInfosDialog" resizable="false" id="newFicheInfosDlg">
+			<h:form id="newFicheInfosForm">
+				<p:panelGrid id="displayNewFicheInfos" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<!--  
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText
+							value="#{ficheInfosBean.newFicheInfos.id}"
+							required="true" requiredMessage="ID obligatoire!" />
+					-->
+						<h:outputText value="ID Careco "></h:outputText>
+						<p:inputText value="#{ficheInfosBean.newFicheInfos.idCareco}" />
+
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newFicheInfosDlg','newFicheInfosForm');"
+							actionListener="#{ficheInfosBean.doCreateFicheInfos}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

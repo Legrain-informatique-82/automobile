@@ -1,0 +1,180 @@
+<ui:composition template="./index_admin_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        Gestion des utilisateurs
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<h:form id="form">
+
+			<p:dataTable id="dataTable" var="piece" widgetVar="dataTableW"
+				value="#{doublonBean.listeStock}"
+				resizableColumns="true"
+				rowKey="#{piece.id}"
+				selection="#{doublonBean.selectedStocks}"
+				paginator="true" rows="30"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				 rowsPerPageTemplate="3,6,30"
+				emptyMessage="No line found with given criteria" >
+				<!--
+				lazy="true"
+				enlever car sinon empeche les filtres de fonctionner 
+				 -->
+ 
+				<f:facet name="header">  
+           			Ligne de Stock en double - Résultats de la recherche (#{monStockBean.monStock.size()} pièces)
+        		</f:facet>
+
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{piece.id}" filterBy="#{piece.id} ">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{piece.id}" title="View">
+						<f:setPropertyActionListener value="#{piece}"
+							target="#{doublonBean.selectedStock}" />
+					</p:commandLink>
+				</p:column>
+				
+				<p:column sortBy="#{piece.numLivrePolice}">
+					<f:facet name="header">
+						<h:outputText value="N° Livre de police" />
+					</f:facet>
+					<h:outputText value="#{piece.numLivrePolice}" />
+				</p:column>
+				
+				<p:column sortBy="#{piece.typeDePiece}">
+					<f:facet name="header">
+						<h:outputText value="Type de pièce" />
+					</f:facet>
+					<h:outputText value="#{piece.typeDePiece}" />
+				</p:column>
+				
+				<p:column sortBy="#{piece.refConstructeur}">
+					<f:facet name="header">
+						<h:outputText value="Ref constructeur" />
+					</f:facet>
+					<h:outputText value="#{piece.refConstructeur}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.marque}">
+					<f:facet name="header">
+						<h:outputText value="Marque" />
+					</f:facet>
+					<h:outputText value="#{piece.marque}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.modele}">
+					<f:facet name="header">
+						<h:outputText value="Modèle" />
+					</f:facet>
+					<h:outputText value="#{piece.modele}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.date1erMiseEnCirculation}">
+					<f:facet name="header">
+						<h:outputText value="Date de 1er mise en circulation" />
+					</f:facet>
+					<h:outputText value="#{piece.date1erMiseEnCirculation}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.kms}" filterBy="#{piece.kms}">
+					<f:facet name="header">
+						<h:outputText value="Kms" />
+					</f:facet>
+					<h:outputText value="#{piece.kms}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.emplacementCasier}">
+					<f:facet name="header">
+						<h:outputText value="Empl." />
+					</f:facet>
+					<h:outputText value="#{piece.emplacementCasier}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.garantie}">
+					<f:facet name="header">
+						<h:outputText value="Garantie (mois)" />
+					</f:facet>
+					<h:outputText value="#{piece.garantie}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.prixAchat}">
+					<f:facet name="header">
+						<h:outputText value="Prix achat" />
+					</f:facet>
+					<h:outputText value="#{piece.prixAchat}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.prixCareco}">
+					<f:facet name="header">
+						<p:graphicImage  library="images" name="favicon.ico" />
+						<h:outputText value="Prix caréco " />
+					</f:facet>
+					<h:outputText value="#{piece.prixCareco}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.prixVente}">
+					<f:facet name="header">
+						<h:outputText value="Prix vente" />
+					</f:facet>
+					<h:outputText value="#{piece.prixVente}"/>
+				</p:column>
+	
+				<p:column sortBy="#{piece.dateAchat}">
+					<f:facet name="header">
+						<h:outputText value="Date achat" />
+					</f:facet>
+					<h:outputText value="#{piece.dateAchat}"/>
+				</p:column>
+
+				
+				<p:column sortBy="#{piece.status}">
+					<f:facet name="header">
+						<h:outputText value="Status" />
+					</f:facet>
+					<h:outputText value="#{piece.status}"/>
+				</p:column>
+				
+				<p:column sortBy="#{piece.idOrigine}">
+					<f:facet name="header">
+						<h:outputText value="ID V1" />
+					</f:facet>
+					<h:outputText value="#{piece.idOrigine}"/>
+				</p:column>
+				
+				<f:facet name="footer">
+					<p:commandButton value="Supprimer"
+						actionListener="#{doublonBean.doDeleteStocks}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+
+	</ui:define>
+
+</ui:composition>

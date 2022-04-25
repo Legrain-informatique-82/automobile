@@ -1,0 +1,14 @@
+<jboss-app>
+
+	<security-domain>CarecoRealm</security-domain>
+
+	<loader-repository>
+		<!-- fr.legrain.bdg.ear.ear:archive=fr.legrain.bdg.ear.ear -->
+		fr.careco:archive=fr.careco.ear.ear
+		<loader-repository-config>
+			java2ParentDelegation=false
+		</loader-repository-config>
+	</loader-repository>
+
+
+</jboss-app>

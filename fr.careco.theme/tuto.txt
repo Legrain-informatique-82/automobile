@@ -1,0 +1,1 @@
+http://www.mkyong.com/jsf2/primefaces/create-a-custom-theme-in-primefaces/

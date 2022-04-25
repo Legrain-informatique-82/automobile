@@ -1,0 +1,473 @@
+<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+			<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+
+			<p:dashboard id="board2" model="#{dashboardResultBean.model}">
+				
+				<p:panel id="id_resultat"
+					header="Résultats de la recherche (#{monStockBean.monStock.size()} pièces)"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel3">
+					<p:messages id="id_message_erreur_global" styleClass="errors" autoUpdate="true" showDetail="true" showSummary="true" closable="true"/>
+					
+					<p:accordionPanel id="main_panel_result">
+						<p:tab title="Mon stock">
+
+							<p:commandButton value="Imprimer tout mon stock"
+								onclick="window.open('#{request.contextPath}/output?__report=/reports/mon_stock.rptdesign&amp;id_entreprise=#{monStockBean.idTypeStockUser}&amp;__format=pdf')"
+								styleClass="bleu">
+							</p:commandButton>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="excel.png"
+									title="Export au format Excel" alt="Export au format Excel"
+									height="20" />
+								<p:dataExporter type="xls" target="dataTable" fileName="stock" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="csv.png"
+									title="Export au format CSV" alt="Export au format CSV"
+									height="20" />
+								<p:dataExporter type="csv" target="dataTable" fileName="stock" />
+							</h:commandLink>
+							
+							<!--  
+							<h:commandLink>
+								<p:graphicImage library="images" name="pdf.png"
+									title="Export au format PDF" alt="Export au format PDF"
+									height="20" />
+								<p:dataExporter type="pdf" target="dataTable" fileName="stock" />
+							</h:commandLink>
+							-->
+
+							<p:dataTable id="dataTable" var="ligneResultat"
+								resizableColumns="true" value="#{monStockBean.monStock}"
+								rowKey="#{ligneResultat.id}"
+								selection="#{monStockBean.selectedStocks}" paginator="true"
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								
+								<!--  
+								<p:ajax event="rowSelect" listener="#{monStockBean.stockSelect}" />
+								-->
+
+								<p:column selectionMode="multiple" style="width:18px" exportable="false"/>
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+								<p:column sortBy="#{ligneResultat.numLivrePolice}"
+									filterBy="#{ligneResultat.numLivrePolice}" >
+									<f:facet name="header">
+										<h:outputText value="N° Livre de police" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.numLivrePolice}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.export}">
+									<f:facet name="header">
+										<h:outputText value="Export" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.export}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.demonte}">
+									<f:facet name="header">
+										<h:outputText value="Démonté" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.demonte}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}"
+									filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}"
+									filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}"
+									filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}"
+									filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.date1erMiseEnCirculation}">
+									<f:facet name="header">
+										<h:outputText value="Date de 1er mise en circulation" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.date1erMiseEnCirculation}" >
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								
+								 
+								<p:column sortBy="#{ligneResultat.dateAchat}">
+									<f:facet name="header">
+										<h:outputText value="Date entrée en stock" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.dateAchat}" >
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}"
+									filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}"
+									filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}"
+									filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixAchat}"
+									filterBy="#{ligneResultat.prixAchat}">
+									<f:facet name="header">
+										<h:outputText value="Prix achat" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixAchat}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}"
+									filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}"
+									filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.idOrigine}"
+									filterBy="#{ligneResultat.idOrigine}">
+									<f:facet name="header">
+										<h:outputText value="ID V1" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idOrigine}" />
+								</p:column>
+
+
+								<p:column exportable="false">
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+
+									<!--  
+									<p:commandLink>
+										<f:setPropertyActionListener value="#{ligneResultat}"
+											target="#{ligneResultatController.selectedligneResultat}" />
+										<p:graphicImage library="images" name="update.gif"
+											title="Mettre à jour PO" alt="Mettre à jour PO" height="16" />
+									</p:commandLink>
+									-->
+
+									<p:commandLink
+										onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg"
+											title="Détail/Modification" alt="Détail/Modification" height="16" />
+									</p:commandLink>
+									
+									<p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" > <!-- dynamic="true" -->  
+        								<h:outputText value="Pièce N° #{ligneResultat.id}" /><br/>
+        								
+        								<h:outputText value="Cette pièce est présente dans #{panierBean.findNbPanierContientPiece(ligneResultat.id)} panier(s)." /><br/>
+        								<!--  
+        								<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500" collapsed="true">
+        									<p:dataTable var="ligneResultat" resizableColumns="true"
+												value="#{panierBean.findPanierContientPiece(ligneResultat.id)}">
+												<p:column>
+													<f:facet name="header">
+														<h:outputText value="N° panier" />
+													</f:facet>
+													<h:outputText value="#{ligneResultat.id}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+										-->
+									</p:overlayPanel>  
+									
+									<p:commandLink id="chartBtn">
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_error.png" title="Déjà dans un panier" alt="Déjà dans un panier" height="16" rendered="#{ligneResultat.status == 'panier'}"/>
+									</p:commandLink>
+									
+									<p:graphicImage library="famfamfam_icons" name="icons/lock.png.png" title="Transaction en cours" alt="Transaction en cours" height="16" rendered="#{ligneResultat.status == 'transaction'}"/>
+
+									<p:commandLink actionListener="#{monStockBean.supprimer}"
+										update=":form:main_panel_result:dataTable, :form:main_panel_result:dataTableSuppr, :form:growl"
+										rendered="#{ligneResultat.status != 'panier'}">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<p:graphicImage library="images" name="delete.png"
+											title="Supprimer la pièce" alt="Supprimer la pièce"
+											height="16" />
+											<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cette pièce de votre stock ?" icon="ui-icon-alert" />  
+									</p:commandLink>
+
+								</p:column>
+
+								<f:facet name="footer">
+									<p:commandButton value="Supprimer la sélection"
+										actionListener="#{monStockBean.supprimerSelectionStocks}"
+										update=":form:main_panel_result:dataTable, :form:growl" icon="ui-icon-trash">
+										<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer les pièces sélectionnées de votre stock ?" icon="ui-icon-alert" />  
+									</p:commandButton>
+								</f:facet>
+
+
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab title="Pièces supprimées">
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="excel.png"
+									title="Export au format Excel" alt="Export au format Excel"
+									height="20" />
+								<p:dataExporter type="xls" target="dataTableSuppr" fileName="stock" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="csv.png"
+									title="Export au format CSV" alt="Export au format CSV"
+									height="20" />
+								<p:dataExporter type="csv" target="dataTableSuppr" fileName="stock" />
+							</h:commandLink>
+							
+							<!--  
+							<h:commandLink>
+								<p:graphicImage library="images" name="pdf.png"
+									title="Export au format PDF" alt="Export au format PDF"
+									height="20" />
+								<p:dataExporter type="pdf" target="dataTable" fileName="stock" />
+							</h:commandLink>
+							-->
+
+							<p:dataTable id="dataTableSuppr" var="ligneResultat"
+								resizableColumns="true" value="#{monStockBean.monStockSupprime}"
+								rowKey="#{ligneResultat.id}"
+								paginator="true"
+								selectionMode="single"
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								
+								<!--  
+								<p:ajax event="rowSelect" listener="#{monStockBean.stockSelect}" />
+								-->
+
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+								
+								<p:column sortBy="#{ligneResultat.quandModif}">
+									<f:facet name="header">
+										<h:outputText value="Suppression/Dernière modification"/>
+									</f:facet>
+									<h:outputText value="#{ligneResultat.quandModif}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								
+								<!--  
+								<p:column >
+									<f:facet name="header">
+										<h:outputText value="Qui"/>
+									</f:facet>
+									<h:outputText value="#{ligneResultat.quiModif}"/>
+								</p:column>
+								-->
+
+								<p:column sortBy="#{ligneResultat.numLivrePolice}"
+									filterBy="#{ligneResultat.numLivrePolice}" >
+									<f:facet name="header">
+										<h:outputText value="N° Livre de police" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.numLivrePolice}" />
+								</p:column>
+
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}"
+									filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}"
+									filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}"
+									filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}"
+									filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								 
+								<p:column sortBy="#{ligneResultat.dateAchat}">
+									<f:facet name="header">
+										<h:outputText value="Date entrée en stock" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.dateAchat}" >
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}"
+									filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}"
+									filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixAchat}"
+									filterBy="#{ligneResultat.prixAchat}">
+									<f:facet name="header">
+										<h:outputText value="Prix achat" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixAchat}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}"
+									filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+								<p:column exportable="false">
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+
+									<p:commandLink
+										onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg"
+											title="Détail" alt="Détail" height="16" />
+									</p:commandLink>
+									
+									<p:commandLink 
+										actionListener="#{monStockBean.restaurerPiece}"
+										update=":form:main_panel_result:dataTable, :form:main_panel_result:dataTableSuppr, :form:growl" icon="ui-icon-trash">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<p:graphicImage library="famfamfam_icons" name="icons/arrow_undo.png" title="Restaurer la pièce dans le stock" alt="Restaurer la pièce dans le stock" height="16" />
+										<p:confirm header="Confirmation" message="Etes vous sur de vouloir restaurer cette pièce dans votre stock ?" icon="ui-icon-alert" />  
+									</p:commandLink>
+								</p:column>
+				
+							</p:dataTable>
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+
+			</p:dashboard>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,81 @@
+Dans bin/standalone.sh :
+=========================
+Au début, après le #!/bin/sh
+JAVA_HOME="/var/careco/jdk1.7.0_25_x64"
+JAVA_OPTS="-Xms64m -Xmx16g -XX:MaxPermSize=24g"
+
+Dans bin/jboss-cli.sh :
+=========================
+Au début, après le #!/bin/sh
+JAVA_HOME="/var/careco/jdk1.7.0_25_x64"
+
+Lancer/stopper Jboss manuellement :
+===================================
+* Lancer:
+service start jboss
+ou lancer le fichier "bin/standalone.sh" dans le répertoire d'installation de jboss
+* Stopper :
+ps -ae | grep java;ps -ae | grep sh
+puis faire un "kill -9" sur tout les PID "standalone.sh" et "java"
+* Example pour stopper :
+root@ns3267258:~# ps -ae | grep java;ps -ae | grep sh
+12711 pts/1    00:03:59 java
+ 4055 ?        00:00:00 sshd
+ 8950 ?        00:00:01 sshd
+ 8952 pts/1    00:00:00 bash
+ 9007 ?        00:00:00 sshd
+ 9009 pts/2    00:00:00 bash
+12673 pts/1    00:00:00 standalone.sh
+24693 ?        00:07:59 freshclam
+==> kill -9 12711 12673
+
+Fichier /etc/init.d/jboss
+==========================
+
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          jboss
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/Stop JBoss AS 7
+### END INIT INFO
+# chkconfig: 35 92 1
+#
+#For RedHat based distributions (CentOS, Oracle Linux, Fedora) execute (as root):
+# chkconfig servicename on
+#For Debian based distributions (Ubuntu) execute (as root):
+# update-rc.d servicename defaults
+
+## Include some script files in order to set and export environmental variables
+## as well as add the appropriate executables to $PATH.
+    [ -r /etc/profile.d/java.sh ] && . /etc/profile.d/java.sh
+    [ -r /etc/profile.d/jboss.sh ] && . /etc/profile.d/jboss.sh
+
+    JBOSS_HOME=/var/careco/jboss-as-7.1.3.Final_careco
+
+    AS7_OPTS="$AS7_OPTS -Dorg.apache.tomcat.util.http.ServerCookie.ALLOW_HTTP_SEPARATORS_IN_V0=true"   ## See AS7-1625
+    AS7_OPTS="$AS7_OPTS -Djboss.bind.address.management=0.0.0.0"
+    AS7_OPTS="$AS7_OPTS -Djboss.bind.address=0.0.0.0"
+
+    case "$1" in
+        start)
+            echo "Starting JBoss AS 7..."
+            #sudo -u jboss sh ${JBOSS_HOME}/bin/standalone.sh $AS7_OPTS           ##  If running as user "jboss"
+            #start-stop-daemon --start --quiet --background --chuid jboss --exec ${JBOSS_HOME}/bin/standalone.sh $AS7_OPTS   ## Ubuntu
+            ${JBOSS_HOME}/bin/standalone.sh $AS7_OPTS &
+        ;;
+        stop)
+            echo "Stopping JBoss AS 7..."
+            #sudo -u jboss sh ${JBOSS_HOME}/bin/jboss-admin.sh --connect command=:shutdown            ##  If running as user "jboss"
+            #start-stop-daemon --start --quiet --background --chuid jboss --exec ${JBOSS_HOME}/bin/jboss-admin.sh -- --connect command=:shutdown    $
+            ${JBOSS_HOME}/bin/jboss-cli.sh --connect command=:shutdown
+        ;;
+        *)
+            echo "Usage: /etc/init.d/jbossas7 {start|stop}"; exit 1;
+        ;;
+    esac
+
+    exit 0

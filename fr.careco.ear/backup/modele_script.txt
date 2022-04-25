@@ -1,0 +1,174 @@
+==================================================================================================================
+==================================================================================================================
+* Echange de clé SSH
+* Préparation des données sur le serveur à sauvagrdé : Dump MYSQL par example
+* Cron pour lancer les script de péparation des données
+* Sur la machine qui sauvegarde script à base rsync
+* Cron pour lancer les scripts rsync
+==================================================================================================================
+==================================================================================================================
+Echange de clès SSH
+
+Pour des raisons de sécurité et pour faire plus propre, on commence par effacer toute les cles publique et privé de la machine locale et distante 
+ainsi que le authorized_keys sur la machine distante. 
+Sauf bien sur si les clés en question sont déjà utilisées (pour un échange avec une autre machine par exemple).
+Sur la machine locale qui va récuperer les sauvegardes:
+
+$ ssh-keygen -t dsa -b 4096
+
+Important : Ne pas rentrer de passphrase et etre patient ca peut prendre quelques minutes sur des machines peu puissante. 
+Ca va generer la cle prive et publique dans le dossier ~/.ssh/ 
+Mise en garde la cle privee est extremement précieuse :) si elle est derobe quelqu'un pourrais avoir acces au serveur. 
+Comme elle doit etre presente dans le .ssh de l'user qui ferat les sauvegardes il faut faire attention a quel utilisateur on donne ce "pouvoir" 
+et change les droits en 400.
+
+On envoie la cle publique (seulement la publique) sur la machine distante
+
+$ scp .ssh/id_dsa.pub root@remotehost.com:.ssh/
+
+Important : Ne pas envoyer la cle privee associe a cette cle pour des raisons de securite. 
+Meme si en ce moment on peut voir sur le serveur une prive et une publique la prive n'est certainnement pas celle associe a la publique qui 
+permetait de ce logger.
+Ensuite ce logger sur remotehost.com (machine distante a sauvegarder) 
+On ajoute la cle publique dans le /root/.ssh/authorized_keys:
+
+# mv .ssh/id_dsa.pub .ssh/authorized_keys
+# chmod 400 .ssh/authorized_keys
+
+Ou un simple copier/coller fonctionne aussi.
+On n'est pas oblige de decommenter #AuthorizedKeysFile du sshd_config car comme dit le man sshd_config a ce sujet: "The default .ssh/authorized_keys"
+
+Normalement la on doit pouvoir se logger sans mot de passe.
+Par mesure de securite il faut ajouter dans le id_dsa.pub(sur le serveur distant) juste avant la cle les champs suivant :
+
+from="host.com",command="commande_qu_utilise_rsync"
+ssh-dss AAAAB3NzaC1kc3MAAAIBAI4rlRWcQ0j8wGprk7OnoNmZCV........
+
+C'est tres important car si quelqu'un recupere la cle privee sur la machine il aurat directement un acces root sur serveur distant 
+sans meme avoir ataper de mot de passe.
+La variable from="host.com" dit que la cle publique suivante ne peut etre utilise seulement pour une connection avec host.com,
+ si on avez une ip statique mais l'ip dynamique ou le dns dynamique doit fonctionner aussi (no-ip.com).
+La variable command="commande_qu_utilise_rsync" specifie que seulement cette commande pourrat etre utilise pour cette connexion. 
+C'est un peu plus lourd a gerer mais ca peut etre utile.
+
+==================================================================================================================
+==================================================================================================================
+#!/bin/bash
+USER=admin
+HOST=localhost
+PASSWORD=xxxxxxxxx
+DEST=/root/save_mysql/dump/
+for i in $(mysql --user=$USER --password=$PASSWORD --host=$HOST --batch --skip-column-names -e "show databases"| sed  's/ /%/g'); do
+       /usr/bin/mysqldump --user=$USER --password=$PASSWORD $i > $DEST$i.sql
+done
+
+# Plan B
+#for i in /var/lib/mysql/*/; do
+#dbname=`basename $i`
+#/usr/bin/mysqldump --user=$USER --password=$PASSWORD $dbname > /home/xxxxxxxx/$dbname.sql
+#done
+
+==================================================================================================================
+==================================================================================================================
+
+#!/bin/bash
+#RSYNC 
+
+IP_SERV=0.0.0.0
+USER=root
+REP_BCK=/var/backup
+REP_SERV=xxxxxxxxxx
+
+#Derniere partie du chemin, comme le script travaille sur 2 repertoires en alternance, "1" ou "2" a passer en parametre lors de la tache cron
+echo -e "Semaine N° $(date +%V)"
+((x = $(date +%V) % 2))
+
+if [ $x -eq 0 ];
+then
+FIN_CHEMIN=1
+else
+FIN_CHEMIN=2 
+fi
+
+MESSAGE_MAIL=/tmp/mail_script_$FIN_CHEMIN.txt
+
+REP_TYPE=complet
+REP_METHODE=rsync
+REP_BCK_COMPLET=$REP_BCK/$REP_SERV/$REP_TYPE/$REP_METHODE/$FIN_CHEMIN
+
+echo "################################################################################################"
+echo -e "#  Debut de la sauvegarde $(date) - $REP_SERV - $IP_SERV"
+echo "################################################################################################"
+
+echo -e "\n########################################################################"
+echo "#         RSYNC"
+echo "#######################################################################"
+
+#Recuperation de sauvegarde Plesk
+#/usr/bin/rsync -arvz --delete-after $USER@$IP_SERV:/root/save_psa/psa-7.5.4-xxxxxx.fr.archive /var/backup/xxxxxx.com/complet/plesk
+
+#Recuperation de donnees brutes
+#Preserve les droits sur les fichiers
+#/var/www/vhosts
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/var/www/vhosts/ $REP_BCK_COMPLET/var_www_vhosts
+
+#/var/lib/mysql
+# copie directe : pas de mysqldump, probleme d'integrite des donnees possible
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/var/lib/mysql/ $REP_BCK_COMPLET/var_lib_mysql
+
+# copie des fichiers .sql realise avec mysqldump
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/root/save_mysql/dump/ $REP_BCK_COMPLET/root_save_mysql_dump
+
+#/var/qmail
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/var/qmail/ $REP_BCK_COMPLET/var_qmail
+
+#/usr/local/psa
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/usr/local/psa/ $REP_BCK_COMPLET/usr_local_psa
+
+#/etc
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/etc/ $REP_BCK_COMPLET/_etc
+
+#/var/named
+/usr/bin/rsync -arvzpgo --delete-after $USER@$IP_SERV:/var/named/ $REP_BCK_COMPLET/var_named
+
+#Compression des donnees
+NOM_ARCHIVE="$REP_SERV"_$(date +'%F')
+NOM_ARCHIVE="$REP_SERV"_"$FIN_CHEMIN"
+#EXT=.zip
+EXT=.tar.gz
+NOM_ARCHIVE_COMPLET=$NOM_ARCHIVE$EXT
+
+rm -f old_"$NOM_ARCHIVE_COMPLET"
+mv $NOM_ARCHIVE_COMPLET old_"$NOM_ARCHIVE_COMPLET"
+
+cd $REP_BCK_COMPLET
+#zip -r ../"$NOM_ARCHIVE_COMPLET" .
+tar -czvf ../"$NOM_ARCHIVE_COMPLET" .
+
+echo -e "\n#############################################"
+echo -e "# Fin de la sauvegarde $(date)"
+echo "#############################################"
+
+echo -e "\n"
+ls -lh ..
+
+echo -e "\n"
+df -h
+
+echo -e "\n"
+crontab -l
+
+echo "Sauvegarde du serveur $REP_SERV terminée" > $MESSAGE_MAIL
+mail xx@xx.fr -s "Sauvegarde rsync $REP_SERV **** $(date)" < $MESSAGE_MAIL
+
+==================================================================================================================
+==================================================================================================================
+
+#Sauvegarde du serveur xxxxxxxxxxx
+#Tous les mercredi a 2h30
+#Alternance des sauvegardes sur 2 repertoires (1 semaine sur 2)
+	30	3	*	*	3	/xxxxxx/rsync_complet_xxxxxxxxxx.sh 
+
+==================================================================================================================
+==================================================================================================================
+ 

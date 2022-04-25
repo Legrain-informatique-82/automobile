@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	
+	<display-name>fr.legrain.bdg.webapp</display-name>
+	<welcome-file-list>
+		<welcome-file>accueil_careco_template.xhtml</welcome-file>
+		<welcome-file>index_template_jsf.xhtml</welcome-file>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.xhtml</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<mime-mapping>
+		<extension>ico</extension>
+		<mime-type>image/vnd.microsoft.icon</mime-type>
+	</mime-mapping>
+	
+	<session-config>
+		<session-timeout>240</session-timeout>
+	</session-config>
+	
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- 
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	 -->
+
+	<!-- Web filter pour JavaMelody, monitoring -->
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+
+	<!-- Web filter Primeface upload de fichier -->
+	<filter>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+
+	
+	<!-- Web filter Primeface/Atmosphere pour Push et Websocket -->
+	<servlet>
+		<servlet-name>Push Servlet</servlet-name>
+		<servlet-class>org.primefaces.push.PushServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Push Servlet</servlet-name>
+		<url-pattern>/primepush/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- Birt Engine Servlet -->
+	<servlet>
+		<servlet-name>EngineServlet</servlet-name>
+		<servlet-class>org.eclipse.birt.report.servlet.BirtEngineServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/output</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 
+	http://www.mkyong.com/jsf2/primefaces/changing-theme-in-primefaces/ 
+	<param-value>aristo</param-value> ==> defaut (aristo)
+	<param-value>light</param-value> ==> careco (light)  
+		-->
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>aristo</param-value>
+	</context-param>
+	
+	<context-param>
+      <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+      <param-value>true</param-value>
+	</context-param>
+	
+	<context-param>
+	  <param-name>javax.faces.FACELETS_RESOURCE_RESOLVER</param-name>
+	  <param-value>fr.legrain.careco.webapp.FaceletsResourceResolver</param-value>
+	</context-param>
+	
+	
+	<!-- Roles -->
+	<security-role>
+  		<description>Administrateur</description>
+  		<role-name>admin</role-name>
+	</security-role>
+	<security-role>
+  		<description>Utilisateur</description>
+  		<role-name>utilisateur</role-name>
+	</security-role>
+
+<!-- Resource / Role Mapping  -->
+<!-- 
+Remplacer par la classe AuthFilter
+<security-constraint>
+  <display-name>Admin Area</display-name>
+  <web-resource-collection>
+      <web-resource-name>admin_resources</web-resource-name>
+      <url-pattern>/admin/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+  </web-resource-collection>
+  <auth-constraint>
+      <description>For admin role only</description>
+      <role-name>admin</role-name>
+  </auth-constraint>
+</security-constraint> 
+ -->
+ 
+ <security-constraint>
+ <!--
+ https://community.jboss.org/thread/161511
+  security-constraint "bidon", uniquement pour que le serveur JBoss cree un security-constraint et pouvoir ensuite utiliser 
+  la methode login() par programmation
+  -->
+  <display-name>Admin Area</display-name>
+  <web-resource-collection>
+      <web-resource-name>admin_resources</web-resource-name>
+      <url-pattern>/azeazea/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+  </web-resource-collection>
+</security-constraint> 
+ 
+<!-- Login Prompt -->        
+<login-config>
+<auth-method>FORM</auth-method>
+<form-login-config>
+  <form-login-page>/login/login.xhtml</form-login-page>
+  <form-error-page>/error.xhtml</form-error-page>
+  </form-login-config>
+</login-config>
+	
+</web-app>

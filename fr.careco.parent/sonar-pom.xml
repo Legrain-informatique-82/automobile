@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- project information -->
+
+	<groupId>fr.careco</groupId>
+	<artifactId>fr.careco</artifactId>
+	<name>Careco</name>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<build>
+		<!-- Setup compiler options Java 1.4 -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<modules>
+		<module>../fr.careco.ear</module>
+		<module>../fr.careco.ejb</module>
+		<module>../fr.careco.webapp</module>
+	</modules>
+
+	<properties>
+		<sonar.dynamicAnalysis>false</sonar.dynamicAnalysis>
+	</properties>
+
+	<pluginRepositories>
+		<!-- Sonar may not be found on some repositories -->
+		<pluginRepository>
+			<id>Codehaus repository</id>
+			<url>http://repository.codehaus.org/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>

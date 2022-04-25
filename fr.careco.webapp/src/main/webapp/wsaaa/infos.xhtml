@@ -1,0 +1,47 @@
+<ui:composition template="./index_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            dialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+		
+		<p:growl id="growl" showDetail="true" />
+		
+		<h:outputText value="Codes erreurs" /> <br /><br />
+		<h:outputText value="1 : Véhicule trouvé par AAA" /><br />
+		<h:outputText value="2 : Véhicule non trouvé" /><br />
+		<h:outputText value="3 : Véhicule dans le cache" /><br />
+		<h:outputText value="4 : Erreur technique de AAA" /><br />
+		<h:outputText value="5 : Erreur technique du webservice" /><br />
+		<h:outputText value="6 : Arreur applicative du WS (données invalides ou manquantes, compte désactivé, ...)" /><br />
+
+		</h:form>	
+
+	</ui:define>
+
+</ui:composition>

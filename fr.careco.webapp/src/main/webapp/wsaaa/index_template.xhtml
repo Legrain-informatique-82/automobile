@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+	
+	<title><ui:insert name="title">Default title</ui:insert></title>
+
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['images:itcar/favicon.ico']}" />
+
+	<h:outputScript src="http://code.jquery.com/jquery-latest.min.js" />
+	<h:outputScript>
+		<ui:insert name="scriptjs"></ui:insert>
+		
+	    function clearForm(formName){
+		        jQuery('#'+formName).each(function(){
+			        this.reset();
+			});
+	    }
+	    
+	    $(function() {
+	    	$('#id_lien').removeClass('ui-commandlink ui-widget');
+	    })
+	</h:outputScript>
+
+	<h:outputScript library="primefaces" name="jquery/jquery.js" />
+	
+	
+	
+	 <h:outputScript library="js_careco" name="plugins.js" />
+        <h:outputScript library="js_careco" name="editor.js" />
+        <h:outputScript library="js_careco" name="calendar.js" />
+        <h:outputScript library="js_careco" name="flot.js" />
+        <h:outputScript library="js_careco" name="elfinder.js" />
+        <h:outputScript library="js_careco" name="datatables.js" />
+        <h:outputScript library="js_careco" name="wl_Alert.js" />
+        <h:outputScript library="js_careco" name="wl_Autocomplete.js" />
+        <h:outputScript library="js_careco" name="wl_Breadcrumb.js" />
+        <h:outputScript library="js_careco" name="wl_Calendar.js" />
+        <h:outputScript library="js_careco" name="wl_Chart.js" />
+        <h:outputScript library="js_careco" name="wl_Color.js" />
+        <h:outputScript library="js_careco" name="wl_Date.js" />
+        <h:outputScript library="js_careco" name="wl_Editor.js" />
+        <h:outputScript library="js_careco" name="wl_File.js" />
+		<h:outputScript library="js_careco" name="wl_Dialog.js" />
+        <h:outputScript library="js_careco" name="wl_Fileexplorer.js" />
+        <h:outputScript library="js_careco" name="wl_Form.js" />
+        <h:outputScript library="js_careco" name="wl_Gallery.js" />
+        <h:outputScript library="js_careco" name="wl_Multiselect.js" />
+        <h:outputScript library="js_careco" name="wl_Number.js" />
+        <h:outputScript library="js_careco" name="wl_Password.js" />
+        <h:outputScript library="js_careco" name="wl_Slider.js" />
+        <h:outputScript library="js_careco" name="wl_Store.js" />
+        <h:outputScript library="js_careco" name="wl_Time.js" />
+        <h:outputScript library="js_careco" name="wl_Valid.js" />
+        <h:outputScript library="js_careco" name="wl_Widget.js" />
+
+		<h:outputScript library="js_careco" name="menu.js" />
+		<h:outputScript library="js_careco" name="menur.js" />
+
+	 <f:facet name="first"> 
+  	</f:facet>
+	 
+</h:head>
+
+<h:body>
+
+	<f:facet name="last"> <!-- surcharge des CSS primefaces -->
+	
+	 	<h:outputStylesheet library="css_careco" name="style.css" /> 
+		<h:outputStylesheet library="css_careco" name="cart.css" />
+		<h:outputStylesheet library="css_careco" name="UI2.css" />
+		 <h:outputStylesheet library="css" name="style_lgr.css" />  
+  	</f:facet>
+  
+
+<div class="body">
+
+	<div id="content">
+	  <div><ui:include src="./menu_ws.xhtml" /></div> 
+		<ui:insert name="content">Default content</ui:insert>
+	</div>
+
+	<div id="footer">
+		<ui:insert name="footer">Footer</ui:insert>
+	</div>
+</div>
+
+</h:body>
+
+</html>

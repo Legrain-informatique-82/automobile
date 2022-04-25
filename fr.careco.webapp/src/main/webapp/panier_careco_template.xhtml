@@ -1,0 +1,1779 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+
+			<p:growl id="growl" showDetail="true" />
+			
+			<p:messages styleClass="errors" autoUpdate="true" showDetail="true" showSummary="true"/>
+			
+			<p:dashboard id="board" model="#{dashboardPanierHautBean.model}">
+  
+				<p:panel id="id_infos_client" header="Client final"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel3">
+
+					<p:tabView>
+  
+						<p:tab title="Contact" rendered="#{panierBean.clientModif}">
+							<p:panelGrid>
+							
+								<p:row>
+									<p:column colspan="2">
+										<div class="immatriculation">
+											<h:inputText
+												value="#{panierBean.immatriculation}"
+												style="font-size: 2em;" />
+										</div>
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Choisissez client ou créer un" />
+									</p:column>
+									<p:column>
+										<p:selectOneMenu>
+											<f:selectItem itemLabel="0" itemValue="0" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Client type" />
+									</p:column>
+									<p:column>
+									
+										<p:selectOneRadio value="#{panierBean.detailPanier.client.type}">
+											<f:selectItem itemLabel="Professionnel (BtoB)" itemValue="btob" />
+											<f:selectItem itemLabel="Particulier (BtoC)" itemValue="btoc" />
+										</p:selectOneRadio>
+									
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Nom" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.nom}" />
+									</p:column>
+								</p:row>
+							
+								<p:row>
+									<p:column>
+										<h:outputText value="Prénom" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.prenom}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Société" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.societe}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Téléphone fixe" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.telephoneFixe}" />
+										<h:outputText value="Commentaire" />
+										<h:inputText value="#{panierBean.detailPanier.client.commentaireTelFixe}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Téléphone portable" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.telephonePortable}" />
+										<h:outputText value="Commentaire" />
+										<h:inputText value="#{panierBean.detailPanier.client.commentairePortable}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Fax" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.fax}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="N° carte client" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.numCarteClient}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="N° compte client" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.numCompteClient}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Email" />
+									</p:column>
+									<p:column>
+										<h:inputText value="#{panierBean.detailPanier.client.email}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Adresse facturation" />
+									</p:column>
+									<p:column>
+									  
+										<h:outputText value="Adresse 1" />
+										<h:inputText value="#{panierBean.detailPanier.client.adresseFacturation}" />
+										<h:outputText value="Adresse 2" />
+										<h:inputText value="#{panierBean.detailPanier.client.adresse2Facturation}" />
+										<h:outputText value="Code postal" />
+										<h:inputText value="#{panierBean.detailPanier.client.codePostalFacturation}" />
+										<h:outputText value="Ville" />
+										<h:inputText value="#{panierBean.detailPanier.client.villeFacturation}" />
+										<h:outputText value="Pays" />
+										<h:inputText value="#{panierBean.detailPanier.client.paysFacturation}" />
+										
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<h:outputText value="Adresse livraison" />
+									</p:column>
+									<p:column>
+							
+										<h:outputText value="Adresse 1" />
+										<h:inputText value="#{panierBean.detailPanier.client.adresseLivraison}" />
+										<h:outputText value="Adresse 2" />
+										<h:inputText value="#{panierBean.detailPanier.client.adresse2Livraison}" />
+										<h:outputText value="Code postal" />
+										<h:inputText value="#{panierBean.detailPanier.client.codePostalLivraison}" />
+										<h:outputText value="Ville" />
+										<h:inputText value="#{panierBean.detailPanier.client.villeLivraison}" />
+										<h:outputText value="Pays" />
+										<h:inputText value="#{panierBean.detailPanier.client.paysLivraison}" />
+									
+									</p:column>
+								</p:row>
+  
+								<p:row>
+									<p:column>
+										<h:outputText value="TVA (%)" />
+									</p:column>
+									<p:column>
+										<p:selectOneRadio value="#{panierBean.detailPanier.client.tva}" converter="bigDecimalConverter">
+											<f:selectItem itemLabel="0" itemValue="0.000" />
+											<f:selectItem itemLabel="9.998" itemValue="9.998" />
+											<f:selectItem itemLabel="10" itemValue="10.000" />
+											<f:selectItem itemLabel="20" itemValue="20.000" />
+										</p:selectOneRadio>
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column colspan="2">
+										<!--
+										<p:commandButton value="Ajouter ce contact client" actionListener="#{panierBean.ajouterClientPanier}" update=":form:growl,  :form:id_infos_client"/>
+										-->
+										<p:commandButton value="Mettre à jour ce contact client" actionListener="#{panierBean.modfierClientPanier}" update=":form:growl,  :form:id_table_detail_panier_actif, :form:id_titre_detail_panier_actif, :form:id_commentaire_detail_panier_actif, :form:id_infos_client, :form:id_paniers_actifs"/>
+									</p:column>
+
+								</p:row>
+
+							</p:panelGrid>
+							
+						</p:tab>
+						
+ 
+						<p:tab title="Contact" rendered="#{!panierBean.clientModif}">
+ 
+							<h:outputText value="Nom : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.nom}" />
+							<br />
+							<h:outputText value="Prénom : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.prenom}" />
+							<br />
+							<h:outputText value="Société : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.societe}" />
+							<br />
+							<br />
+							<h:outputText value="Téléphone fixe : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.telephoneFixe}" />
+							<h:outputText value=" ( #{panierBean.detailPanier.client.commentaireTelFixe} )" />
+							<br />
+							<h:outputText value="Téléphone portable : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.telephonePortable}" />
+							<h:outputText value=" ( #{panierBean.detailPanier.client.commentairePortable} )" />
+							<br />
+							<h:outputText value="Fax : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.fax}" />
+							<br />
+							<br />
+							<h:outputText value="Immatriculation : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.immatriculation}" />
+							<br />
+							<h:outputText value="VIN : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.codif_Vin_Pref}" />
+							<br />
+							<h:outputText value="CNIT : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.type}" />
+							<br />
+							<h:outputText value="Date 1er MC : " styleClass="infosAAABleu" />
+							<h:outputText
+								value="#{panierBean.rvClient.infosAAA.date_1er_Cir_Jour}/#{panierBean.rvClient.infosAAA.date_1er_Cir_Mois}/#{panierBean.rvClient.infosAAA.date_1er_Cir_Annee}" />
+							<br />
+							<h:outputText value="TM : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.tp_Boite_Vit}" />
+							<br />
+							<h:outputText value="RBV : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.nb_Vitesse}" />
+							<br />
+							<br />
+							<h:outputText value="N° carte client : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.numCarteClient}" />
+							<br />
+							<h:outputText value="N° compte client : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.numCompteClient}" />
+							<br />
+							<br />
+
+							<h:outputText value="Email : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.detailPanier.client.email}" />
+							<br />
+
+							<p:panel header="Adresses" toggleable="true" toggleSpeed="500"
+								closeSpeed="500">
+								<p:tabView>
+									<p:tab title="Facturation" titleStyleClass="vert">
+										<h:outputText value="#{panierBean.detailPanier.client.adresseFacturation}" /><br/>
+										<h:outputText value="#{panierBean.detailPanier.client.adresse2Facturation}" /><br/>
+										<h:outputText value="#{panierBean.detailPanier.client.codePostalFacturation}" />
+										<h:outputText value=" #{panierBean.detailPanier.client.villeFacturation}" /><br/>
+										<h:outputText value="#{panierBean.detailPanier.client.paysFacturation}" />
+									</p:tab>
+									<p:tab title="Livraison" titleStyleClass="bleu">
+										<h:outputText value="#{panierBean.detailPanier.client.adresseLivraison}" /><br/>
+										<h:outputText value="#{panierBean.detailPanier.client.adresse2Livraison}" /><br/>
+										<h:outputText value="#{panierBean.detailPanier.client.codePostalLivraison}" />
+										<h:outputText value=" #{panierBean.detailPanier.client.villeLivraison}" /><br/>
+										<h:outputText value="#{panierBean.detailPanier.client.paysLivraison}" />
+									</p:tab>
+								</p:tabView>
+							</p:panel>			
+
+						</p:tab>
+			
+					</p:tabView>
+
+				</p:panel>
+
+				<p:panel id="id_frs_piece"
+					header="Producteur ou fournisseur de la pièce" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="panel1">
+  
+					<p:tabView>
+
+						<p:tab title="Société" titleStyleClass="jaune">
+							<h:outputText value="Firme : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.idStockOrigine.nom}" />
+							<br />
+							<h:outputText value="Contact : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.idStockOrigine.telephone}" />
+							<br />
+							<h:outputText value="Transporteur préféré : " styleClass="infosAAABleu" />
+							<br />
+						</p:tab>
+
+						<p:tab title="VHU" titleStyleClass="vert">
+							<h:outputText value="Marque : "  styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.marque}" />
+							<br />
+							<h:outputText value="Modèle : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.modele}" />
+							<br />
+							<h:outputText value="Version : "  styleClass="infosAAABleu"/>
+							<h:outputText value="#{panierBean.pieceEnCours.version}" />
+							<br />
+							<h:outputText value="Carrosserie : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.carrosserie_CG}" />
+							<br />
+							<h:outputText value="Moteur version : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.version}" />
+							<br />
+							<h:outputText value="Volume : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.nb_Volumes}" />
+							<br />
+							<h:outputText value="Puissance : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.puis_Ch}" />
+							<br />
+							<h:outputText value="Cylindrée : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.cylindree}" />
+							<br />
+							<h:outputText value="Soupape : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.nb_Soupapes}" />
+							<br />
+							<h:outputText value="Dossier : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.numLivrePolice}" />
+							<br />
+							<h:outputText value="Date de première circulation : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.date1erMiseEnCirculation}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+							<br />
+							<h:outputText value="Kilométrage : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.kms}" />
+							<br />
+							<h:outputText value="Type mine : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.CNITTypeMine}" />
+							<br />
+							<h:outputText value="VIN : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.vin}" />
+							<br />
+							<h:outputText value="Puissance fiscale : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.puis_Fisc}" />
+							<br />
+						</p:tab>
+
+						<p:tab title="Détail de la pièce">
+							<h:outputText value="Référence scanné (code barre) : " styleClass="infosAAABleu" />
+							<br />
+							<h:outputText value="Marque : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.marque}" />
+							<br />
+							<h:outputText value="Modèle : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.refConstructeur}" />
+							<br />
+							<h:outputText value="Version : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.version}" />
+							<br />
+							<h:outputText value="Carrosserie : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.carrosserie_CG}" />
+							<br />
+							<h:outputText value="Volume : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.nb_Volumes}" />
+							<br />
+							<h:outputText value="Puissance : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.puis_Ch}" />
+							<br />
+							<h:outputText value="Cylindre : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.cylindree}" />
+							<br />
+							<h:outputText value="Soupape : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rv.infosAAA.nb_Soupapes}" />
+							<br />
+							<h:outputText value="Dossier : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.numLivrePolice}" />
+							<br />
+							<h:outputText value="Date de première circulation : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.date1erMiseEnCirculation}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+							<br />
+							<h:outputText value="Commentaire stockeur : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.pieceEnCours.commentaireCommercial}" escape="false"/>
+							<br />
+							<h:outputText value="Commentaire Expert : " styleClass="infosAAABleu" rendered="#{panierBean.pieceEnCours.idStockOrigine.id == panierBean.user.userCompany.id}"/>
+							<h:outputText value="#{panierBean.pieceEnCours.commentaireInterne}" escape="false" rendered="#{panierBean.pieceEnCours.idStockOrigine.id == panierBean.user.userCompany.id}"/>
+							<br />
+							<h:outputText value="Virtuel : " styleClass="infosAAABleu" />
+							<br />
+							
+							<p:galleria id="photos" value="#{panierBean.pieceEnCours.images}" 
+								var="image" panelWidth="500" panelHeight="313" showCaption="true">
+								<p:graphicImage value="/images_piece/#{image.chemin}" alt="Image Description for #{image.description}" title="#{image.chemin}" />
+							</p:galleria>
+						</p:tab>
+					</p:tabView>
+
+					<p:accordionPanel>
+
+						<p:tab>
+
+							<p:tabView id="tabViewAstuceMoteur" var="moteur"
+								value="#{panierBean.rv.tabsAstuceMoteur}">
+								<p:tab title="#{moteur.typeMoteur}"
+									titleStyleClass="#{!moteur.compatible ? 'vert' : 'jaune'}">
+
+									<h:outputText value="#{moteur.commentaire}" escape="false" />
+
+								</p:tab>
+							</p:tabView>
+
+							<f:facet name="title">
+								<h:graphicImage library="images" name="btn-moteur.png"
+									width="30" height="25" />
+								<h:outputText value="Type moteur" />
+							</f:facet>
+
+						</p:tab>
+
+						<p:tab>
+							<p:tabView id="tabViewAstuceBoite" var="boite"
+								value="#{panierBean.rv.tabsAstuceBoite}">
+								<p:tab title="#{boite.refBoite}"
+									titleStyleClass="#{!boite.compatible ? 'vert' : 'jaune'}">
+
+									<h:outputText value="#{boite.commentaire}" escape="false" />
+
+								</p:tab>
+							</p:tabView>
+
+							<f:facet name="title">
+								<h:graphicImage library="images" name="btn-boite-vitesses.png"
+									width="30" height="25" />
+								<h:outputText value="Boite de vitesse" />
+							</f:facet>
+						</p:tab>
+
+						<p:tab title="Suivi des expertises">
+							<p:tabView>
+								<p:tab title="Expertise-VHU">
+									<h:outputText value="Expertise du VHU" /><br />
+									<h:outputText value="Ce Véhicule : " /><br />
+									<h:outputText value="N° de livre de police ou (NOGO) : " />
+									<h:outputText value="#{panierBean.pieceEnCours.numLivrePolice}" /><br />
+									<h:outputText value="a été expertisé le : " />
+									<h:outputText value="#{panierBean.pieceEnCours.dateAchat}" /><br />
+									<h:outputText value="Par : " /><br />
+								</p:tab>
+								<p:tab title="Expertise Moteur">
+									<h:outputText value="Expertise du Moteur :" /> <br />
+									<h:outputText value="Ce Moteur :" /> <br />
+									<h:outputText value="a été expertisé le : " />
+									<h:outputText value="#{panierBean.pieceEnCours.dateAchat}" /><br />
+									<h:outputText value="Par :" /> 
+								</p:tab>
+								<p:tab title="Expertise Boite à vitesse">
+									<h:outputText value="Expertise de La Boîte de Vitesses : " /><br />
+									<h:outputText value="Cette Boîte de Vitesses :" /> <br />
+									<h:outputText value="a été expertisé le : " />
+									<h:outputText value="#{panierBean.pieceEnCours.dateAchat}" /><br />
+									<h:outputText value="Par : " /><br />
+								</p:tab>
+							</p:tabView>
+						</p:tab>
+					</p:accordionPanel>
+
+				</p:panel>
+
+				<p:panel id="id_mes_expertises_boite"
+					header="Mes expertises boite de vitesses" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="panel1ddfg">
+
+				</p:panel>
+
+			</p:dashboard>
+
+
+			<p:dashboard id="board2" model="#{dashboardPanierBasBean.model}">
+
+				<p:panel id="id_contenupanier" header="Liste des paniers"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel3d">
+					
+					<f:facet name="actions">
+						<p:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+								actionListener="#{panierBean.refreshPanier}" 
+								process="@this"
+								update="
+								:form:id_contenupanier,
+		
+								:form:board, 
+								:form:growl"
+								>
+								<!-- :form:id_contenupanier,  
+								
+								:form:id_paniers_actifs,
+								:form:id_titre_detail_panier_actif,
+								:form:id_commentaire_detail_panier_actif,
+								:form:id_table_detail_panier_actif,
+								:form:id_paniers_encours,
+								:form:id_table_detail_panier_selectionne,
+								-->
+							<h:outputText styleClass="ui-icon ui-icon-star" />
+						</p:commandLink>
+					</f:facet>
+
+  
+					<p:accordionPanel id="id_paniers_actifs">
+				
+						<p:tab title="Paniers actifs">
+							<p:accordionPanel id="id_paniers_actifs_b2c_b2b">
+							
+								<p:tab title="Particulier (BtoC)">
+									<!-- 
+										value="#{panierBean.listePanierActif}"
+										value="#{panierBean.listePanierActifOuPerime}"
+									 -->
+									<p:dataTable var="ligneResultat" resizableColumns="true"
+										value="#{panierBean.listePanierActifOuPerime}"
+										rowKey="#{ligneResultat.id}"
+										selection="#{panierBean.selectedDetailPanierB2C}"
+										selectionMode="single"
+										paginator="true" 
+										rows="#{msg.modele_datatable_ligne_par_page_debut_min}"
+										paginatorTemplate="#{msg.modele_datatable_paginator}"
+										rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+										emptyMessage="#{msg.message_datatable_vide}"
+										currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+        								<!--
+        								:form:id_paniers_actifs:id_paniers_actifs_b2c_b2b:id_btn_devis_btoc
+        								 -->
+        								<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPanierB2C}" 
+                    						update=":form:id_table_detail_panier_actif, @this, :form:id_paniers_actifs:id_paniers_actifs_b2c_b2b:id_btn_devis_btoc, :form:id_titre_detail_panier_actif, :form:id_commentaire_detail_panier_actif, :form:id_frs_piece, :form:id_infos_client, :form:growl" />
+                    					
+										<p:column selectionMode="single" style="width:18px" />
+
+										<p:column sortBy="#{ligneResultat.panierPerime()}">
+											<f:facet name="header">
+												<h:outputText value="Validité" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.validite}" />
+											<h:outputText value="Périmé" rendered="#{ligneResultat.panierPerime()}"/>
+											<h:outputText value="Actif" rendered="#{!ligneResultat.panierPerime()}"/>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.id}" filterBy="#{ligneResultat.id}">
+											<f:facet name="header">
+												<h:outputText value="ID/N° panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.id}" />
+										</p:column>
+
+										<p:column filterBy="#{ligneResultat.client.nom}">
+											<f:facet name="header">
+												<h:outputText value="Client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.nom}" />
+											<br />
+											<h:outputText value="#{ligneResultat.client.prenom}" />
+										</p:column>
+										
+										<p:column filterBy="#{ligneResultat.client.immatriculation}">
+											<f:facet name="header">
+												<h:outputText value="Immat client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.immatriculation}" />
+										</p:column>
+
+
+										<p:column filterBy="#{ligneResultat.vendeur.nom}">
+											<f:facet name="header">
+												<h:outputText value="Vendeur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.nbPiece}" filterBy="#{ligneResultat.nbPiece}">
+											<f:facet name="header">
+												<h:outputText value="NB Pièces" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.nbPiece}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.devis}">
+											<f:facet name="header">
+												<h:outputText value="Devis" />
+											</f:facet>
+											<p:selectBooleanCheckbox value="#{ligneResultat.devis}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.prixHT}" filterBy="#{ligneResultat.prixHT}">
+											<f:facet name="header">
+												<h:outputText value="Prix HT" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.prixHT}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.tva}" filterBy="#{ligneResultat.tva}">
+											<f:facet name="header">
+												<h:outputText value="TVA(%)" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.tva}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.totalTTC}" filterBy="#{ligneResultat.totalTTC}">
+											<f:facet name="header">
+												<h:outputText value="Total TTC" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.totalTTC}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Actions" />
+											</f:facet>
+											
+											<p:commandLink 
+												actionListener="#{panierBean.definirCommeActifPanier}"
+												update=":form:id_infos_client, :form:id_paniers_actifs, :form:growl"
+												process="@this"
+												rendered="#{ligneResultat.panierPerime()}">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="famfamfam_icons" name="icons/time.png" title="Définir ce panier (#{ligneResultat.id}) comme actif" alt="Définir ce panier (#{ligneResultat.id}) comme actif" height="16"/>
+											</p:commandLink>
+											<!--  
+											<p:commandLink 
+												actionListener="#{panierBean.selectionPrincipalPanier}"
+												update=":form:id_infos_client, :form:id_paniers_actifs, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="select.png" title="Définir ce panier comme principal" alt="Définir ce panier comme principal" height="16"/>
+											</p:commandLink>
+											-->
+							
+											<!--  
+											<p:commandLink
+												actionListener="#{panierBean.chargerDetailPanier}"
+												update=":form:id_table_detail_panier_actif, , :form:id_paniers_actifs, :form:id_infos_client, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="show.jpg" title="Charger ce panier" alt="Charger ce panier" height="16"/>
+											</p:commandLink>
+											-->
+
+										</p:column>
+
+										<!-- 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Principal" />
+											</f:facet>
+											
+											<h:outputText value="X" rendered="#{panierBean.detailPanier.id == ligneResultat.id}"/>
+											
+										</p:column>
+										-->
+
+									</p:dataTable>
+  
+									<p:commandButton id="id_btn_devis_btoc" value="Générer le devis"
+										process="@this"
+										onclick="window.open('#{request.contextPath}/output?__report=/reports/devis_panier_itcar.rptdesign&amp;id_panier=#{panierBean.detailPanier.id}&amp;__format=pdf')"
+										actionListener="#{panierBean.genererDevisPanier}"
+										update=":form:growl" styleClass="bleu"
+										rendered="#{!empty panierBean.listePanierActifOuPerime}">
+										<f:attribute  name="idPanier"
+											value="#{panierBean.detailPanier.id}" />
+									</p:commandButton>
+														
+									<p:commandButton value="Modifier ce panier"
+										rendered="#{!empty panierBean.listePanierActifOuPerime}"
+										process="@this"
+										update=":form:growl, :form:id_infos_client" styleClass="jaune">
+										<f:setPropertyActionListener
+											target="#{panierBean.clientModif}" value="true" />
+									</p:commandButton>
+									
+									<p:commandButton value="Je commande ces pièces" styleClass="vert"
+										process="@this"
+										rendered="#{!empty panierBean.listePanierActifOuPerime}"
+										actionListener="#{panierBean.validerPanier}"
+										update=":form:id_paniers_actifs:id_paniers_actifs_b2c_b2b, :form:id_paniers_actifs:id_paniers_actifs_b2c_b2b:id_btn_devis_btoc, :form:id_table_detail_panier_actif, :form:id_titre_detail_panier_actif, :form:id_commentaire_detail_panier_actif, :form:id_frs_piece, :form:id_infos_client, :form:id_paniers_encours, :form:growl" />
+								</p:tab>
+		
+								<p:tab title="Professionnel (BtoB)">
+									<!-- 
+										value="#{panierBean.listePanierActif}"
+										value="#{panierBean.listePanierActifOuPerime}"
+									 -->
+									<p:dataTable var="ligneResultat" resizableColumns="true"
+										value="#{panierBean.listePanierActifOuPerimeB2B}"
+										rowKey="#{ligneResultat.id}"
+										 selection="#{panierBean.selectedDetailPanierB2B}"
+										selectionMode="single"
+										paginator="true" 
+										rows="#{msg.modele_datatable_ligne_par_page_debut_min}"
+										paginatorTemplate="#{msg.modele_datatable_paginator}"
+										rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+										emptyMessage="#{msg.message_datatable_vide}"
+										currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+										>
+										
+										<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPanierB2B}" 
+                    						update=":form:id_table_detail_panier_actif, @this, :form:id_paniers_actifs:id_paniers_actifs_b2c_b2b:id_btn_devis_btob, :form:id_titre_detail_panier_actif, :form:id_commentaire_detail_panier_actif, :form:id_frs_piece, :form:id_infos_client, :form:growl" />
+
+										<p:column selectionMode="single" style="width:18px" />                    						 
+
+										<p:column sortBy="#{ligneResultat.panierPerime()}">
+											<f:facet name="header">
+												<h:outputText value="Validité" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.validite}" />
+											<h:outputText value="Périmé" rendered="#{ligneResultat.panierPerime()}"/>
+											<h:outputText value="Actif" rendered="#{!ligneResultat.panierPerime()}"/>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.id}" filterBy="#{ligneResultat.id}">
+											<f:facet name="header">
+												<h:outputText value="ID/N° panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.id}" />
+										</p:column>
+
+										<p:column filterBy="#{ligneResultat.client.nom}">
+											<f:facet name="header">
+												<h:outputText value="Client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.societe}" /><br />
+											<h:outputText value="#{ligneResultat.client.nom}" />
+											<br />
+											<h:outputText value="#{ligneResultat.client.prenom}" />
+											
+										</p:column>
+										
+										<p:column filterBy="#{ligneResultat.client.immatriculation}">
+											<f:facet name="header">
+												<h:outputText value="Immat client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.immatriculation}" />
+										</p:column>
+
+										<p:column filterBy="#{ligneResultat.vendeur.nom}">
+											<f:facet name="header">
+												<h:outputText value="Vendeur" />
+											</f:facet>
+	
+											<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.nbPiece}" filterBy="#{ligneResultat.nbPiece}">
+											<f:facet name="header">
+												<h:outputText value="NB Pièces" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.nbPiece}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.devis}">
+											<f:facet name="header">
+												<h:outputText value="Devis" />
+											</f:facet>
+											<p:selectBooleanCheckbox value="#{ligneResultat.devis}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.prixHT}" filterBy="#{ligneResultat.prixHT}">
+											<f:facet name="header">
+												<h:outputText value="Prix HT" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.prixHT}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.tva}" filterBy="#{ligneResultat.tva}">
+											<f:facet name="header">
+												<h:outputText value="TVA(%)" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.tva}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.totalTTC}" filterBy="#{ligneResultat.totalTTC}">
+											<f:facet name="header">
+												<h:outputText value="Total TTC" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.totalTTC}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Actions" />
+											</f:facet>
+											
+											<p:commandLink 
+												actionListener="#{panierBean.definirCommeActifPanier}"
+												update=":form:id_infos_client, :form:id_paniers_actifs, :form:growl"
+												rendered="#{ligneResultat.panierPerime()}">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="famfamfam_icons" name="icons/time.png" title="Définir ce panier comme actif" alt="Définir ce panier comme actif" height="16"/>
+											</p:commandLink>
+											<!--  
+											<p:commandLink 
+												actionListener="#{panierBean.selectionPrincipalPanier}"
+												update=":form:id_infos_client, :form:id_paniers_actifs, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="select.png" title="Définir ce panier comme principal" alt="Définir ce panier comme principal" height="16"/>
+											</p:commandLink>
+											-->
+											
+											<!--  
+											<p:commandLink 
+												actionListener="#{panierBean.chargerDetailPanier}"
+												update=":form:id_table_detail_panier_actif, , :form:id_paniers_actifs, :form:id_infos_client, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="show.jpg" title="Charger ce panier" alt="Charger ce panier" height="16"/>
+											</p:commandLink>
+											-->
+
+										</p:column>
+
+										<!-- 
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Principal" />
+											</f:facet>
+											
+											<h:outputText value="X" rendered="#{panierBean.detailPanier.id == ligneResultat.id}"/>
+											
+										</p:column>
+										 -->
+
+									</p:dataTable>
+									
+									<p:commandButton id="id_btn_devis_btob" value="Générer le devis" styleClass="bleu"
+										onclick="window.open('#{request.contextPath}/output?__report=/reports/devis_panier_itcar.rptdesign&amp;id_panier=#{panierBean.detailPanier.id}&amp;__format=pdf')"
+										actionListener="#{panierBean.genererDevisPanier}"
+										rendered="#{!empty panierBean.listePanierActifOuPerimeB2B}"
+										process="@this"
+										update=":form:growl">
+										<f:attribute  name="idPanier"
+											value="#{panierBean.detailPanier.id}" />
+									</p:commandButton>
+									<p:commandButton value="Modifier ce panier" styleClass="jaune"
+										rendered="#{!empty panierBean.listePanierActifOuPerimeB2B}"
+										process="@this"
+										update=":form:growl, :form:id_infos_client" >
+										<f:setPropertyActionListener
+											target="#{panierBean.clientModif}" value="true" />
+										</p:commandButton>
+										
+									<p:commandButton value="Je commande ces pièces" styleClass="vert"
+										process="@this"
+										rendered="#{!empty panierBean.listePanierActifOuPerimeB2B}"
+										actionListener="#{panierBean.validerPanier}"
+										update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:id_paniers_actifs:id_paniers_actifs_b2c_b2b:id_btn_devis_btob, :form:id_titre_detail_panier_actif, :form:id_commentaire_detail_panier_actif, :form:id_frs_piece, :form:id_infos_client, :form:id_paniers_encours, :form:growl" />
+								</p:tab>
+							
+							</p:accordionPanel>
+							
+						</p:tab>
+						
+					</p:accordionPanel>
+
+					<br />
+			
+					<h:outputText id="id_titre_detail_panier_actif" value="Contenu du panier N°#{panierBean.detailPanier.id}" />
+					<br/>
+					<h:outputText value="Commentaire panier : " />
+					<p:inplace id="id_commentaire_detail_panier_actif" editor="true" emptyLabel="N.C.">
+						<p:ajax event="save" listener="#{panierBean.enregistreModificationDetailPanier}" update=":form:growl"/>
+						<h:inputText value="#{panierBean.detailPanier.commentaire}"/>
+					</p:inplace>
+			
+					<p:dataTable id="id_table_detail_panier_actif" var="ligneResultat"
+						resizableColumns="true" value="#{panierBean.detailPanier.lignes}"
+						rowKey="#{ligneResultat.id}"
+						selection="#{panierBean.lignePanierEnCours}"
+						selectionMode="single"
+						emptyMessage="#{msg.message_datatable_vide}">
+					
+						<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPiecePanier}" 
+                    						update=":form:id_frs_piece, :form:growl" /> 
+
+						<p:column sortBy="#{ligneResultat.idPiece.disponibilite}">
+							<f:facet name="header">
+								<h:outputText value="Disponibilité" />
+							</f:facet>
+							<p:selectBooleanCheckbox value="#{ligneResultat.idPiece.disponibilite}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.typeDepiece}">
+							<f:facet name="header">
+								<h:outputText value="Type de pièce" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.typeDePiece}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.refConstructeur}">
+							<f:facet name="header">
+								<h:outputText value="Ref constructeur" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.refConstructeur}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.CNITTypeMine}">
+							<f:facet name="header">
+								<h:outputText value="CNIT / Type mine" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.CNITTypeMine}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.marque}">
+							<f:facet name="header">
+								<h:outputText value="Marque" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.marque}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.idPiece.modele}">
+							<f:facet name="header">
+								<h:outputText value="Modèle" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.modele}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.version}">
+							<f:facet name="header">
+								<h:outputText value="Version" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.version}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.kms}">
+							<f:facet name="header">
+								<h:outputText value="Kms" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.kms}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.empl}">
+							<f:facet name="header">
+								<h:outputText value="Empl." />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.empl}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.vendeur}" width="50">
+							<f:facet name="header">
+								<h:outputText value="Producteur / Fournisseur" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.vendeur}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.prixAchat}">
+							<f:facet name="header">
+								<h:outputText value="Prix achat HT" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.prixAchat}" />
+						</p:column>
+						
+						<p:column sortBy="#{ligneResultat.montantPE}">
+							<f:facet name="header">
+								<h:outputText value="Contrat PE TTC" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.montantPE} " />
+							 <!--  
+							<p:commandLink actionListener="#{panierBean.desactiverPEsurLigne}" update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:growl">
+								<f:attribute name="idLignePanier" value="#{ligneResultat.id}" />
+								<p:graphicImage library="images" name="update.gif" title="Modifier calcul PE" alt="Modifier calcul PE" height="16"/>
+								<p:confirm header="Confirmation" message="Etes vous sur de vouloir modifier la calcul PE sur cette pièce ?" icon="ui-icon-alert" />  
+							</p:commandLink>
+						-->
+							  
+							<p:commandLink actionListener="#{panierBean.desactiverPEsurLigne}"  oncomplete="PF('dialogPePieceWidget').show()" update=":form:id_dialog_prix, :form:id_dialog_livraison, :form:id_dialog_commentaire_cmd_piece, :form:id_dialog_pe_piece, :form:id_table_detail_panier_actif">
+								<f:attribute name="idLignePanier" value="#{ligneResultat.id}" />
+								<p:graphicImage library="images" name="update.gif" title="Modifier calcul PE" alt="Modifier calcul PE" height="16"/>
+							</p:commandLink>
+							
+				
+						</p:column> 	
+	
+						<p:column sortBy="#{ligneResultat.supplementLivraison}">
+							<f:facet name="header">
+								<h:outputText value="Livraison TTC" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.supplementLivraison}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.prixVenteHTFinal}">
+							<f:facet name="header">
+								<h:outputText value="Prix vente HT" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.prixVenteHTFinal}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.prixVenteTTCFinal}">
+							<f:facet name="header">
+								<h:outputText value="Prix vente TTC" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.prixVenteTTCFinal}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Actions" />
+							</f:facet>
+							<!--  
+							<p:commandLink 
+								actionListener="#{panierBean.selectionDetailPiecePanier}"
+								update=":form:id_frs_piece, :form:growl" >
+								<f:attribute name="idPiece" value="#{ligneResultat.idPiece.id}" />
+								<p:graphicImage library="images" name="show.jpg" title="Sélectionner" alt="Sélectionner" height="16"/>
+							</p:commandLink>
+							-->
+							
+							<p:commandLink 
+								actionListener="#{panierBean.supprimerPiecePanier}"
+								update=":form:id_table_detail_panier_actif, :form:growl">
+								<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+								<f:attribute name="idPiece" value="#{ligneResultat.idPiece.id}" />
+								<p:graphicImage library="images" name="delete.png" title="Retirer du panier" alt="Retirer du panier" height="16"/>
+								<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cette pièce du panier ?" icon="ui-icon-alert" />  
+							</p:commandLink>
+							
+							<p:commandLink  actionListener="#{panierBean.majPrixPanier}"
+								 oncomplete="PF('dialogUpdatePrixWidget').show()" update=":form:id_dialog_prix, :form:id_dialog_livraison, :form:id_dialog_commentaire_cmd_piece, :form:id_dialog_pe_piece, :form:id_table_detail_panier_actif">
+								<!--  <f:attribute name="idLignePanier" value="#{ligneResultat.id}" /> -->
+								<f:setPropertyActionListener value="#{ligneResultat}" target="#{panierBean.lignePanierEnCours}" />
+								<p:graphicImage library="famfamfam_icons" name="icons/money_euro.png" title="Mettre à jour le prix" alt="Mettre à jour le prix" height="16"/>
+							</p:commandLink>
+						
+							
+							<p:commandLink actionListener="#{panierBean.majLivraisonPanier}"
+								 oncomplete="PF('dialogUpdateLivraisonWidget').show()" update=":form:id_dialog_prix, :form:id_dialog_livraison, :form:id_dialog_commentaire_cmd_piece, :form:id_dialog_pe_piece, :form:id_table_detail_panier_actif">
+								<!--  <f:attribute name="idLignePanier" value="#{ligneResultat.id}" /> -->
+								<f:setPropertyActionListener value="#{ligneResultat}" target="#{panierBean.lignePanierEnCours}" />
+								<p:graphicImage library="famfamfam_icons" name="icons/lorry.png" title="Mettre à jour livraison" alt="Mettre à jour livraison" height="16"/>
+							</p:commandLink>
+							
+							<p:commandLink actionListener="#{panierBean.reinitialisePrix}" update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:growl">
+								<!--  <f:attribute name="idLignePanier" value="#{ligneResultat.id}" /> -->
+								<f:setPropertyActionListener value="#{ligneResultat}" target="#{panierBean.lignePanierEnCours}" />
+								<p:graphicImage library="famfamfam_icons" name="icons/arrow_undo.png" title="Réinitialiser le prix" alt="Réinitialiser le prix" height="16"/>
+								<p:confirm header="Confirmation" message="Etes vous sur de vouloir réinitialiser le prix de cette pièce ?" icon="ui-icon-alert" />  
+							</p:commandLink>
+							
+							<p:commandLink actionListener="#{panierBean.commentaireLignePanier}"  oncomplete="PF('dialogCommentaireCmdPieceWidget').show()" update=":form:id_dialog_commentaire_cmd_piece, :form:id_table_detail_panier_actif">
+								<f:attribute name="idLignePanier" value="#{ligneResultat.id}" />
+								<p:graphicImage library="famfamfam_icons" name="icons/comment.png" title="Commentaire pièce" alt="Commentaire pièce" height="16"/>
+							</p:commandLink>
+														
+						</p:column>
+
+					</p:dataTable>
+
+  
+					<p:accordionPanel id="id_paniers_encours">
+						<p:tab title="Paniers : En cours">
+							<p:accordionPanel>
+								<p:tab title="Particulier (BtoC)">
+
+									<p:dataTable var="ligneResultat" resizableColumns="true"
+										value="#{panierBean.listePanierEnCours}"
+										rowKey="#{ligneResultat.id}"
+										selection="#{panierBean.detailPanierBas}"
+										selectionMode="single"
+										paginator="true" 
+										rows="#{msg.modele_datatable_ligne_par_page_debut}"
+										paginatorTemplate="#{msg.modele_datatable_paginator}"
+										rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+										emptyMessage="#{msg.message_datatable_vide}"
+										currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+										
+										<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPanierBas}" 
+                    						update=":form:id_table_detail_panier_selectionne, :form:growl" /> 
+
+										<p:column sortBy="#{ligneResultat.validite}" filterBy="#{ligneResultat.validite}">
+											<f:facet name="header">
+												<h:outputText value="Validité du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.validite}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.id}" filterBy="#{ligneResultat.id}">
+											<f:facet name="header">
+												<h:outputText value="ID/N° panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.id}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header" filterBy="#{ligneResultat.client.nom}">
+												<h:outputText value="Client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.nom}" />
+											<br />
+											<h:outputText value="#{ligneResultat.client.prenom}" />
+										</p:column>
+										
+										<p:column filterBy="#{ligneResultat.client.immatriculation}">
+											<f:facet name="header">
+												<h:outputText value="Immat client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.immatriculation}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.datePanier}">
+											<f:facet name="header">
+												<h:outputText value="Date panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.datePanier}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+
+										<p:column sortBy="#{ligneResultat.vendeur.nom}" filterBy="#{ligneResultat.vendeur.nom}">
+											<f:facet name="header">
+												<h:outputText value="Vendeur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.nbPiece}">
+											<f:facet name="header">
+												<h:outputText value="NB Pièces" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.nbPiece}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.devis}">
+											<f:facet name="header">
+												<h:outputText value="Devis" />
+											</f:facet>
+											<p:selectBooleanCheckbox value="#{ligneResultat.devis}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.prixHT}" filterBy="#{ligneResultat.prixHT}">
+											<f:facet name="header">
+												<h:outputText value="Prix HT" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.prixHT}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.tva}" filterBy="#{ligneResultat.tva}">
+											<f:facet name="header">
+												<h:outputText value="TVA(%)" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.tva}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.totalTTC}" filterBy="#{ligneResultat.totalTTC}">
+											<f:facet name="header">
+												<h:outputText value="Total TTC du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.totalTTC}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Actions" />
+											</f:facet>
+											<!--  
+											<p:commandLink
+												actionListener="#{panierBean.chargeDetailBasPanier}"
+												update=":form:id_table_detail_panier_selectionne, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="show.jpg" title="Charger ce panier" alt="Charger ce panier" height="16"/>
+											</p:commandLink>
+											-->
+											
+											<p:commandLink
+												onclick="window.open('#{request.contextPath}/output?__report=/reports/devis_panier_itcar.rptdesign&amp;id_panier=#{ligneResultat.id}&amp;__format=pdf')"
+										 		update=":form:growl">
+										 		<p:graphicImage library="images" name="pdf.png" title="Générer le devis" alt="Générer le devis" height="16"/>
+											</p:commandLink>
+
+										</p:column>
+
+									</p:dataTable>
+
+								</p:tab>
+								
+								<p:tab title="Professionnel (BtoB)">
+								<p:dataTable var="ligneResultat" resizableColumns="true"
+										value="#{panierBean.listePanierEnCoursB2B}"
+										rowKey="#{ligneResultat.id}"
+										selection="#{panierBean.detailPanierBas}"
+										selectionMode="single"
+										paginator="true" 
+										rows="#{msg.modele_datatable_ligne_par_page_debut}"
+										paginatorTemplate="#{msg.modele_datatable_paginator}"
+										rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+										emptyMessage="#{msg.message_datatable_vide}"
+										currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+										
+										<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPanierBas}" 
+                    						update=":form:id_table_detail_panier_selectionne, :form:growl" /> 
+
+										<p:column sortBy="#{ligneResultat.validite}" filterBy="#{ligneResultat.validite}">
+											<f:facet name="header">
+												<h:outputText value="Validité du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.validite}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.id}" filterBy="#{ligneResultat.id}">
+											<f:facet name="header">
+												<h:outputText value="ID/N° panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.id}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header" filterBy="#{ligneResultat.client.nom}">
+												<h:outputText value="Client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.societe}" /><br />
+											<h:outputText value="#{ligneResultat.client.nom}" />
+											<br />
+											<h:outputText value="#{ligneResultat.client.prenom}" />
+										</p:column>
+										
+										<p:column filterBy="#{ligneResultat.client.immatriculation}">
+											<f:facet name="header">
+												<h:outputText value="Immat client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.immatriculation}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.datePanier}">
+											<f:facet name="header">
+												<h:outputText value="Date panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.datePanier}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.vendeur.nom}" filterBy="#{ligneResultat.vendeur.nom}">
+											<f:facet name="header">
+												<h:outputText value="Vendeur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.nbPiece}" filterBy="#{ligneResultat.nbPiece}">
+											<f:facet name="header">
+												<h:outputText value="NB Pièces" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.nbPiece}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.devis}">
+											<f:facet name="header">
+												<h:outputText value="Devis" />
+											</f:facet>
+											<p:selectBooleanCheckbox value="#{ligneResultat.devis}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.prixHT}" filterBy="#{ligneResultat.prixHT}">
+											<f:facet name="header">
+												<h:outputText value="Prix HT" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.prixHT}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.tva}" filterBy="#{ligneResultat.tva}">
+											<f:facet name="header">
+												<h:outputText value="TVA(%)" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.tva}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.totalTTC}" filterBy="#{ligneResultat.totalTTC}">
+											<f:facet name="header">
+												<h:outputText value="Total TTC du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.totalTTC}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Actions" />
+											</f:facet>
+											<!--  
+											<p:commandLink
+												actionListener="#{panierBean.chargeDetailBasPanier}"
+												update=":form:id_table_detail_panier_selectionne, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="show.jpg" title="Charger ce panier" alt="Charger ce panier" height="16"/>
+											</p:commandLink>
+											-->
+											
+											<p:commandLink
+												onclick="window.open('#{request.contextPath}/output?__report=/reports/devis_panier_itcar.rptdesign&amp;id_panier=#{ligneResultat.id}&amp;__format=pdf')"
+										 		update=":form:growl">
+										 		<p:graphicImage library="images" name="pdf.png" title="Générer le devis" alt="Générer le devis" height="16"/>
+											</p:commandLink>
+
+										</p:column>
+
+									</p:dataTable>
+								</p:tab>
+							</p:accordionPanel>
+						</p:tab>
+						
+						<p:tab title="Historique des paniers">
+							<p:accordionPanel>
+									<p:tab title="Particulier (BtoC)">
+
+									<p:dataTable var="ligneResultat" resizableColumns="true"
+										value="#{panierBean.listePanierHistorique}"
+										rowKey="#{ligneResultat.id}"
+										selection="#{panierBean.detailPanierBas}"
+										selectionMode="single"
+										paginator="true" 
+										rows="#{msg.modele_datatable_ligne_par_page_debut}"
+										paginatorTemplate="#{msg.modele_datatable_paginator}"
+										rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+										emptyMessage="#{msg.message_datatable_vide}"
+										currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+										
+										<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPanierBas}" 
+                    						update=":form:id_table_detail_panier_selectionne, :form:growl" /> 
+
+										<p:column sortBy="#{ligneResultat.validite}" filterBy="#{ligneResultat.validite}">
+											<f:facet name="header">
+												<h:outputText value="Validité du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.validite}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.id}" filterBy="#{ligneResultat.id}">
+											<f:facet name="header">
+												<h:outputText value="ID/N° panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.id}" />
+										</p:column>
+
+										<p:column filterBy="#{ligneResultat.client.nom}">
+											<f:facet name="header" >
+												<h:outputText value="Client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.nom}" />
+											<br />
+											<h:outputText value="#{ligneResultat.client.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.datePanier}">
+											<f:facet name="header">
+												<h:outputText value="Date panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.datePanier}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.dateFin}">
+											<f:facet name="header">
+												<h:outputText value="Date de fin" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.dateFin}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.vendeur.nom}" filterBy="#{ligneResultat.vendeur.nom}">
+											<f:facet name="header">
+												<h:outputText value="Vendeur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.nbPiece}" filterBy="#{ligneResultat.nbPiece}">
+											<f:facet name="header">
+												<h:outputText value="NB Pièces" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.nbPiece}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.devis}">
+											<f:facet name="header">
+												<h:outputText value="Devis" />
+											</f:facet>
+											<p:selectBooleanCheckbox value="#{ligneResultat.devis}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.prixHT}" filterBy="#{ligneResultat.prixHT}">
+											<f:facet name="header">
+												<h:outputText value="Prix HT" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.prixHT}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.tva}" filterBy="#{ligneResultat.tva}">
+											<f:facet name="header">
+												<h:outputText value="TVA(%)" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.tva}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.totalTTC}" filterBy="#{ligneResultat.totalTTC}">
+											<f:facet name="header">
+												<h:outputText value="Total TTC du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.totalTTC}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Actions" />
+											</f:facet>
+											<!--  
+											<p:commandLink
+												actionListener="#{panierBean.chargeDetailBasPanier}"
+												update=":form:id_table_detail_panier_selectionne, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="show.jpg" title="Charger ce panier" alt="Charger ce panier" height="16"/>
+											</p:commandLink>
+											-->
+											
+											<p:commandLink
+												onclick="window.open('#{request.contextPath}/output?__report=/reports/devis_panier_itcar.rptdesign&amp;id_panier=#{ligneResultat.id}&amp;__format=pdf')"
+										 		update=":form:growl">
+										 		<p:graphicImage library="images" name="pdf.png" title="Générer le devis" alt="Générer le devis" height="16"/>
+											</p:commandLink>
+
+										</p:column>
+
+									</p:dataTable>
+
+								</p:tab>
+								
+								<p:tab title="Professionnel (BtoB)">
+								<p:dataTable var="ligneResultat" resizableColumns="true"
+										value="#{panierBean.listePanierHistoriqueB2B}"
+										rowKey="#{ligneResultat.id}"
+										selection="#{panierBean.detailPanierBas}"
+										selectionMode="single"
+										paginator="true" 
+										rows="#{msg.modele_datatable_ligne_par_page_debut}"
+										paginatorTemplate="#{msg.modele_datatable_paginator}"
+										rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+										emptyMessage="#{msg.message_datatable_vide}"
+										currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+										
+										<p:ajax event="rowSelect" listener="#{panierBean.onRowSelectDetailPanierBas}" 
+                    						update=":form:id_table_detail_panier_selectionne, :form:growl" /> 
+
+										<p:column sortBy="#{ligneResultat.validite}" filterBy="#{ligneResultat.validite}">
+											<f:facet name="header">
+												<h:outputText value="Validité du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.validite}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.id}" filterBy="#{ligneResultat.id}">
+											<f:facet name="header">
+												<h:outputText value="ID/N° panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.id}" />
+										</p:column>
+
+										<p:column filterBy="#{ligneResultat.client.nom}">
+											<f:facet name="header">
+												<h:outputText value="Client" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.client.societe}" /><br />
+											<h:outputText value="#{ligneResultat.client.nom}" />
+											<br />
+											<h:outputText value="#{ligneResultat.client.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.datePanier}">
+											<f:facet name="header">
+												<h:outputText value="Date panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.datePanier}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.dateFin}">
+											<f:facet name="header">
+												<h:outputText value="Date de fin" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.dateFin}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.vendeur.nom}" filterBy="#{ligneResultat.vendeur.nom}">
+											<f:facet name="header">
+												<h:outputText value="Vendeur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.vendeur.nom} #{ligneResultat.vendeur.prenom}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.nbPiece}" filterBy="#{ligneResultat.nbPiece}">
+											<f:facet name="header">
+												<h:outputText value="NB Pièces" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.nbPiece}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.devis}">
+											<f:facet name="header">
+												<h:outputText value="Devis" />
+											</f:facet>
+											<p:selectBooleanCheckbox value="#{ligneResultat.devis}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.prixHT}" filterBy="#{ligneResultat.prixHT}">
+											<f:facet name="header">
+												<h:outputText value="Prix HT" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.prixHT}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.tva}" filterBy="#{ligneResultat.tva}">
+											<f:facet name="header">
+												<h:outputText value="TVA(%)" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.tva}" />
+										</p:column>
+
+										<p:column sortBy="#{ligneResultat.totalTTC}" filterBy="#{ligneResultat.totalTTC}">
+											<f:facet name="header">
+												<h:outputText value="Total TTC du panier" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.totalTTC}" />
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Actions" />
+											</f:facet>
+											<!--  
+											<p:commandLink 
+												actionListener="#{panierBean.chargeDetailBasPanier}"
+												update=":form:id_table_detail_panier_selectionne, :form:growl">
+												<f:attribute name="idPanier" value="#{ligneResultat.id}" />
+												<p:graphicImage library="images" name="show.jpg" title="Charger ce panier" alt="Charger ce panier" height="16"/>
+											</p:commandLink>
+											-->
+											
+											<p:commandLink
+												onclick="window.open('#{request.contextPath}/output?__report=/reports/devis_panier_itcar.rptdesign&amp;id_panier=#{ligneResultat.id}&amp;__format=pdf')"
+										 		update=":form:growl">
+										 		<p:graphicImage library="images" name="pdf.png" title="Générer le devis" alt="Générer le devis" height="16"/>
+											</p:commandLink>
+
+										</p:column>
+
+									</p:dataTable>
+								</p:tab>
+							</p:accordionPanel>
+						</p:tab>
+					</p:accordionPanel>
+					
+					<br/>
+					<h:outputText id="id_titre_detail_panier_encours_histo" value="Contenu du panier : " />
+					
+					<p:dataTable id="id_table_detail_panier_selectionne" resizableColumns="true"
+						var="ligneResultat" value="#{panierBean.detailPanierBas.lignes}"
+						rowKey="#{ligneResultat.transactionAchatVente.id}"
+						selectionMode="single"
+						emptyMessage="#{msg.message_datatable_vide}">
+
+						<p:column sortBy="#{ligneResultat.transactionAchatVente.id}">
+							<f:facet name="header">
+								<h:outputText value="Transaction ID" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.transactionAchatVente.id}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.id}">
+							<f:facet name="header">
+								<h:outputText value="Pièce Id" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.id}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.idStockOrigine.nom}">
+							<f:facet name="header">
+								<h:outputText value="Proriétaire" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.idStockOrigine.nom}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.marque}">
+							<f:facet name="header">
+								<h:outputText value="Marque" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.marque}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.modele}">
+							<f:facet name="header">
+								<h:outputText value="Modèle" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.modele}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.typeDePiece}">
+							<f:facet name="header">
+								<h:outputText value="Type" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.typeDePiece}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.modele}">
+							<f:facet name="header">
+								<h:outputText value="Type pièce" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.modele}" />
+						</p:column>
+
+						<p:column
+							sortBy="#{ligneResultat.transactionAchatVente.derierChangementEtat}">
+							<f:facet name="header">
+								<h:outputText value="Dernier changement d'état" />
+							</f:facet>
+							<h:outputText
+								value="#{ligneResultat.transactionAchatVente.derierChangementEtat}" >
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+								</h:outputText>
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.CNITTypeMine}">
+							<f:facet name="header">
+								<h:outputText value="CNIT" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.CNITTypeMine}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.vin}">
+							<f:facet name="header">
+								<h:outputText value="VIN" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.vin}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.prixAchat}">
+							<f:facet name="header">
+								<h:outputText value="Prix achat" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.prixAchat}" />
+						</p:column>
+
+						<p:column sortBy="#{ligneResultat.idPiece.prixVente}">
+							<f:facet name="header">
+								<h:outputText value="Prix vente" />
+							</f:facet>
+							<h:outputText value="#{ligneResultat.idPiece.prixVente}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Statut" />
+							</f:facet>
+							<h:outputText
+								value="Etat : #{ligneResultat.transactionAchatVente.etatAcheteur}" />
+							<br />
+							<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.idPiece.id}')">
+								<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+							</p:commandLink>
+							
+							<p:commandLink id="id_cmd_commantaire" rendered="#{ligneResultat.commentaireCommande != null and ligneResultat.commentaireCommande != ''}">
+								<p:graphicImage library="famfamfam_icons" name="icons/comment.png" title="Commentaire pièce" alt="Commentaire pièce" height="16"/>
+							</p:commandLink>
+							<p:overlayPanel for="id_cmd_commantaire" hideEffect="fade" > 
+        						<h:outputText value="Commentaire commande :" /><br/>
+        						<h:outputText value="#{ligneResultat.commentaireCommande}" />
+							</p:overlayPanel> 
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+
+			</p:dashboard>
+			
+			<p:dialog id="id_dialog_prix" widgetVar="dialogUpdatePrixWidget" modal="true" rendered="#{panierBean.lignePanierEnCours!=null}">
+				<h:outputText value="Nouveau prix TTC" />
+				<h:inputText value="#{panierBean.lignePanierEnCours.prixVenteTTCFinal}" />
+	
+				<p:commandButton value="Valider" oncomplete="PF('dialogUpdatePrixWidget').hide()"
+					actionListener="#{panierBean.validerMajPrixPanier}" 
+				 update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:growl" />
+				 <p:commandButton value="Annuler" oncomplete="PF('dialogUpdatePrixWidget').hide()"/>
+			</p:dialog>
+			
+			<p:dialog id="id_dialog_livraison" widgetVar="dialogUpdateLivraisonWidget" modal="true" rendered="#{panierBean.lignePanierEnCours!=null}">
+				<h:outputText value="Nouveau prix de livraison TTC" />
+				<h:inputText value="#{panierBean.lignePanierEnCours.supplementLivraison}" />
+				<p:commandButton value="Valider"
+					actionListener="#{panierBean.validerMajLivraisonPanier}" oncomplete="PF('dialogUpdateLivraisonWidget').hide()"
+				 update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:growl"/>
+				 <p:commandButton value="Annuler" oncomplete="PF('dialogUpdateLivraisonWidget').hide()"/>
+			</p:dialog>
+			
+			<p:dialog id="id_dialog_commentaire_cmd_piece" widgetVar="dialogCommentaireCmdPieceWidget" modal="true" rendered="#{panierBean.lignePanierEnCours!=null}">
+				<h:outputText value="Commentaire commande pour cette pièce" />
+				<h:inputText value="#{panierBean.lignePanierEnCours.commentaireCommande}" />
+	
+				<p:commandButton value="Valider" actionListener="#{panierBean.validerCommentaireLignePanier}"
+					 oncomplete="PF('dialogCommentaireCmdPieceWidget').hide()"
+				 update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:growl"/>
+				 <p:commandButton value="Annuler" oncomplete="PF('dialogCommentaireCmdPieceWidget').hide()"/>
+			</p:dialog>
+			
+			<p:dialog id="id_dialog_pe_piece" widgetVar="dialogPePieceWidget" modal="true" rendered="#{panierBean.lignePanierEnCours!=null}"> 
+				<h:outputText value="Durée de la garantie  " />
+				<p:selectOneMenu value="#{panierBean.lignePanierEnCours.dureePeVendu}">
+					<f:selectItem itemLabel="0" itemValue="0" />
+					<f:selectItem itemLabel="12" itemValue="12" />
+					<f:selectItem itemLabel="24" itemValue="24" />
+				</p:selectOneMenu>
+				<br/><h:outputText value="( Durée de la garantie initialement saisie pour cette pièce : #{panierBean.lignePanierEnCours.idPiece.garantie} )" />
+							
+				<p:selectOneRadio value="#{panierBean.lignePanierEnCours.typeVente}">
+					<f:selectItem itemLabel="Pièce montée par le garage" itemValue="montage_garage" />
+					<f:selectItem itemLabel="Livraison" itemValue="livraison_client" />
+					<f:selectItem itemLabel="Livraison par fournisseur" itemValue="livraison_client_par_fournisseur" />
+				</p:selectOneRadio>
+	
+				<p:commandButton value="Valider" actionListener="#{panierBean.validerModifPELignePanier}"
+					oncomplete="PF('dialogPePieceWidget').hide()"
+				 	update=":form:id_table_detail_panier_actif, :form:id_paniers_actifs, :form:growl"
+				 />
+				 <p:commandButton value="Annuler" oncomplete="PF('dialogPePieceWidget').hide()"/>
+			</p:dialog>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

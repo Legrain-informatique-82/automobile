@@ -1,0 +1,27 @@
+
+
+<!-- 
+http://www.javacodegeeks.com/2012/09/jboss-as-7-classloading-explained.html
+https://docs.jboss.org/author/display/AS7/Class+Loading+in+AS7#ClassLoadinginAS7-EARClassLoading
+ -->
+ 
+<jboss-deployment-structure>
+	<deployment>
+		<dependencies>
+			<!-- 
+				Le classloader ne charge/trouve pas les jars dans /lib de l'ear, 
+				donc on force à utiliser le module inclus avec le serveur.
+				A corriger surement
+				-->
+			<!--  <module name="org.apache.commons.configuration" /> -->
+		</dependencies>
+	</deployment>
+	
+	<!-- 
+	<sub-deployment name="fr.legrain.bdg.ejb.jar">
+		<dependencies>
+			<module name="org.apache.commons.configuration" />
+		</dependencies>
+	</sub-deployment>
+ -->
+</jboss-deployment-structure>

@@ -1,0 +1,325 @@
+<ui:composition template="../index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default} - Gestion des entreprises utilisateurs" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newEntrepriseDialog.hide(); 
+	            entrepriseDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+
+			<p:growl id="growl" showDetail="true" life="5000" />
+
+			<p:tabView id="id_tabview">
+				<p:tab title="Multi Site">
+					<h:outputText value="La liste des multi sites est établie à partir de l'adhérent." />
+					<br/>
+					<p:commandButton value="Rafraichir liste"
+								update=":form:id_tabview:dataTableMutliSite"
+								actionListener="#{mesAmiesMultiSiteBean.refreshListeMultiSite}"
+								icon="ui-icon-star"
+								title="Rafraichir liste" />
+					<br/>	
+					<br/>	
+
+					<p:dataTable id="dataTableMutliSite" var="entreprise"
+						value="#{mesAmiesMultiSiteBean.multiSite}"
+						rowKey="#{entreprise.id}" selectionMode="single" paginator="true"
+						rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="10,20,30">
+						
+						<p:ajax event="rowSelect" update="@this" /> 
+
+						<!-- 
+				selection="#{mesAmiesMultiSiteBean.selectedEntreprise}"
+				<p:ajax event="rowSelect" listener="#{mesAmiesMultiSiteBean.onRowSelectDetail}" 
+                    						update=":form:growl" /> 
+                    						 -->
+
+						<f:facet name="header">  
+           					Multi Site
+        				</f:facet>
+
+						<p:column selectionMode="single" style="width:18px" />
+						<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+						<p:column sortBy="#{entreprise.societeB.id}">
+							<f:facet name="header">
+								<h:outputText value="ID" />
+							</f:facet>
+							<p:commandLink value="#{entreprise.societeB.id}" title="View">
+								<f:setPropertyActionListener value="#{entreprise}"
+									target="#{mesAmiesMultiSiteBean.selectedEntreprise}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column sortBy="#{entreprise.societeB.nom}">
+							<f:facet name="header">
+								<h:outputText value="Nom" />
+							</f:facet>
+							<h:outputText value="#{entreprise.societeB.nom}" />
+						</p:column>
+
+						<p:column sortBy="#{entreprise.pourcentageReduction}">
+							<f:facet name="header">
+								<h:outputText value="Remise" />
+							</f:facet>
+							<h:outputText value="#{entreprise.pourcentageReduction} %" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Actions" />
+							</f:facet>
+							<p:commandLink oncomplete="modifEntrepriseDialog.show()" actionListener="#{mesAmiesMultiSiteBean.initModif}"  value="Modifier"
+								update=":modifEntrepriseForm"	>
+								<f:attribute name="idRelationSocieteAmie" value="#{entreprise.id}" />
+								<!-- 
+								<f:setPropertyActionListener value="#{entreprise}" target="#{mesAmiesMultiSiteBean.relationSocietesAmiesSelectionne}" />
+								 -->
+							</p:commandLink>
+						</p:column>
+
+						<f:facet name="footer">
+							<!--  
+					<p:commandButton value="Nouveau"
+						oncomplete="newEntrepriseDialog.show()" icon="ui-icon-star"
+						title="Céer un nouvel utilisateur" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{mesAmiesMultiSiteBean.doDeleteEntreprises}"
+						update="dataTable" icon="ui-icon-trash" />
+						-->
+						</f:facet>
+					</p:dataTable>
+				</p:tab>
+
+				<p:tab title="Sociétés Amies">
+					<h:outputText value="Ajoutez une société en tant que société amie pour qu'elle puisse accéder à vos stocks dans des conditions préférentielles." />
+					<br/>
+					<p:commandButton value="Ajouter nouvelle société amie"
+								update=":newEntrepriseForm"
+								actionListener="#{mesAmiesMultiSiteBean.initAjoutSocieteAmie}"
+								oncomplete="newEntrepriseDialog.show()" icon="ui-icon-star"
+								title="Céer nouvelle société amie" />
+					<br/>	
+					<br/>		
+					<p:dataTable id="dataTableAmies" var="entreprise"
+						value="#{mesAmiesMultiSiteBean.amieAjoutee}" rowKey="#{entreprise.id}"
+						selectionMode="single" paginator="true" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						lazy="true" rowsPerPageTemplate="10,20,30">
+						
+						<p:ajax event="rowSelect" update="@this" /> 
+
+						<!-- 
+				selection="#{mesAmiesMultiSiteBean.selectedEntreprise}"
+				<p:ajax event="rowSelect" listener="#{mesAmiesMultiSiteBean.onRowSelectDetail}" 
+                    						update=":form:growl" /> 
+                    						 -->
+
+						<f:facet name="header">  
+							Société que vous <u>avez ajouté</u> en tant que société amie
+        				</f:facet>
+
+						<p:column selectionMode="single" style="width:18px" />
+						<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+						<p:column sortBy="#{entreprise.societeB.id}">
+							<f:facet name="header">
+								<h:outputText value="ID" />
+							</f:facet>
+							<h:outputText value="#{entreprise.societeA.id}" />
+							<!-- 
+					<p:commandLink value="#{entreprise.societeB.id}" title="View">
+						<f:setPropertyActionListener value="#{entreprise}"
+							target="#{mesAmiesMultiSiteBean.selectedEntreprise}" />
+					</p:commandLink>
+					 -->
+						</p:column>
+
+						<p:column sortBy="#{entreprise.societeA.nom}">
+							<f:facet name="header">
+								<h:outputText value="Nom" />
+							</f:facet>
+							<h:outputText value="#{entreprise.societeA.nom}" />
+						</p:column>
+
+						<p:column sortBy="#{entreprise.pourcentageReduction}">
+							<f:facet name="header">
+								<h:outputText value="Remise" />
+							</f:facet>
+							<h:outputText value="#{entreprise.pourcentageReduction} %" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Actions" />
+							</f:facet>
+							<p:commandLink actionListener="#{mesAmiesMultiSiteBean.supprimerSocieteAmie}" update=":form:growl">
+								<f:attribute name="idRelationSocieteAmie" value="#{entreprise.id}" />
+								<p:graphicImage library="images" name="delete.png" title="Annuler relation" alt="Annuler relation" height="16" />
+								<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cette relation ?" icon="ui-icon-alert" />
+							</p:commandLink>
+							
+							<p:commandLink oncomplete="modifEntrepriseDialog.show()" actionListener="#{mesAmiesMultiSiteBean.initModif}"  value="Modifier"
+								update=":modifEntrepriseForm"	>
+								<f:attribute name="idRelationSocieteAmie" value="#{entreprise.id}" />
+								<!-- 
+								<f:setPropertyActionListener value="#{entreprise}" target="#{mesAmiesMultiSiteBean.relationSocietesAmiesSelectionne}" />
+								 -->
+							</p:commandLink>
+							<!-- 
+							update=":newEntrepriseDlg"
+							 -->
+						</p:column>
+
+					</p:dataTable>
+					
+					<br/>	
+					<br/>		
+					<p:dataTable id="dataTableAmies2" var="entreprise"
+						value="#{mesAmiesMultiSiteBean.amie}" rowKey="#{entreprise.id}"
+						selectionMode="single" paginator="true" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						lazy="true" rowsPerPageTemplate="10,20,30">
+
+						<!-- 
+				selection="#{mesAmiesMultiSiteBean.selectedEntreprise}"
+				<p:ajax event="rowSelect" listener="#{mesAmiesMultiSiteBean.onRowSelectDetail}" 
+                    						update=":form:growl" /> 
+                    						 -->
+                    	<p:ajax event="rowSelect" update="@this" /> 
+
+						<f:facet name="header">  
+           					Société qui vous <u>ont ajouté</u> en tant que société amie
+        				</f:facet>
+
+						<p:column selectionMode="single" style="width:18px" />
+						<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+						<p:column sortBy="#{entreprise.societeB.id}">
+							<f:facet name="header">
+								<h:outputText value="ID" />
+							</f:facet>
+							<h:outputText value="#{entreprise.societeB.id}" />
+							<!-- 
+					<p:commandLink value="#{entreprise.societeB.id}" title="View">
+						<f:setPropertyActionListener value="#{entreprise}"
+							target="#{mesAmiesMultiSiteBean.selectedEntreprise}" />
+					</p:commandLink>
+					 -->
+						</p:column>
+
+						<p:column sortBy="#{entreprise.societeB.nom}">
+							<f:facet name="header">
+								<h:outputText value="Nom" />
+							</f:facet>
+							<h:outputText value="#{entreprise.societeB.nom}" />
+						</p:column>
+
+						<p:column sortBy="#{entreprise.pourcentageReduction}">
+							<f:facet name="header">
+								<h:outputText value="Remise" />
+							</f:facet>
+							<h:outputText value="#{entreprise.pourcentageReduction} %" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Actions" />
+							</f:facet>
+							<!--  
+							<p:commandLink value="Ajouter relation réciproque" actionListener="#{mesAmiesMultiSiteBean.ajouteReciproqueSocieteAmie}" update=":form:growl">
+								<f:attribute name="idRelationSocieteAmie" value="#{entreprise.id}" />
+								<p:confirm header="Confirmation" message="Etes vous sur de vouloir créer cette relation ?" icon="ui-icon-alert" />
+							</p:commandLink>
+							-->
+						</p:column>
+
+					</p:dataTable>
+				</p:tab>
+			</p:tabView>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		</h:form>
+
+		<p:dialog header="Nouveau"
+			widgetVar="newEntrepriseDialog" resizable="false"
+			id="newEntrepriseDlg">
+			<h:form id="newEntrepriseForm">
+				<p:panelGrid columns="2" cellpadding="4" style="margin:0 auto;">
+					
+					<h:outputText value="Nom :" />
+					<h:outputText
+						value="#{mesAmiesMultiSiteBean.monEntreprise.nom}" />
+
+					<h:outputText value="Entreprise" />
+					<p:selectOneMenu value="#{mesAmiesMultiSiteBean.selectedEntreprise}">
+						<f:selectItems value="#{mesAmiesMultiSiteBean.listeEntreprise}" var="uc" itemLabel="#{uc.nom}" itemValue="#{uc}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="Remise (%)" />
+					<p:inputText value="#{mesAmiesMultiSiteBean.montantReduction}" />
+
+				</p:panelGrid>
+				<p:commandButton value="Valider" update=":form:growl, :form:id_tabview:dataTableAmies"
+					actionListener="#{mesAmiesMultiSiteBean.ajouteSocieteAmie}"
+					oncomplete="newEntrepriseDialog.hide()" />
+					
+				<p:commandButton oncomplete="newEntrepriseDialog.hide()"
+					value="Annuler" />
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Modification"
+			widgetVar="modifEntrepriseDialog" resizable="false"
+			id="modifEntrepriseDlg">
+			<h:form id="modifEntrepriseForm">
+				<p:panelGrid columns="2" cellpadding="4" style="margin:0 auto;">
+					
+					<h:outputText value="Remise (%)" />
+					<p:inputText value="#{mesAmiesMultiSiteBean.montantReduction}" />
+
+				</p:panelGrid>
+				<p:commandButton value="Valider" update=":form:growl, :form:id_tabview:dataTableAmies"
+					actionListener="#{mesAmiesMultiSiteBean.modifierSocieteAmie}"
+					oncomplete="modifEntrepriseDialog.hide()">
+				</p:commandButton>
+					
+				<p:commandButton oncomplete="modifEntrepriseDialog.hide()"
+					value="Annuler" />
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

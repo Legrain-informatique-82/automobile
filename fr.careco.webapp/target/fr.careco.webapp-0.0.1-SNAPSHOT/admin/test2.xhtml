@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<!--  
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+-->
+
+<h:head>
+	<h:outputScript src="http://code.jquery.com/jquery-latest.min.js" />
+	<h:outputScript>
+    function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+            dialog = jQuery('#'+dialogName);
+        if(args.validationFailed) {  
+            dialog.effect("shake", { times:3 }, 100);  
+        } else {
+            clearForm(formName);
+            newCiviliteDialog.hide(); 
+            civiliteDialog.hide(); 
+        }  
+    }
+    function clearForm(formName){
+        jQuery('#'+formName).each(function(){
+	        this.reset();
+	});
+    }
+</h:outputScript>
+
+</h:head>
+<h:body>
+
+
+
+	<!-- 
+	<h:form>
+		<h:outputText value="jsf mojarra" />
+
+
+		<h:dataTable value="#{listeValeurTest.values}" var="val">
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="ID" />
+				</f:facet>
+				<h:outputText value="#{val.col1}" />
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="Name" />
+				</f:facet>
+				<h:outputText value="#{val.col2}" />
+			</h:column>
+		</h:dataTable>
+</h:form>
+ -->
+
+	<h:outputText value="jsf primefaces" />
+	<!--  
+		<p:dataTable var="val" value="#{listeValeurTest.values}"
+			rowKey="#{val.col1}" selectionMode="single">
+			<f:facet name="header">  
+           		Test JSF bdg
+        	</f:facet>
+
+			<p:column headerText="Col 1">
+				<h:outputText value="#{val.col1}" />
+			</p:column>
+
+			<p:column headerText="Col 2">
+				<h:outputText value="#{val.col2}" />
+			</p:column>
+		</p:dataTable>
+		-->
+		
+		<p:commandButton value="Logout" actionListener="#{auth.logout}" icon="ui-icon-extlink" />
+
+	<br />
+	<h:form id="form">
+
+		<p:dataTable id="dataTable" var="taTCivilite"
+			value="#{listeValeurTest.values}" rowKey="#{taTCivilite.idTCivilite}"
+			selection="#{listeValeurTest.selectedTaTCivilites}" paginator="true"
+			rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			lazy="true" rowsPerPageTemplate="3,6,30">
+
+			<f:facet name="header">  
+           		Test JSF bdg
+        	</f:facet>
+
+			<p:column selectionMode="multiple" style="width:18px" />
+			<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+			<p:column sortBy="#{taTCivilite.idTCivilite}">
+				<f:facet name="header">
+					<h:outputText value="ID" />
+				</f:facet>
+				<p:commandLink value="#{taTCivilite.idTCivilite}"
+					update=":civiliteDetailForm:display" oncomplete="civiliteDialog.show()"
+					title="View">
+					<f:setPropertyActionListener value="#{taTCivilite}" target="#{listeValeurTest.selectedTaTCivilite}" />
+				</p:commandLink>
+			</p:column>
+
+			<p:column sortBy="#{taTCivilite.codeTCivilite}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{taTCivilite.codeTCivilite}" />
+			</p:column>
+
+			<f:facet name="footer">
+				<p:commandButton value="Nouveau" oncomplete="newCiviliteDialog.show()"
+					icon="ui-icon-star" title="Céer une nouvelle civilité" />
+				<p:commandButton value="Supprimer"
+					actionListener="#{listeValeurTest.doDeleteCivilites}"
+					update="dataTable" icon="ui-icon-trash" />
+			</f:facet>
+		</p:dataTable>
+	</h:form>
+
+	<p:dialog header="Détail" widgetVar="civiliteDialog" resizable="false"
+		id="civiliteDlg">
+		<h:form id="civiliteDetailForm">
+			<p:panelGrid id="display" columns="2" cellpadding="4"
+				style="margin:0 auto;">
+				<h:outputText value="ID :"></h:outputText>
+				<h:outputText value="#{listeValeurTest.selectedTaTCivilite.idTCivilite}" />
+
+				<h:outputText value="Code :"></h:outputText>
+				<h:inputText value="#{listeValeurTest.selectedTaTCivilite.codeTCivilite}"
+					required="true" requiredMessage="Code obligatoire!" />
+
+				<f:facet name="footer">
+					<p:commandButton value="Mettre à jour" update=":form:dataTable, :growl"
+						oncomplete="handleSubmitRequest(xhr, status, args, 'civiliteDlg','newCiviliteForm'); "
+						actionListener="#{listeValeurTest.doUpdateCivilite}" />
+				</f:facet>
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Nouveau" onLoad="reset()"
+		widgetVar="newCiviliteDialog" resizable="false" id="newCiviliteDlg">
+		<h:form id="newCiviliteForm">
+			<p:panelGrid id="displayNewUser" columns="2" cellpadding="4"
+				style="margin:0 auto;">
+				<h:outputText value="ID :"></h:outputText>
+				<p:inputText value="#{listeValeurTest.newTaTCivilite.idTCivilite}"
+					required="true" requiredMessage="ID obligatoire!" />
+
+				<h:outputText value="Code :"></h:outputText>
+				<p:inputText value="#{listeValeurTest.newTaTCivilite.codeTCivilite}"
+					required="true" requiredMessage="Code obligatoire!" />
+
+				<f:facet name="footer">
+					<p:commandButton value="Valider" update=":form:dataTable, :growl"
+						oncomplete=" handleSubmitRequest(xhr, status, args, 'newCiviliteDlg','newCiviliteForm');"
+						actionListener="#{listeValeurTest.doCreateCivilite}" />
+					<p:commandButton type="reset" value="Vider"></p:commandButton>
+				</f:facet>
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<p:growl id="growl" showDetail="true" life="5000" />
+
+</h:body>
+</html>

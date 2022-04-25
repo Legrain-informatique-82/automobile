@@ -1,0 +1,387 @@
+<ui:composition template="./index_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+		<h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+
+			<p:growl id="growl" showDetail="true" />
+
+			<p:panel id="id_recherche" header="Recherche" toggleable="true"
+				toggleSpeed="500" closeSpeed="500" widgetVar="panel2">
+
+				<p:messages styleClass="errors" autoUpdate="true" showDetail="true"
+					showSummary="true" />
+
+				<div id="id_immatriculation" class="immatriculation">
+					<h:inputText value="#{wsAAABean.immatriculation}"
+						style="font-size: 2em;">
+					</h:inputText>
+
+					<p:ajaxStatus styleClass="ajax_status_immatriculation">
+						<f:facet name="error">
+							<p:graphicImage library="css_careco" name="images/led_red.gif"
+								height="16" title="Error" />
+						</f:facet>
+						<f:facet name="success">
+							<p:graphicImage library="css_careco" name="images/led_green.gif"
+								height="16" title="Success" />
+						</f:facet>
+						<f:facet name="default">
+							<p:graphicImage library="css_careco" name="images/led_green.gif"
+								height="16" title="Idle" />
+						</f:facet>
+						<f:facet name="start">
+							<p:graphicImage library="css_careco" name="images/led_yellow.gif"
+								height="16" title="Sending" />
+						</f:facet>
+						<f:facet name="complete">
+							<p:graphicImage library="css_careco" name="images/led_green.gif"
+								height="16" title="Done" />
+						</f:facet>
+					</p:ajaxStatus>
+				</div>
+
+				<h:outputText value="3 première lettre du nom (B2C)" />
+				<h:inputText value="#{wsAAABean.debutNom}" />
+
+				<h:outputText value="Identifiant" />
+				<h:inputText value="#{wsAAABean.login}" />
+
+				<h:outputText value="Mot de passe" />
+				<h:inputText value="#{wsAAABean.password}" />
+
+				<p:commandButton value="Recherche" update="id_resultat"
+					actionListener="#{wsAAABean.recherche}" />
+				<p:commandButton value="Recherche WS" update="id_resultat"
+					actionListener="#{wsAAABean.rechercheWS}" />
+			</p:panel>
+
+			<p:panel id="id_resultat" header="Résultat" toggleable="true"
+				toggleSpeed="500" closeSpeed="500" widgetVar="panel1">
+
+				<h:outputText value="Marque: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.marque}" />
+				<br />
+
+				<h:outputText value="Modèle redressé APRF: "
+					styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.modele_Etude}" />
+				<br />
+				<h:outputText value="Version: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.version}" />
+				<br />
+				<h:outputText value="Energie: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.energie}" />
+				<br />
+				<h:outputText value="Date de première circulation: "
+					styleClass="infosAAARed" />
+				<h:outputText
+					value="#{wsAAABean.v.date_1er_Cir_Jour}/#{wsAAABean.v.date_1er_Cir_Mois}/#{wsAAABean.v.date_1er_Cir_Annee}" />
+				<br />
+				<!--  
+							<h:outputText value="Premier mois de circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{wsAAABean.v.date_1er_Cir_Mois}" />
+							<br />
+							<h:outputText value="Jour de première circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{wsAAABean.v.date_1er_Cir_Jour}" />
+							<br />
+							-->
+				<h:outputText value="Présence de turbo: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.turbo_Compr}" />
+				<br />
+				<h:outputText value="Nb soupapes: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.nb_Soupapes}" />
+				<br />
+				<h:outputText value="Type boîte de vitesses: "
+					styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.tp_Boite_Vit}" />
+				<br />
+				<h:outputText
+					value="Codification précise du véhicule selon la codification du VIN: "
+					styleClass="infosAAAGreen" />
+				<h:outputText value="#{wsAAABean.v.codif_Vin_Pref}" />
+				<br />
+				<h:outputText value="Code moteur: " styleClass="infosAAAGreen" />
+				<h:outputText value="#{wsAAABean.v.code_Moteur}" />
+				<br />
+				<h:outputText value="Type CNIT ou Mine: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.type}" />
+				<br />
+				<h:outputText value="Nb cylindres: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.nb_Cylind}" />
+				<br />
+				<h:outputText value="Cylindrée: " styleClass="infosAAARed" />
+				<h:outputText value="#{wsAAABean.v.cylindree}" />
+				<br />
+
+				<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500"
+					collapsed="true">
+
+					<h:outputText value="Immatriculation: " styleClass="infosAAAGreen" />
+					<h:outputText value="#{wsAAABean.v.immat_SIV}" />
+					<br />
+
+					<h:outputText value="Nb vitesses: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.nb_Vitesse}" />
+					<br />
+
+					<h:outputText value="Mode injection: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.mode_Inject}" />
+					<br />
+
+					<h:outputText value="Type boîte de vitesses: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.tp_Boite_Vit}" />
+					<br />
+
+					<h:outputText value="Genre: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.genre}" />
+					<br />
+
+					<h:outputText value="Genre VCg: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.genre_V_CG}" />
+					<br />
+
+					<h:outputText value="Modèle de la carte grise: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.modele}" />
+					<br />
+
+					<h:outputText
+						value="Codification précise du véhicule selon la codification du VIN: "
+						styleClass="infosAAAGreen" />
+					<h:outputText value="#{wsAAABean.v.codif_Vin_Pref}" />
+					<br />
+
+					<h:outputText value="Code moteur: " styleClass="infosAAAGreen" />
+					<h:outputText value="#{wsAAABean.v.code_Moteur}" />
+					<br />
+
+					<h:outputText value="Poids à vide: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.poids_Vide}" />
+					<br />
+
+					<h:outputText value="Numéro de série: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.n_Serie}" />
+					<br />
+
+					<h:outputText value="Propulsion: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.propulsion}" />
+					<br />
+
+					<h:outputText value="Type VIN: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.type_Vin_Cg}" />
+					<br />
+
+					<h:outputText value="Modèle d'usage commun: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.modele_Etude}" />
+					<br />
+
+					<h:outputText value="Emissions de CO2 en g par km: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.CO2}" />
+					<br />
+
+					<br />
+					<h:outputText value="Libellé Carrosserie: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.carrosserie}" />
+					<br />
+
+					<h:outputText value="Couleur: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.couleur_Vehic}" />
+					<br />
+
+					<h:outputText value="Carrosserie CG: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.carrosserie_CG}" />
+					<br />
+
+					<h:outputText value="Nb places assises ou charge utile: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.nb_Pl_Ass}" />
+					<br />
+
+					<h:outputText value="Poids: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.ptr}" />
+					<br />
+
+					<h:outputText
+						value="Poids total roulant tel qu'indiqué sur la CG: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.ptr_Prf}" />
+					<br />
+
+					<h:outputText value="Empattement: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.empat}" />
+					<br />
+
+					<h:outputText value="Dispositif de dépollution: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.depollution}" />
+					<br />
+
+					<h:outputText value="Marque de la carrosserie du véhicule: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.marque_Carros}" />
+					<br />
+
+					<h:outputText value="Marque: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.marque}" />
+					<br />
+
+					<h:outputText value="Modèle redressé APRF: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.modele_Prf}" />
+					<br />
+
+					<h:outputText value="Version: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.version}" />
+					<br />
+
+					<h:outputText value="Nb portes: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.nb_Portes}" />
+					<br />
+
+					<h:outputText value="Energie: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.energie}" />
+					<br />
+
+					<h:outputText value="Nb volumes: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.nb_Volumes}" />
+					<br />
+
+					<br />
+					<h:outputText value="Largeur: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.largeur}" />
+					<br />
+
+					<h:outputText value="Hauteur: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.hauteur}" />
+					<br />
+
+					<h:outputText value="Nb cylindres: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.nb_Cylind}" />
+					<br />
+
+					<h:outputText value="Cylindrée: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.cylindree}" />
+					<br />
+
+					<h:outputText value="Date de première circulation: "
+						styleClass="infosAAARed" />
+					<h:outputText
+						value="#{wsAAABean.v.date_1er_Cir_Jour}/#{wsAAABean.v.date_1er_Cir_Mois}/#{wsAAABean.v.date_1er_Cir_Annee}" />
+					<br />
+					<!--  
+								<h:outputText value="Premier mois de circulation: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.date_1er_Cir_Mois}" /><br />
+								
+								<h:outputText value="Jour de première circulation: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.date_1er_Cir_Jour}" /><br />
+								-->
+
+					<h:outputText value="Date Dcg: " styleClass="infosAAARed" />
+					<h:outputText
+						value="#{wsAAABean.v.date_Dcg_Jour}/#{wsAAABean.v.date_Dcg_Mois}/#{wsAAABean.v.date_Dcg_Annee}" />
+					<br />
+					<!-- 
+								<h:outputText value="Date Dcg mois: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.date_Dcg_Mois}" /><br />
+								
+								<h:outputText value="Date Dcg jour: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.date_Dcg_Jour}" /><br />
+								 -->
+
+					<h:outputText value="Puissance réelle en chevaux vapeur: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.puis_Ch}" />
+					<br />
+
+					<h:outputText value="Puissance fiscale en chevaux fiscaux: "
+						styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.puis_Fisc}" />
+					<br />
+
+					<h:outputText value="Présence de turbo: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.turbo_Compr}" />
+					<br />
+
+					<h:outputText value="Nb soupapes: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.nb_Soupapes}" />
+					<br />
+
+					<h:outputText value="Longueur: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.longueur}" />
+					<br />
+
+					<h:outputText value="Type CNIT ou Mine: " styleClass="infosAAARed" />
+					<h:outputText value="#{wsAAABean.v.type}" />
+					<br />
+
+					<!--  	
+
+								<br />
+								<h:outputText value="Consommation en zone urbaine: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.cons_Urb}" /><br />
+								
+								<h:outputText value="Consommation dans les conditions de circulation générale: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.cons_Mixte}" /><br />
+								
+								<h:outputText value="Consommation du véhicule en zone urbanisée: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.cons_Exurb}" /><br />
+								
+								<h:outputText value="SIREN (Système d’identification du répertoire des entreprises): " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.siren}" /><br />
+					
+								<h:outputText value="Type Variante Version: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.type_Var_Ver_Prf}" /><br />
+								
+								<h:outputText value="Prix catalogue des véhicules (T.T.C. de base sans options), issu du fichier de l'Argus: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.prix_Vehic}" /><br />
+								
+								<h:outputText value="Puissance du véhicule exprimée en KW : " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.puis_Kw}" /><br />
+								
+								<h:outputText value="Montes de pneus compatibles: " styleClass="infosAAARed" />
+								<h:outputText value="#{wsAAABean.v.pneu}" /><br />
+-->
+				</p:fieldset>
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,252 @@
+<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+			<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+
+			<p:dashboard id="board2" model="#{dashboardResultBean.model}">
+				<p:ajax event="reorder"
+					listener="#{dashboardResultBean.handleReorder}" update="growl" />
+
+
+				<p:panel id="id_resultat" header="Mes achats" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="panel3">
+					<p:accordionPanel id="main_panel_result">
+						<p:tab title="En cours">
+
+							<p:dataTable id="dataTable" var="ligneResultat" resizableColumns="true"
+								value="#{achatBean.mesAchatsEncours}"
+								rowKey="#{ligneResultat.transactionAchatVente.id}"
+								selectionMode="single"
+								paginator="true"
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+								<p:column sortBy="#{ligneResultat.transactionAchatVente.id}" filterBy="#{ligneResultat.transactionAchatVente.id}">
+									<f:facet name="header">
+										<h:outputText value="Transaction ID" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.transactionAchatVente.id}" />
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.panier.id}" filterBy="#{ligneResultat.panier.id}">
+									<f:facet name="header">
+										<h:outputText value="N° Panier" />
+									</f:facet>
+									<h:outputText
+										value="#{ligneResultat.panier.id}" />
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.panier.id}" filterBy="#{ligneResultat.panier.id}">
+									<f:facet name="header">
+										<h:outputText value="N° Devis" />
+									</f:facet>
+									<h:outputText
+										value="#{ligneResultat.panier.id}" />
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.panier.vendeur.nom}" filterBy="#{ligneResultat.panier.vendeur.nom}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									
+									<h:outputText
+										value="#{ligneResultat.panier.vendeur.nom} #{ligneResultat.panier.vendeur.prenom}" />
+												
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.panier.client.immatriculation}" filterBy="#{ligneResultat.panier.client.immatriculation}">
+									<f:facet name="header">
+										<h:outputText value="Client immat." />
+									</f:facet>
+									
+									<h:outputText
+										value="#{ligneResultat.panier.client.immatriculation}" />
+												
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.panier.client.nom}" filterBy="#{ligneResultat.panier.client.nom}">
+									<f:facet name="header">
+										<h:outputText value="Client" />
+									</f:facet>
+									
+									<h:outputText
+										value="#{ligneResultat.panier.client.nom}" />
+												
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.panier.client.type}" filterBy="#{ligneResultat.panier.client.type}">
+									<f:facet name="header">
+										<h:outputText value="Type client" />
+									</f:facet>
+									
+									<h:outputText
+										value="#{ligneResultat.panier.client.type}" />
+												
+								</p:column>
+
+								<!--  
+								<p:column sortBy="#{ligneResultat.idPiece.id}">
+									<f:facet name="header">
+										<h:outputText value="Pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.id}" />
+								</p:column>
+								-->
+
+								<p:column sortBy="#{ligneResultat.idPiece.idStock.nom}" filterBy="#{ligneResultat.idPiece.idStock.nom}">
+									<f:facet name="header">
+										<h:outputText value="Proriétaire pièce" />
+									</f:facet>
+									<h:outputText
+										value="#{ligneResultat.idPiece.idStock.nom}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.idPiece.marque}" filterBy="#{ligneResultat.idPiece.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.idPiece.modele}" filterBy="#{ligneResultat.idPiece.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.idPiece.typeDePiece}" filterBy="#{ligneResultat.idPiece.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.typeDePiece}" />
+								</p:column>
+
+								<!--  
+								<p:column sortBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Type" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.modele}" />
+								</p:column>
+								-->
+
+								<p:column
+									sortBy="#{ligneResultat.transactionAchatVente.derierChangementEtat}">
+									<f:facet name="header">
+										<h:outputText value="Dernier changement d'état" />
+									</f:facet>
+									<h:outputText
+										value="#{ligneResultat.transactionAchatVente.derierChangementEtat}" >
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+										</h:outputText>
+								</p:column>
+
+								<!--  
+								<p:column sortBy="#{ligneResultat.idPiece.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.idPiece.vin}">
+									<f:facet name="header">
+										<h:outputText value="VIN" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.vin}" />
+								</p:column>
+								-->
+								
+								<p:column sortBy="#{ligneResultat.supplementLivraison}" filterBy="#{ligneResultat.supplementLivraison}">
+									<f:facet name="header">
+										<h:outputText value="Frais transport" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.supplementLivraison}" />
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.prixVenteTTCFinal}" filterBy="#{ligneResultat.prixVenteTTCFinal}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente TTC" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVenteTTCFinal}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.idPiece.prixAchat}" filterBy="#{ligneResultat.idPiece.prixAchat}">
+									<f:facet name="header">
+										<h:outputText value="Prix achat" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.idPiece.prixAchat}" />
+								</p:column>
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Statut" />
+									</f:facet>
+									<h:outputText
+										value="Etat : #{ligneResultat.transactionAchatVente.etatAcheteur}" />
+									<br />
+									<p:commandLink value="Confirmer l'arriver"
+										actionListener="#{achatBean.confirmerArrive}"
+										update=":form:growl, :form:id_resultat">
+										<f:attribute name="idLignePanier" value="#{ligneResultat.id}" />
+										<p:confirm header="Confirmation" message="Etes vous sur de vouloir confirmer la réception de cette pièce et terminer cette transaction ?" icon="ui-icon-alert" /> 
+									</p:commandLink>
+									<br />
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.idPiece.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+									
+								</p:column>
+
+							</p:dataTable>
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+
+			</p:dashboard>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

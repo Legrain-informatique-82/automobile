@@ -1,0 +1,521 @@
+var AjaxUrl = ("Ajax");
+
+function ajax(url, params, callback) {
+    $.ajax({
+        url: url,
+        data: params,
+        success: callback,
+        contentType: "application/x-www-form-urlencoded;charset=UTF-8"
+    });
+}
+
+function updateModels(data) {
+    var response = eval("(" + data + ")");
+    var selectedModel = $("#model").val();
+
+    $("#model").find('option:not(:first)').remove();
+
+    if (response["models"] != null) {
+        for (var i = 0; i < response["models"].length; i++) {
+            $("#model").append($("<option value='" + response["models"][i]["id"] + "'>"
+                    + response["models"][i]["name"] + "</option>"));
+        }
+    }
+
+    if (selectedModel != null)
+        $("#model").val(selectedModel).attr('selected', true);
+
+}
+
+
+//SETTING UP OUR POPUP
+//0 means disabled; 1 means enabled;
+var popupStatus = 0;
+
+//loading popup with jQuery magic!
+function loadPopup() {
+    //loads popup only if it is disabled
+    if (popupStatus == 0) {
+        $("#backgroundPopup").css({
+            "opacity": "0.7"
+        });
+        $("#backgroundPopup").fadeIn("slow");
+        $("#partDetail").fadeIn("slow");
+        popupStatus = 1;
+    }
+}
+
+//disabling popup with jQuery magic!
+function disablePopup() {
+    //disables popup only if it is enabled
+    if (popupStatus == 1) {
+        $("#backgroundPopup").fadeOut("slow");
+        $("#partDetail").fadeOut("slow");
+        popupStatus = 0;
+    }
+}
+
+
+
+//centering popup
+function centerPopup() {
+    //request data for centering
+    var windowWidth = document.documentElement.clientWidth;
+    var windowHeight = document.documentElement.clientHeight + 1000;
+    var popupHeight = $("#partDetail").height();
+    var popupWidth = $("#partDetail").width();
+    //centering
+    $("#partDetail").css({
+        "position": "absolute",
+        "top": windowHeight / 2 - popupHeight / 2,
+        "left": windowWidth / 2 - popupWidth / 2
+    });
+    //only need force for IE6
+
+    $("#backgroundPopup").css({
+        "height": windowHeight
+    });
+
+}
+
+function showDetail(partId) {
+    var params = "op=part&partId=" + partId;
+    ajax(AjaxUrl, params, fillPopup);
+    centerPopup();
+    //load popup
+    loadPopup();
+    /*$('html, body').animate({
+     scrollTop: $("#part_accordion").offset().top
+     }, 200);*/
+}
+
+function showDetailCar(carId) {
+    var params = "op=car&carId=" + carId;
+    ajax(AjaxUrl, params, fillPopupCar);
+    centerPopup();
+    //load popup
+    loadPopup();
+}
+
+function showDetailOrders(transactionId) {
+    var params = "op=partOrder&transactionId=" + transactionId;
+    ajax(AjaxUrl, params, fillPopupCommande);
+    centerPopup();
+    //load popup
+    loadPopup();
+}
+
+function showDetailOrdersHistory(transactionId) {
+    var params = "op=partOrderHistory&transactionId=" + transactionId;
+    ajax(AjaxUrl, params, fillPopupCommande);
+    centerPopup();
+    //load popup
+    loadPopup();
+}
+
+function showDetailApplications(transactionId) {
+    var params = "op=partApplication&transactionId=" + transactionId;
+    ajax(AjaxUrl, params, fillPopupDemande);
+    centerPopup();
+    //load popup
+    loadPopup();
+}
+
+function showDetailApplicationsHistory(transactionId) {
+    var params = "op=partApplicationHistory&transactionId=" + transactionId;
+    ajax(AjaxUrl, params, fillPopupDemande);
+    centerPopup();
+    //load popup
+    loadPopup();
+}
+
+function showObservations(codeMotor, cnit) {
+    var params = "op=observations&codeMotor=" + codeMotor + "&cnit=" + cnit;
+    //var params = "op=observations&codeMotor=" + "SUNNY-CD17-5V" + "&cnit=" + cnit;
+    //console.log(params);
+    ajax(AjaxUrl, params, fillObservations);
+    $('html, body').animate({
+        scrollTop: $("#observation").offset().top
+    }, 200);
+}
+
+function fillPopup(data) {
+    var response = eval("(" + data + ")");
+    $("#bodytype").text(response['bodytype']);
+    $("#makepart").text(response['make']);
+    $("#modelpart").text(response['model']);
+    $("#trimpart").text(response['trim']);
+    $("#status").text(response['status']);
+    $("#valve").text(response['valve']);
+    $("#power").text(response['power']);
+    $("#engineno").text(response['engineno']);
+    $("#preparation").text(response['preparation']);
+    $("#year").text(response['year']);
+    $("#type").text(response['type']);
+    $("#partcode").text(response['partcode']);
+    $("#sellprice").text(response['sellprice']);
+    $("#buyprice").text(response['buyprice']);
+    $("#company").text(response['company']);
+    $("#enginetrim").text(response['enginetrim']);
+    $("#volume").text(response['volume']);
+    $("#cylinder").text(response['cylinder']);
+    $("#outputwarranty").text(response['outputwarranty']);
+    $("#kilometrage").text(response['kilometrage']);
+    $("#parttype").text(response['parttype']);
+    $("#transmissiongenre").text(response['transmissiongenre']);
+    $("#immatriculation").text(response['immatriculation']);
+    $("#typemine").text(response['typemine']);
+    $("#vin").text(response['vin']);
+    $("#taxcategory").text(response['taxcategory']);
+    $("#transportcost").text(response['transportcost']);
+    $("#discount").text(response['discount']);
+    $("#deposit").text(response['deposit']);
+    $("#file").text(response['file']);
+    $("#production").text(response['production']);
+    $("#locationcode").text(response['locationcode']);
+    $("#origin").text(response['origin']);
+    $("#note").text(response['note']);
+    $("#buydate").text(response['buydate']);
+
+
+}
+
+function fillPopupDemande(data) {
+    var response = eval("(" + data + ")");
+
+    $("#transactionid").text(response['transactionid']);
+    $("#transactionidHeader").text("Demande No: " + response['transactionid']);
+    //$("input[id=transactionid]").val(response['transactionid']);
+    $("#date").text(response['date']);
+    $("#status").text(response['status']);
+    $("#sellprice").text(response['sellprice']);
+    $("#margesellprice").text(response['sellprice']);
+    $("#demandesellprice").text(response['sellprice']);
+
+    $("#parttype").text(response['parttype']);
+    $("#no").text(response['partid']);
+    $("#partcode").text(response['partcode']);
+    $("#km").text(response['km']);
+    $("#emplacement").text(response['emplacement']);
+    $("#placeid").text(response['placeid']);
+
+    $("#acheteurfirstname").text(response['buyerfirstname']);
+    $("#acheteurlastname").text(response['buyerlastname']);
+    $("#acheteurcompanyname").text(response['buyercompanyname']);
+    $("#buyerphone").text(response['buyerphone']);
+    $("#buyermobile").text(response['buyermobile']);
+    $("#buyerfax").text(response['buyerfax']);
+    $("#buyeremail").text(response['buyeremail']);
+    $("#buyeraddress").text(response['buyeraddress']);
+    $("#buyerzip").text(response['buyerzip']);
+    $("#buyercity").text(response['buyercity']);
+    $("#buyercountry").text(response['buyercountry']);
+    $("#buyprice").text(response['buyprice']);
+    $("#calculebuyprice").text(response['buyprice']);
+
+
+
+    $("#clientfirstname").text(response['buyerfirstname']);
+    $("#clientlastname").text(response['buyerlastname']);
+    $("#clientcompanyname").text(response['buyercompanyname']);
+    $("#clientphone").text(response['buyerphone']);
+    $("#clientmobile").text(response['buyermobile']);
+    $("#clientfax").text(response['buyerfax']);
+    $("#clientemail").text(response['buyeremail']);
+    $("#clientaddress").text(response['buyeraddress']);
+    $("#clientzip").text(response['buyerzip']);
+    $("#clientcity").text(response['buyercity']);
+    $("#clientcountry").text(response['buyercountry']);
+    $("#buyprice").text(response['buyprice']);
+
+
+
+
+    $("#recommendedprice").text(response['recommendedprice']);
+    $("#calculerecommendedprice").text(response['recommendedprice']);
+    $("#vat").text(response['vat']);
+    $("#transportprice").text(response['transportprice']);
+    $("#warrantyperiod").text(response['warrantyperiod'] + " année");
+    $("#warrantyprice").text(response['warrantyprice']);
+    ;
+    $("#totalpriceht").text(response['totalpriceht']);
+    $("#totalpricettc").text(response['totalpricettc']);
+    $("#marge").text(response['marge']);
+    $("#margepercent").text(response['margepercent']);
+
+}
+
+function fillPopupCommande(data) {
+    var response = eval("(" + data + ")");
+
+    $("#transactionid").text(response['transactionid']);
+    $("#transactionidHeader").text("Commande No: " + response['transactionid']);
+    //$("input[id=transactionid]").val(response['transactionid']);
+    $("#date").text(response['date']);
+    $("#status").text(response['status']);
+    $("#sellprice").text(response['sellprice']);
+
+    $("#commandesellprice").text(response['sellprice']);
+
+    $("#parttype").text(response['parttype']);
+    $("#no").text(response['partid']);
+    $("#partcode").text(response['partcode']);
+    $("#km").text(response['km']);
+    //$("#emplacement").text(response['emplacement']);
+    //$("#placeid").text(response['placeid']);
+
+    $("#sellerfirstname").text(response['sellerfirstname']);
+    $("#sellerlastname").text(response['sellerlastname']);
+    $("#sellercompanyname").text(response['sellercompanyname']);
+    $("#sellerphone").text(response['sellerphone']);
+    $("#sellermobile").text(response['sellermobile']);
+    $("#sellerfax").text(response['sellerfax']);
+    $("#selleremail").text(response['selleremail']);
+    $("#selleraddress").text(response['selleraddress']);
+    $("#sellerzip").text(response['sellerzip']);
+    $("#sellercity").text(response['sellercity']);
+    $("#sellercountry").text(response['sellercountry']);
+    $("#sellprice").text(response['sellprice']);
+    $("#calculesellprice").text(response['sellprice']);
+
+
+
+    $("#clientfirstname").text(response['sellerfirstname']);
+    $("#clientlastname").text(response['sellerlastname']);
+    $("#clientcompanyname").text(response['sellercompanyname']);
+    $("#clientphone").text(response['sellerphone']);
+    $("#clientmobile").text(response['sellermobile']);
+    $("#clientfax").text(response['sellerfax']);
+    $("#clientemail").text(response['selleremail']);
+    $("#clientaddress").text(response['selleraddress']);
+    $("#clientzip").text(response['sellerzip']);
+    $("#clientcity").text(response['sellercity']);
+    $("#clientcountry").text(response['sellercountry']);
+    $("#sellprice").text(response['sellprice']);
+
+
+
+
+    //$("#recommendedprice").text(response['recommendedprice']); 
+    //$("#calculerecommendedprice").text(response['recommendedprice']); 
+    //$("#vat").text(response['vat']); 
+    $("#transportprice").text(response['transportprice']);
+    $("#warrantyperiod").text(response['warrantyperiod'] + " année");
+    $("#warrantyprice").text(response['warrantyprice']);
+    ;
+    $("#totalpriceht").text(response['totalpriceht']);
+    $("#totalpricettc").text(response['totalpricettc']);
+//$("#marge").text(response['marge']); 
+//$("#margepercent").text(response['margepercent']); 
+
+}
+
+
+function fillPopupCar(data) {
+    var response = eval("(" + data + ")");
+    $("#bodytype").text(response['bodytype']);
+    $("#carosserieCg").text(response['carosserieCg']);
+    $("#co2").text(response['co2']);
+    $("#vin").text(response['vin']);
+    $("#serieNo").text(response['serieNo']);
+    $("#color").text(response['color']);
+    $("#volume").text(response['volume']);
+    $("#depollution").text(response['depollution']);
+    $("#empattement").text(response['empattement']);
+    $("#fueltype").text(response['fueltype']);
+    $("#genre").text(response['genre']);
+    $("#genreVcg").text(response['genreVcg']);
+    $("#height").text(response['height']);
+    $("#immatriculation").text(response['immatriculation']);
+    $("#width").text(response['width']);
+    $("#length").text(response['length']);
+    $("#make").text(response['make']);
+    $("#makeCarros").text(response['makeCarros']);
+    $("#injectionType").text(response['injectionType']);
+    $("#model").text(response['model']);
+    $("#subModel").text(response['subModel']);
+    $("#modelPrf").text(response['modelPrf']);
+    $("#cylinder").text(response['cylinder']);
+    $("#doorNo").text(response['doorNo']);
+    $("#gearNo").text(response['gearNo']);
+    $("#valveNo").text(response['valveNo']);
+    $("#weightEmpty").text(response['weightEmpty']);
+    $("#propulsion").text(response['propulsion']);
+    $("#weightMax").text(response['weightMax']);
+    $("#ptrPrf").text(response['ptrPrf']);
+    $("#puissanceHP").text(response['puissanceHP']);
+    $("#puissanceFiscale").text(response['puissanceFiscale']);
+    $("#boiteType").text(response['boiteType']);
+    $("#turbo").text(response['turbo']);
+    $("#cnit").text(response['cnit']);
+    $("#typeVin").text(response['typeVin']);
+    $("#trim").text(response['trim']);
+    $("#dayDcg").text(response['dayDcg']);
+    $("#monthDcg").text(response['monthDcg']);
+    $("#yearDcg").text(response['yearDcg']);
+    $("#dayFR").text(response['dayFR']);
+    $("#monthFR").text(response['monthFR']);
+    $("#yearFR").text(response['yearFR']);
+    $("#dateDcg").text(response['dateDcg']);
+    $("#dateFirstReg").text(response['dateFirstReg']);
+    $("#nomProprio").text(response['nomProprio']);
+    $("#engineReference").text(response['engineReference']);
+    $("#puissanceKW").text(response['puissanceKW']);
+    $("#seatNo").text(response['seatNo']);
+    $("#volumeNo").text(response['volumeNo']);
+}
+
+function fillObservations(data) {
+
+    var response = eval("(" + data + ")");
+    // alert(response["M"][0].type);
+    //alert(response);
+    if (response["M"] !== undefined) {
+        var htmlMotor = "<div id=\"tabsM\">" +
+                "<ul>";
+
+        for (var i = 0; i < response["M"].length; i++) {
+            htmlMotor += "<li><a href=\"#tabs-" + i + "\">" + "Type moteur " + response["M"][i].type + "</a></li>";
+        }
+
+        htmlMotor += "</ul>";
+        for (var j = 0; j < response["M"].length; j++) {
+            htmlMotor += "<div id=\"tabs-" + j + "\">";
+            htmlMotor += "<p>" + response["M"][j].observation + "</p>";
+            htmlMotor += "</div>";
+        }
+
+        htmlMotor += "</div>";
+        //alert(htmlMotor);
+
+        $("#obsMoteur").html(htmlMotor);
+        $("#tabsM").tabs();
+    }
+    // $( "#tabs" ).tabs();
+
+
+
+
+
+    if (response["B"] !== undefined) {
+        var htmlBoite = "<div id=\"tabsB\">" +
+                "<ul>";
+
+        for (var i = 0; i < response["B"].length; i++) {
+            htmlBoite += "<li><a href=\"#tabs-" + i + "\">" + "Type boite " + response["B"][i].type + "</a></li>";
+        }
+
+        htmlBoite += "</ul>";
+        for (var j = 0; j < response["B"].length; j++) {
+            htmlBoite += "<div id=\"tabs-" + j + "\">";
+            htmlBoite += "<p>" + response["B"][j].observation + "</p>";
+            htmlBoite += "</div>";
+        }
+
+        htmlBoite += "</div>";
+        //alert(htmlBoite);
+
+        $("#obsBoite").html(htmlBoite);
+        $("#tabsB").tabs();
+    }
+    
+//$("#obs").text(response['bodytype']);
+}
+
+function changePage(page, mode) {
+    $("input[id=page]").val(page);
+    if (mode == "qs") {
+        document.forms["searchParts"].submit();
+    } else if (mode == "ts") {
+        document.forms["searchPartsText"].submit();
+    }
+}
+
+
+function changePageInput() {
+    $("input[id=page]").val(page);
+    if (mode == "qs") {
+        document.forms["searchParts"].submit();
+    } else if (mode == "ts") {
+        document.forms["searchPartsText"].submit();
+    }
+}
+
+function changeUserPage(page) {
+    $("#page").val(page);
+    document.forms["searchUsers"].submit();
+}
+
+
+function changeUserPageInput() {
+    var page = $("#pageNum").val();
+    $("#page").val(page);
+    document.forms["searchUsers"].submit();
+}
+
+function changeCarPage(page, mode) {
+    $("input[id=page]").val(page);
+    if (mode == "qs") {
+        document.forms["searchCarsQS"].submit();
+    } else if (mode == "ts") {
+        document.forms["searchCarsText"].submit();
+    }
+
+}
+
+
+function changeCarPageInput() {
+    var page = $("#pageNum").val();
+    $("#page").val(page);
+    document.forms["searchCarsText"].submit();
+}
+
+function changeCompanyPage(page) {
+    $("#page").val(page);
+    document.forms["searchCompany"].submit();
+}
+
+
+function changeCompanyPageInput() {
+    var page = $("#pageNum").val();
+    $("#page").val(page);
+    document.forms["searchCompany"].submit();
+}
+
+function viewMoreAAA() {
+    $("#carAAA").hide();
+    $("#carAAADetail").show('slow');
+}
+
+function viewLessAAA() {
+    $("#carAAA").show('slow');
+    $("#carAAADetail").hide('slow');
+}
+
+$(document).ready(function() {
+
+    $('#make').change(function() {
+        var params = "op=models&make=" + $('#make').val();
+        ajax(AjaxUrl, params, updateModels);
+    });
+
+
+
+
+    //CLOSING POPUP
+    //Click the x event!
+    $("#popupContactClose").click(function() {
+        disablePopup();
+    });
+    //Click out event!
+    $("#backgroundPopup").click(function() {
+        disablePopup();
+    });
+
+    $("#content").find('div.accordion').accordion({
+        collapsible: true,
+        autoHeight: false
+    });
+
+    $("#content").find('div.accordion.div').css("width", "100%");
+});

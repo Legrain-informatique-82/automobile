@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+<!--  
+	<h:outputStylesheet library="css" name="style.css" />
+	-->
+		<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['images:itcar/favicon.ico']}" />
+</h:head>
+
+<h:body>
+
+	<f:facet name="last"> <!-- surcharge des CSS primefaces -->
+	
+		<h:outputStylesheet library="css_careco" name="style.css" />
+		<h:outputStylesheet library="css_careco" name="cart.css" />
+		<h:outputStylesheet library="css_careco" name="UI2.css" />
+		<h:outputStylesheet library="css" name="style_lgr.css" />
+  	</f:facet>
+
+	<!--  
+	<form method="post" action="j_security_check">
+		<h:panelGrid id="panel" columns="2" border="0">
+		
+			<h:outputLabel value="Username" />
+			<input type="text" name="j_username" size="25" />
+			
+			<h:outputLabel value="Password" />
+			<input type="password" size="15" name="j_password" />
+			
+			<h:commandButton value="Login" />
+		</h:panelGrid>
+	</form>
+	-->
+
+	<!--
+	<body id="login">
+       	<header>
+            <div id="logo" >
+                <p style="padding-left:70px;"><a class="small" >Accueil | Utilisateurs </a><code>m&b v2</code></p>
+            </div>
+        </header>
+        <section class="content">
+            <div id="error-response" style="display:none;"></div>
+            <form id="loginform" action="Login" method="POST">
+                <fieldset>
+                    <section>
+                        <label for="username">Utilisateur</label>
+                        <div><input type="text" id="username" name="username" 
+                                    value=""
+                                            autofocus/></div>
+                            </section>
+                            <section>
+                                <label for="password">Mot de Passe</label>
+                                <div><input type="password" id="password" name="password" 
+                                value=""/></div>
+                        <div><input type="checkbox" id="remember" name="remember" ><label for="remember" class="checkbox">mémoriser mon mot de passe</label></div>
+                        </section>
+                        <section>
+                            <div><button class="fr submit" onclick="submitForm('loginform');
+                                return false;">Entrez</button></div>
+                        </section>
+                        <p><a href="#" style="color:#000;">si vous l'avez oublié ?</a></p>
+                    </fieldset>
+                </form>
+            </section>
+        <footer>© Copyright Caréco France 2013</footer>
+
+    </body>
+  -->
+
+	<div id="loginDiv">
+		
+			<p:graphicImage library="images" name="itcar/10w2.jpg" title="ITCar" alt="ITCar" width=""/>
+
+		<div id="divLoginForm">
+			<f:metadata>
+				<f:viewParam name="loginMaint" value="#{auth.loginMaint}"/>
+			</f:metadata>
+			
+			<h:form id="loginForm">
+				<p:focus />
+				<div class="inputlabel">
+					<h:outputLabel for="j_username" value="Utilisateur" />
+				</div>
+				<div>
+					<p:inputText value="#{auth.username}" id="j_username" size="25" />
+				</div>
+				<div class="inputlabel">
+					<h:outputLabel for="j_password" value="Mot de Passe" />
+				</div>
+				<div>
+					<p:password value="#{auth.password}"  id="j_password" size="25" autocomplete="on"/>
+				</div>
+				<div>
+					<p:commandButton action="#{auth.login}" value="LOGIN" ajax="false"/>
+				</div>
+			</h:form>
+			<p:messages styleClass="errors" autoUpdate="true"/>
+		</div>
+	</div>
+
+	<!-- 
+	<h:form id="login" 
+	action="j_security_check"
+		onsubmit="document.getElementById('login').action='j_security_check';"
+		prependId="false">
+		<h:panelGrid columns="2">
+			<p:outputLabel for="j_username" value="Username" />
+			<p:inputText id="j_username" name="j_username" />
+			<p:outputLabel for="j_password" value="Password" />
+			<p:password id="j_password" name="j_password" />
+			<p:commandButton id="submit" value="Login" ajax="false" />
+		</h:panelGrid>
+	</h:form>
+ -->
+
+</h:body>
+</html>

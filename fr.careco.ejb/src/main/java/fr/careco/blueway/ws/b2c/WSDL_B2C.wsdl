@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    xmlns:mime = "http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap = "http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:soap12 = "http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:sp = "http://schemas.xmlsoap.org/ws/2005/07/securitypolicy"
+    xmlns:tns = "http://carecoprod.blueway.fr:8180/engine53/52"
+    xmlns:wsa = "http://schemas.xmlsoap.org/ws/2004/08/addressing"
+    xmlns:wsa10 = "http://www.w3.org/2005/08/addressing"
+    xmlns:wsam = "http://www.w3.org/2007/05/addressing/metadata"
+    xmlns:wsap = "http://schemas.xmlsoap.org/ws/2004/09/policy"
+    xmlns:wsaw = "http://www.w3.org/2006/05/addressing/wsdl"
+    xmlns:wsdl = "http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsp = "http://schemas.xmlsoap.org/ws/2004/09/policy"
+    xmlns:wsse = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+    xmlns:wsu = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+    xmlns:wsx = "http://schemas.xmlsoap.org/ws/2004/09/mex"
+    xmlns:xsd = "http://www.w3.org/2001/XMLSchema"
+    targetNamespace = "http://carecoprod.blueway.fr:8180/engine53/52">
+    <wsp:Policy>
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:TransportBinding>
+                    <wsp:Policy>
+                        <sp:TransportToken>
+                            <wsp:Policy>
+                                <sp:HttpsToken RequireClientCertificate = "false"/>
+                                <sp:AlgorithmSuite>
+                                    <wsp:Policy>
+                                        <sp:Basic256/>
+                                        <sp:Layout>
+                                            <wsp:Policy>
+                                                <sp:Lax/>
+                                                <sp:IncludeTimestamp/>
+                                            </wsp:Policy>
+                                        </sp:Layout>
+                                    </wsp:Policy>
+                                </sp:AlgorithmSuite>
+                            </wsp:Policy>
+                        </sp:TransportToken>
+                    </wsp:Policy>
+                </sp:TransportBinding>
+                <sp:SignedSupportingTokens>
+                    <wsp:Policy>
+                        <sp:UsernameToken sp:IncludeToken = "http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                            <wsp:Policy>
+                                <sp:WssUsernameToken10/>
+                            </wsp:Policy>
+                        </sp:UsernameToken>
+                    </wsp:Policy>
+                </sp:SignedSupportingTokens>
+                <sp:Wss10>
+                    <wsp:Policy>
+                        <sp:MustSupportRefKeyIdentifier/>
+                        <sp:MustSupportRefIssuerSerial/>
+                    </wsp:Policy>
+                </sp:Wss10>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsdl:types>
+        <xsd:schema elementFormDefault = "qualified" targetNamespace = "http://carecoprod.blueway.fr:8180/engine53/52">
+            <xsd:element name = "AAA00_WsB2CIN">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name = "Var_AAA" type = "tns:Var_AAA"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name = "Var_AAA">
+                <xsd:sequence>
+                    <xsd:element name = "TypeReq" type = "xsd:string"/>
+                    <xsd:element name = "Nom" type = "xsd:string"/>
+                    <xsd:element name = "Mdp" type = "xsd:string"/>
+                    <xsd:element name = "Login" type = "xsd:string"/>
+                    <xsd:element name = "Immat" type = "xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name = "AAA00_WsB2COUT">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name = "Var_AAA_retourWs" type = "tns:Var_AAA_retourWs"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name = "Var_AAA_retourWs">
+                <xsd:sequence>
+                    <xsd:element name = "Version" type = "xsd:string"/>
+                    <xsd:element name = "Type" type = "xsd:string"/>
+                    <xsd:element name = "Type_Vin_CG" type = "xsd:string"/>
+                    <xsd:element name = "Turbo_Compr" type = "xsd:string"/>
+                    <xsd:element name = "TP_Boite_Vit" type = "xsd:string"/>
+                    <xsd:element name = "Puis_Fisc" type = "xsd:string"/>
+                    <xsd:element name = "Puis_Ch" type = "xsd:string"/>
+                    <xsd:element name = "PTR_PRF" type = "xsd:string"/>
+                    <xsd:element name = "PTR" type = "xsd:string"/>
+                    <xsd:element name = "Propulsion" type = "xsd:string"/>
+                    <xsd:element name = "Poids_Vide" type = "xsd:string"/>
+                    <xsd:element name = "N_Serie" type = "xsd:string"/>
+                    <xsd:element name = "NB_Volume" type = "xsd:string"/>
+                    <xsd:element name = "NB_Vitesse" type = "xsd:string"/>
+                    <xsd:element name = "NB_Soupapes" type = "xsd:string"/>
+                    <xsd:element name = "NB_Portes" type = "xsd:string"/>
+                    <xsd:element name = "NB_Cylind" type = "xsd:string"/>
+                    <xsd:element name = "NB_PL_Ass" type = "xsd:string"/>
+                    <xsd:element name = "Mode_Inject" type = "xsd:string"/>
+                    <xsd:element name = "Modele_PRF" type = "xsd:string"/>
+                    <xsd:element name = "Modele_Etude" type = "xsd:string"/>
+                    <xsd:element name = "Modele" type = "xsd:string"/>
+                    <xsd:element name = "Marque_Carros" type = "xsd:string"/>
+                    <xsd:element name = "Marque" type = "xsd:string"/>
+                    <xsd:element name = "Longueur" type = "xsd:string"/>
+                    <xsd:element name = "Hauteur" type = "xsd:string"/>
+                    <xsd:element name = "Immat_SIV" type = "xsd:string"/>
+                    <xsd:element name = "Largeur" type = "xsd:string"/>
+                    <xsd:element name = "Genre_V_CG" type = "xsd:string"/>
+                    <xsd:element name = "Energie" type = "xsd:string"/>
+                    <xsd:element name = "Genre_V" type = "xsd:string"/>
+                    <xsd:element name = "Empat" type = "xsd:string"/>
+                    <xsd:element name = "Depollution" type = "xsd:string"/>
+                    <xsd:element name = "Date_Dcg_Mois" type = "xsd:string"/>
+                    <xsd:element name = "Date_Dcg_Jour" type = "xsd:string"/>
+                    <xsd:element name = "Date_DCG_Annee" type = "xsd:string"/>
+                    <xsd:element name = "Date_1er_Cir_Mois" type = "xsd:string"/>
+                    <xsd:element name = "Date_1er_Cir_jour" type = "xsd:string"/>
+                    <xsd:element name = "Date_1Er_CIR_Annee" type = "xsd:string"/>
+                    <xsd:element name = "Cylindree" type = "xsd:string"/>
+                    <xsd:element name = "Couleur_Vehic" type = "xsd:string"/>
+                    <xsd:element name = "Codif_Vin_PRF" type = "xsd:string"/>
+                    <xsd:element name = "Carrosserie_CG" type = "xsd:string"/>
+                    <xsd:element name = "CO2" type = "xsd:string"/>
+                    <xsd:element name = "Carrosserie" type = "xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name = "AAA00_WsB2CRequest">
+        <wsdl:part element = "tns:AAA00_WsB2CIN" name = "AAA00_WsB2CInput"/>
+    </wsdl:message>
+    <wsdl:message name = "AAA00_WsB2CResponse">
+        <wsdl:part element = "tns:AAA00_WsB2COUT" name = "AAA00_WsB2CReturn"/>
+    </wsdl:message>
+    <wsdl:portType name = "ProxyWsAAAB2CPortType">
+        <wsdl:operation name = "AAA00_WsB2C">
+            <wsdl:input message = "tns:AAA00_WsB2CRequest"/>
+            <wsdl:output message = "tns:AAA00_WsB2CResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name = "ProxyWsAAAB2CBinding" type = "tns:ProxyWsAAAB2CPortType">
+        <!--<wsp:PolicyReference URI = "#ProxyWsAAAB2CBinding_policy"/>-->
+        <soap:binding style = "document" transport = "http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name = "AAA00_WsB2C">
+        	<!--  
+            <soap:operation
+                soapAction = "AAA00_WsB2C#1#EAII"
+                style = "document"
+                wsdl:required = "true"/>
+            -->
+             <soap:operation
+                style = "document"
+                wsdl:required = "true"/>
+            <wsdl:input>
+                <soap:body use = "literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use = "literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name = "ProxyWsAAAB2C">
+        <wsdl:port binding = "tns:ProxyWsAAAB2CBinding" name = "ProxyWsAAAB2CPort">
+            <soap:address location = "http://carecoprod.blueway.fr:8180/engine53/52/WebserviceLauncher"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

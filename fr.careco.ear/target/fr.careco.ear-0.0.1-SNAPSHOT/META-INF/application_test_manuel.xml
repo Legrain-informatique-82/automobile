@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:application="http://java.sun.com/xml/ns/javaee/application_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd" version="6">
+  <application-name>test-app</application-name>
+  <initialize-in-order>true</initialize-in-order>
+  <module>
+    <!--  <ejb>fr.legrain.bdg.ejb.mvn.jar</ejb> -->
+    <ejb>fr.legrain.bdg.ejb.mvn-0.0.1-SNAPSHOT.jar</ejb>
+  </module>
+  <module>
+    <web>
+      <!-- <web-uri>fr.legrain.bdg.ejb.mvn.webjsf.war</web-uri>  -->
+      <web-uri>fr.legrain.bdg.ejb.mvn.webjsf-0.0.1-SNAPSHOT.war</web-uri>
+      <context-root>fr.legrain.bdg.ejb.mvn.webjsf</context-root>
+    </web>
+  </module>
+</application>

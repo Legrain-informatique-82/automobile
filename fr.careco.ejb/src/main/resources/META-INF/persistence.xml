@@ -1,0 +1,77 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+             
+	<persistence-unit name="careco" transaction-type="JTA" >
+		<!-- <jta-data-source>java:/DefaultDS</jta-data-source>  -->
+		<jta-data-source>java:/CarecoMYSQLDS</jta-data-source>
+
+		<!-- tiers -->
+		<!-- <class>fr.legrain.tiers.dao.TaTCivilite</class>  -->
+		<class>fr.legrain.tiers.model.User</class>
+		<class>fr.legrain.tiers.model.UserRole</class>
+		<class>fr.legrain.tiers.model.Role</class>
+		<class>fr.legrain.tiers.model.FicheCareco</class>
+		<class>fr.legrain.tiers.model.Stock</class>
+		<class>fr.legrain.tiers.model.Client</class>
+		<class>fr.legrain.tiers.model.LignePanier</class>
+		<class>fr.legrain.tiers.model.Panier</class>
+		<class>fr.legrain.tiers.model.UserCompany</class>
+		
+		<validation-mode>NONE</validation-mode> 
+		
+		<properties>
+			<!-- 
+				<property name="hibernate.connection.driver_class">org.firebirdsql.jdbc.FBDriver</property>
+				<property name="hibernate.connection.password">lgr82admin</property>
+				<property name="hibernate.connection.url">jdbc:firebirdsql:localhost:/donnees/Projet/Java/Eclipse/runtime-GestionCommerciale.product/dossier/Bd/GEST_COM.FDB</property>
+				<property name="hibernate.connection.username">admin</property>
+			-->
+			<property name="javax.persistence.validation.mode" value="NONE"/>
+
+			<!-- <property name="hibernate.dialect" value="fr.legrain.gestCom.global.LgrHibernateFirebirdDialect"/>  -->
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+			
+		</properties>
+	</persistence-unit>
+ 
+	<persistence-unit name="careco_AAA" transaction-type="JTA" >
+		<jta-data-source>java:/CarecoAAAMYSQLDS</jta-data-source>
+
+		<class>fr.legrain.careco.aaa.model.VehiculeCacheAAA</class>
+
+		
+		<validation-mode>NONE</validation-mode> 
+		<properties>
+			<property name="javax.persistence.validation.mode" value="NONE"/>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+		</properties>
+	</persistence-unit>
+	
+	<!-- -->
+	<persistence-unit name="careco_import_V1" transaction-type="JTA" >
+		<jta-data-source>java:/CarecoV1MYSQLDS</jta-data-source>
+		
+		<validation-mode>NONE</validation-mode> 
+		<properties>
+			<property name="javax.persistence.validation.mode" value="NONE"/>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+		</properties>
+	</persistence-unit>
+	 
+	 
+	 <!-- -->
+	<persistence-unit name="careco_dump_mc" transaction-type="JTA" >
+		<jta-data-source>java:/CarecoDumpMCMYSQLDS</jta-data-source>
+		
+		<validation-mode>NONE</validation-mode> 
+		<properties>
+			<property name="javax.persistence.validation.mode" value="NONE"/>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+		</properties>
+	</persistence-unit>
+	 
+
+	
+</persistence>

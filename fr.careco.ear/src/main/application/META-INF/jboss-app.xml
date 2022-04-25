@@ -1,0 +1,8 @@
+<jboss-app>
+
+	<security-domain>CarecoRealm</security-domain>
+
+	<loader-repository>
+    fr.careco.ejb.ear.ear:archive=fr.careco.ejb.ear.ear
+  </loader-repository>
+</jboss-app>

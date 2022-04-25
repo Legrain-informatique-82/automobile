@@ -1,0 +1,85 @@
+<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+			<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+			
+			<h:outputText value="Nom : #{auth.user.prenom} #{auth.user.nom}" /><br/>
+			<h:outputText value="Login : #{auth.username}" /><br/>
+			<h:outputText value="Entreprise : #{auth.user.userCompany.nom}" /><br/>
+			<h:outputText value="Role : " />
+			<ui:repeat value="${auth.user.roles}" var="item">
+				<h:outputText value="#{item.userRoles.role}, " />
+			</ui:repeat>
+			<br/>
+			<h:outputText value="Multi site : " />
+			<ui:repeat value="${auth.user.userCompany.idAdherent.multiSite}" var="item">
+				<h:outputText value="#{item.nom}, " />
+			</ui:repeat>
+			<br/>
+			<h:outputText value="Sociétés Amies : " />
+			<ui:repeat value="${auth.user.userCompany.amies}" var="item">
+				<h:outputText value="#{item.societeB.nom}, " />
+			</ui:repeat>
+			<br/>
+					
+			<p:separator/>
+
+			<h:outputText value="Mot de passe actuel " /><br/>
+			<p:password value="#{monCompteBean.motDePasseActuel}"/><br/>
+			
+			<h:outputText value="Nouveau mot de passe" /><br/>
+			<p:password id="pwd1" value="#{monCompteBean.nouveauMotDePasse}" feedback="true" weakLabel="Sécurité faible"  
+                        promptLabel="Veuillez saisir votre nouveau mot de passe" goodLabel="Sécurité correcte" strongLabel="Sécurité forte" match="pwd2"/><br/>
+			
+			<h:outputText value="Confirmation du mot de passe" /><br/>
+			<p:password id="pwd2" value="#{monCompteBean.confirmationMotDePasse}" /><br/>
+
+			<p:commandButton value="Mettre à jour mon mot de passe"
+				actionListener="#{monCompteBean.changeMotDePasse}"
+				update=":form:growl">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir modifier votre mot de passe ? Si vous continuez vous serez déconnecté. Vous devrez vous reconnecté avec votre nouveau mot de passe" icon="ui-icon-alert" />  
+			</p:commandButton>
+			<br/>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

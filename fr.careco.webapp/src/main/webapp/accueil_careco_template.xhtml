@@ -1,0 +1,1683 @@
+<ui:composition template="./index_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+	
+	<ui:define name="panier_dyn">
+		<ui:include src="/panier_careco_dyn.xhtml" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	    
+	    function handleMessage(msg) {
+			msg.severity = 'info';
+			PF('growl').show([msg]);
+		}
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+			<!-- false pour le selector du CSS -->
+			<!--  
+			<ui:debug hotkey="y"/>
+			-->
+
+			<p:socket onMessage="handleMessage" channel="/notifications" />
+			
+			<p:growl id="growl" showDetail="true" widgetVar="growl" />
+						
+			<!--  
+			<p:notificationBar id="id_notificationBar" position="top" effect="slide" widgetVar="notificationBar" styleClass="top">  
+    			<h:outputText value="aaa" />  
+    			<p:commandButton value="Hide" onclick="notificationBar.hide()" type="button" /> 
+			</p:notificationBar>  
+  
+  			
+			<p:commandButton value="Show" onclick="notificationBar.show()" type="button" />  
+		  	-->
+
+
+			<p:dashboard id="board" model="#{dashboardBean.model}">
+				<p:ajax event="reorder" listener="#{dashboardBean.handleReorder}"
+					update="growl" />
+
+				<p:panel id="id_recherche" header="Lancer une recherche ..."
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel3">
+					<p:accordionPanel id="id_accordion_recherche">
+						<p:tab title="Recherche avec les éléments de la carte grise">
+						
+							<p:messages styleClass="errors" autoUpdate="true" showDetail="true" showSummary="true"/>
+							
+							<div id="id_immatriculation" class="immatriculation">
+								<h:inputText value="#{rechercheCarteGriseBean.immatriculation}"
+									style="font-size: 2em;">
+									<p:ajax event="blur"
+										listener="#{rechercheCarteGriseBean.lastFocused}">
+										<f:setPropertyActionListener
+											target="#{rechercheCarteGriseBean.typeRecherche}" value="1" />
+									</p:ajax>
+								</h:inputText>
+
+								<p:ajaxStatus styleClass="ajax_status_immatriculation">
+									<f:facet name="error">
+										<p:graphicImage library="css_careco" name="images/led_red.gif" height="16" title="Error"/>
+									</f:facet>
+									<f:facet name="success">
+										<p:graphicImage library="css_careco" name="images/led_green.gif" height="16" title="Success"/>
+									</f:facet>
+									<f:facet name="default">
+										<p:graphicImage library="css_careco" name="images/led_green.gif" height="16" title="Idle"/>
+									</f:facet>
+									<f:facet name="start">
+										<p:graphicImage library="css_careco" name="images/led_yellow.gif" height="16" title="Sending"/>
+									</f:facet>
+									<f:facet name="complete">
+										<p:graphicImage library="css_careco" name="images/led_green.gif" height="16" title="Done"/>
+									</f:facet>
+								</p:ajaxStatus>
+							</div>
+
+							<!--  <h:form id="id_form_recherche_cartegrise"> -->
+							<h:panelGrid columns="3">
+
+<!--
+								<h:outputText value="Immatriculation cache pour TEST" />
+
+  
+								<p:autoComplete minQueryLength="2"
+									value="#{rechercheCarteGriseBean.immatriculationTest}"
+									completeMethod="#{devBean.autoCompleteImmatCache}" />
+								<p:commandButton value="Recherche"
+								update=":form:id_complements,:form:id_resultat"
+								actionListener="#{rechercheCarteGriseBean.recherche}" />
+-->
+
+								<h:outputText value="VIN" />
+
+								<p:autoComplete value="#{rechercheCarteGriseBean.vin}" minQueryLength="3" style="width:100%"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteVIN}">
+									<p:ajax event="blur"
+										listener="#{rechercheCarteGriseBean.lastFocused}">
+										<f:setPropertyActionListener
+											target="#{rechercheCarteGriseBean.typeRecherche}" value="2" />
+									</p:ajax>
+								</p:autoComplete>
+								
+								<p:commandButton value="Recherche"
+									update=":form:id_complements,:form:id_resultat"
+									actionListener="#{rechercheCarteGriseBean.rechercheVIN}" />
+
+								<h:outputText value="CNIT" />
+
+								<p:autoComplete value="#{rechercheCarteGriseBean.cnit}" minQueryLength="3" style="width:100%"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteCNIT}" />
+									
+								<p:commandButton value="Recherche"
+									update=":form:id_complements,:form:id_resultat"
+									actionListener="#{rechercheCarteGriseBean.rechercheCNIT}" />
+
+								<h:outputText value="N° Livre de Police" />
+
+								<p:autoComplete minQueryLength="2" style="width:100%"
+									value="#{rechercheCarteGriseBean.numLivrePolice}"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteLivrePolice}" />
+								
+								<p:commandButton value="Recherche"
+								update=":form:id_complements,:form:id_resultat"
+								actionListener="#{rechercheCarteGriseBean.rechercheLivrePolice}" />
+
+							</h:panelGrid>
+
+							<p:commandButton value="Interroger le stock électronique"
+								id="recherche_cartegrise_ajax"
+								update=":form:id_complements,:form:id_resultat, :form:growl"
+								actionListener="#{rechercheCarteGriseBean.recherche}"
+								styleClass="ui-priority-primary" >
+								<!-- 
+								<f:actionListener binding="#{panierBean.cherchePanierActionListener}">
+									<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+								</f:actionListener>
+								 -->
+							</p:commandButton>
+
+						</p:tab>
+						
+						<p:tab title="Recherche par marque" disabled="true"><!-- disabled="true" -->
+							<h:panelGrid>
+								<p:row>
+									<p:column>
+										<h:outputText value="Recherche de pièce" />
+									</p:column>
+									<p:column>
+										<p:selectOneRadio
+											value="#{rechercheCarteGriseBean.typeRechercheMarque}">
+											<f:selectItem itemLabel="Moteurs et Boite" itemValue="1" />
+											<f:selectItem itemLabel="Moteurs" itemValue="2" />
+											<f:selectItem itemLabel="Boites à vitesse" itemValue="3" />
+										</p:selectOneRadio>
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column>
+										<h:outputText value="Marque modèle" />
+									</p:column>
+									<p:column>
+									
+										<p:selectOneMenu value="#{rechercheCarteGriseBean.marque}" filter="true">
+											<f:selectItem itemLabel="Marque" noSelectionOption="true"/>
+											<f:selectItems value="#{rechercheCarteGriseBean.marques}" />
+											<p:ajax update="id_liste_modele"
+												listener="#{rechercheCarteGriseBean.updateModeleFromMarque}" />
+											
+										</p:selectOneMenu>
+										<p:selectOneMenu id="id_liste_modele"
+											value="#{rechercheCarteGriseBean.modele}" filter="true">
+											<f:selectItem itemLabel="Modèle" noSelectionOption="true" />
+											<f:selectItems value="#{rechercheCarteGriseBean.modeles}" />
+										</p:selectOneMenu>
+										
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column>
+										<h:outputText value="Année" />
+									</p:column>
+									<p:column>
+										<p:selectOneMenu value="#{rechercheCarteGriseBean.anneeMin}" noSelectionOption="true">
+											<f:selectItem itemLabel="Année min" itemValue="" />
+											<f:selectItems value="#{rechercheCarteGriseBean.annees}" />
+										</p:selectOneMenu>
+										<p:selectOneMenu value="#{rechercheCarteGriseBean.anneeMax}" noSelectionOption="true">
+											<f:selectItem itemLabel="Année max" itemValue="" />
+											<f:selectItems value="#{rechercheCarteGriseBean.annees}" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:row>
+							</h:panelGrid>
+							<p:commandButton value="Interroger le stock électronique"
+								onsuccess="PF('dialogPanierWidget').show()"
+								actionListener="#{rechercheCarteGriseBean.rechercheParModele}"
+								update=":form:growl" />
+						</p:tab>
+						<p:tab title="Recherche par référence de la pièce">
+							<h:panelGrid columns="3" cellpadding="10">
+							
+								<h:outputText value="Type moteur" />
+								<p:autoComplete value="#{rechercheCarteGriseBean.typeMoteur}" style="width:100%"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteTypeMoteur}" />
+								<p:commandButton value="Recherche moteur"
+									update=":form:id_complements,:form:id_resultat"
+									actionListener="#{rechercheCarteGriseBean.rechercheMoteur}" />
+								
+								<h:outputText value="Type boite" />
+								<p:autoComplete value="#{rechercheCarteGriseBean.typeBoite}" style="width:100%"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteTypeBoite}" />
+								<p:commandButton value="Recherche boite"
+									update=":form:id_complements,:form:id_resultat"
+									actionListener="#{rechercheCarteGriseBean.rechercheBoite}" />
+
+								<h:outputText value="Nom du casier" />
+								<p:autoComplete value="#{rechercheCarteGriseBean.casier}" style="width:100%"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteCasier}" />
+								<p:commandButton value="Recherche casier"
+									update=":form:id_complements,:form:id_resultat"
+									actionListener="#{rechercheCarteGriseBean.rechercheCasier}" />
+									
+							</h:panelGrid>
+							<p:accordionPanel rendered="false">
+								<p:tab title="Précision kilométrique" disabled="true">
+									<h:inputText id="kms_debut"
+										value="#{rechercheCarteGriseBean.kmsMin}" />
+									<h:inputText id="kms_fin"
+										value="#{rechercheCarteGriseBean.kmsMax}" />
+
+									<!-- 
+									<p:slider for="kms_debut,kms_fin" display="displayRange"
+											range="true" minValue="0" maxValue="500000" 
+											displayTemplate="Between {min} and {max}" />
+									 -->
+								</p:tab>
+								<p:tab title="Autres critères pour votre recherche" disabled="true">
+									<h:outputText value="Autres critères ..." />
+								</p:tab>
+							</p:accordionPanel>
+							<p:commandButton value="Rechercher les pièces"
+								actionListener="#{rechercheCarteGriseBean.recherchePiece}"
+								update=":form:growl" />
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+
+				<p:panel id="id_complements"
+					header="Compléments d'information tete haute du véhicule : #{rechercheCarteGriseBean.rv.infosAAA != null ? rechercheCarteGriseBean.immatriculation : ''}"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel1">
+					<p:ajax event="close" listener="#{panelBean.handleClose}"
+						update="growl" />
+					<p:ajax event="toggle" listener="#{panelBean.handleToggle}"
+						update="growl" />
+
+					<p:tabView id="tabView">
+
+						<p:tab id="tab_info_AAA" title="info-AAA" rendered="#{rechercheCarteGriseBean.rv.infosAAA != null}">
+
+							<h:outputText value="Marque: " styleClass="infosAAARed" />
+							<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.marque}" />
+							<br />
+
+							<h:outputText value="Modèle redressé APRF: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.modele_Etude}" />
+							<br />
+							<h:outputText value="Version: " styleClass="infosAAARed" />
+							<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.version}" />
+							<br />
+							<h:outputText value="Energie: " styleClass="infosAAARed" />
+							<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.energie}" />
+							<br />
+							<h:outputText value="Date de première circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Jour}/#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Mois}/#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Annee}" />
+							<br />
+							<!--  
+							<h:outputText value="Premier mois de circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Mois}" />
+							<br />
+							<h:outputText value="Jour de première circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Jour}" />
+							<br />
+							-->
+							<h:outputText value="Présence de turbo: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.turbo_Compr}" />
+							<br />
+							<h:outputText value="Nb soupapes: " styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Soupapes}" />
+							<br />
+							<h:outputText value="Type boîte de vitesses: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.tp_Boite_Vit}" />
+							<br />
+							<h:outputText
+								value="Codification précise du véhicule selon la codification du VIN: "
+								styleClass="infosAAAGreen" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.codif_Vin_Pref}" />
+							<br />
+							<h:outputText value="Code moteur: " styleClass="infosAAAGreen" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.code_Moteur}" />
+							<br />
+							<h:outputText value="Type CNIT ou Mine: "
+								styleClass="infosAAARed" />
+							<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.type}" />
+							<br />
+							<h:outputText value="Nb cylindres: " styleClass="infosAAARed" />
+							<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Cylind}" />
+							<br />
+							<h:outputText value="Cylindrée: " styleClass="infosAAARed" />
+							<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.cylindree}" /><br />
+
+							<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500"
+								collapsed="true">
+								
+								<h:outputText value="Immatriculation: " styleClass="infosAAAGreen" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.immat_SIV}" /><br />
+							
+								<h:outputText value="Nb vitesses: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Vitesse}" /><br />
+								
+								<h:outputText value="Mode injection: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.mode_Inject}" /><br />
+								
+								<h:outputText value="Type boîte de vitesses: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.tp_Boite_Vit}" /><br />
+								
+								<h:outputText value="Genre: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.genre}" /><br />
+								
+								<h:outputText value="Genre VCg: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.genre_V_CG}" /><br />
+								
+								<h:outputText value="Modèle de la carte grise: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.modele}" /><br />
+								
+								<h:outputText value="Codification précise du véhicule selon la codification du VIN: " styleClass="infosAAAGreen" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.codif_Vin_Pref}" /><br />
+								
+								<h:outputText value="Code moteur: " styleClass="infosAAAGreen" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.code_Moteur}" /><br />
+								
+								<h:outputText value="Poids à vide: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.poids_Vide}" /><br />
+								
+								<h:outputText value="Numéro de série: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.n_Serie}" /><br />
+								
+								<h:outputText value="Propulsion: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.propulsion}" /><br />
+								
+								<h:outputText value="Type VIN: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.type_Vin_Cg}" /><br />
+								
+								<h:outputText value="Modèle d'usage commun: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.modele_Etude}" /><br />
+								
+								<h:outputText value="Emissions de CO2 en g par km: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.CO2}" /><br />
+								
+								<br />
+								<h:outputText value="Libellé Carrosserie: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.carrosserie}" /><br />
+								
+								<h:outputText value="Couleur: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.couleur_Vehic}" /><br />
+								
+								<h:outputText value="Carrosserie CG: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.carrosserie_CG}" /><br />
+								
+								<h:outputText value="Nb places assises ou charge utile: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Pl_Ass}" /><br />
+								
+								<h:outputText value="Poids: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.ptr}" /><br />
+								
+								<h:outputText value="Poids total roulant tel qu'indiqué sur la CG: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.ptr_Prf}" /><br />
+								
+								<h:outputText value="Empattement: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.empat}" /><br />
+								
+								<h:outputText value="Dispositif de dépollution: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.depollution}" /><br />
+								
+								<h:outputText value="Marque de la carrosserie du véhicule: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.marque_Carros}" /><br />
+								
+								<h:outputText value="Marque: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.marque}" /><br />
+								
+								<h:outputText value="Modèle redressé APRF: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.modele_Prf}" /><br />
+								
+								<h:outputText value="Version: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.version}" /><br />
+								
+								<h:outputText value="Nb portes: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Portes}" /><br />
+								
+								<h:outputText value="Energie: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.energie}" /><br />
+								
+								<h:outputText value="Nb volumes: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Volumes}" /><br />
+								
+								<br />
+								<h:outputText value="Largeur: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.largeur}" /><br />
+								
+								<h:outputText value="Hauteur: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.hauteur}" /><br />
+								
+								<h:outputText value="Nb cylindres: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Cylind}" /><br />
+								
+								<h:outputText value="Cylindrée: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.cylindree}" /><br />
+								
+								<h:outputText value="Date de première circulation: " styleClass="infosAAARed" />
+								<h:outputText
+								value="#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Jour}/#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Mois}/#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Annee}" /><br />
+								<!--  
+								<h:outputText value="Premier mois de circulation: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Mois}" /><br />
+								
+								<h:outputText value="Jour de première circulation: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Jour}" /><br />
+								-->
+								
+								<h:outputText value="Date Dcg: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.date_Dcg_Jour}/#{rechercheCarteGriseBean.rv.infosAAA.date_Dcg_Mois}/#{rechercheCarteGriseBean.rv.infosAAA.date_Dcg_Annee}" /><br />
+								<!-- 
+								<h:outputText value="Date Dcg mois: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.date_Dcg_Mois}" /><br />
+								
+								<h:outputText value="Date Dcg jour: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.date_Dcg_Jour}" /><br />
+								 -->
+								 
+								<h:outputText value="Puissance réelle en chevaux vapeur: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.puis_Ch}" /><br />
+								
+								<h:outputText value="Puissance fiscale en chevaux fiscaux: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.puis_Fisc}" /><br />
+								
+								<h:outputText value="Présence de turbo: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.turbo_Compr}" /><br />
+								
+								<h:outputText value="Nb soupapes: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.nb_Soupapes}" /><br />
+								
+								<h:outputText value="Longueur: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.longueur}" /><br />
+								
+								<h:outputText value="Type CNIT ou Mine: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.type}" /><br />
+
+<!--  	
+
+								<br />
+								<h:outputText value="Consommation en zone urbaine: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.cons_Urb}" /><br />
+								
+								<h:outputText value="Consommation dans les conditions de circulation générale: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.cons_Mixte}" /><br />
+								
+								<h:outputText value="Consommation du véhicule en zone urbanisée: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.cons_Exurb}" /><br />
+								
+								<h:outputText value="SIREN (Système d’identification du répertoire des entreprises): " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.siren}" /><br />
+					
+								<h:outputText value="Type Variante Version: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.type_Var_Ver_Prf}" /><br />
+								
+								<h:outputText value="Prix catalogue des véhicules (T.T.C. de base sans options), issu du fichier de l'Argus: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.prix_Vehic}" /><br />
+								
+								<h:outputText value="Puissance du véhicule exprimée en KW : " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.puis_Kw}" /><br />
+								
+								<h:outputText value="Montes de pneus compatibles: " styleClass="infosAAARed" />
+								<h:outputText value="#{rechercheCarteGriseBean.rv.infosAAA.pneu}" /><br />
+-->
+
+							</p:fieldset>
+						</p:tab>
+						
+						<p:tab id="tab_contact" title="Contact" rendered="#{panierBean.selectedPanierActifAccueil!=null}">
+					
+							<h:outputText value="Nom : " styleClass="infosAAABleu" />
+							<!-- <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.nom}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.nom}"/>
+							</p:inplace>
+							<br />
+							<h:outputText value="Prénom : " styleClass="infosAAABleu" />
+							<!-- <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.prenom}" />  -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.prenom}"/>
+							</p:inplace>
+							<br />
+							<h:outputText value="Société : " styleClass="infosAAABleu" />
+							<!--  <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.societe}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.societe}"/>
+							</p:inplace>
+							<br />
+							<br />
+							<h:outputText value="Téléphone fixe : " styleClass="infosAAABleu" />
+							<!-- <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.telephoneFixe}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.telephoneFixe}"/>
+							</p:inplace>
+							<h:outputText value=" ( #{panierBean.selectedPanierActifAccueil.client.commentaireTelFixe} )" />
+							<br />
+							<h:outputText value="Téléphone portable : " styleClass="infosAAABleu" />
+							<!-- <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.telephonePortable}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.telephonePortable}"/>
+							</p:inplace>
+							<h:outputText value=" ( #{panierBean.selectedPanierActifAccueil.client.commentairePortable} )" />
+							<br />
+							<h:outputText value="Fax : " styleClass="infosAAABleu" />
+							<!--  <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.fax}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.fax}"/>
+							</p:inplace>
+							<br />
+							<br />
+							<h:outputText value="Immatriculation : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.immatriculation}" />
+							<br />
+							<!-- 
+							<h:outputText value="VIN : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.codif_Vin_Pref}" />
+							<br />
+							<h:outputText value="CNIT : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.type}" />
+							<br />
+							<h:outputText value="Date 1er MC : " styleClass="infosAAABleu" />
+							<h:outputText
+								value="#{panierBean.rvClient.infosAAA.date_1er_Cir_Jour}/#{panierBean.rvClient.infosAAA.date_1er_Cir_Mois}/#{panierBean.rvClient.infosAAA.date_1er_Cir_Annee}" />
+							<br />
+							<h:outputText value="TM : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.tp_Boite_Vit}" />
+							<br />
+							<h:outputText value="RBV : " styleClass="infosAAABleu" />
+							<h:outputText value="#{panierBean.rvClient.infosAAA.nb_Vitesse}" />
+							<br />
+							-->
+							<br />
+							<h:outputText value="N° carte client : " styleClass="infosAAABleu" />
+							<!--  <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.numCarteClient}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.numCarteClient}"/>
+							</p:inplace>
+							<br />
+							<h:outputText value="N° compte client : " styleClass="infosAAABleu" />
+							<!--  <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.numCompteClient}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.numCompteClient}"/>
+							</p:inplace>
+							<br />
+							<br />
+
+							<h:outputText value="Email : " styleClass="infosAAABleu" />
+							<!--  <h:outputText value="#{panierBean.selectedPanierActifAccueil.client.email}" /> -->
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+								<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" update=":form:growl, :id_form_cart" />
+								<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.email}"/>
+							</p:inplace>
+							<br />
+
+							<p:panel header="Adresses" toggleable="true" toggleSpeed="500"
+								closeSpeed="500">
+								<p:tabView>
+									<p:tab title="Facturation" titleStyleClass="vert">
+										<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+											<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" />
+											<f:facet name="output">
+												<h:outputText value="N.C." rendered="#{panierBean.selectedPanierActifAccueil.client.codePostalFacturation == null or panierBean.selectedPanierActifAccueil.client.codePostalFacturation == ''}"/>
+												
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresseFacturation}" /><br/>
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresse2Facturation}" /><br/>
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.codePostalFacturation}" />
+												<h:outputText value=" #{panierBean.selectedPanierActifAccueil.client.villeFacturation}" /><br/>
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.paysFacturation}" />
+											</f:facet>
+											<f:facet name="input">
+												<h:outputText value="Adresse 1" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.adresseFacturation}" />
+												<h:outputText value="Adresse 2" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.adresse2Facturation}" />
+												<h:outputText value="Code postal" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.codePostalFacturation}" />
+												<h:outputText value="Ville" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.villeFacturation}" />
+												<h:outputText value="Pays" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.paysFacturation}" />
+											</f:facet>
+										</p:inplace>
+										<!--  
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresseFacturation}" /><br/>
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresse2Facturation}" /><br/>
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.codePostalFacturation}" />
+										<h:outputText value=" #{panierBean.selectedPanierActifAccueil.client.villeFacturation}" /><br/>
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.paysFacturation}" />
+										-->
+									</p:tab>
+									<p:tab title="Livraison" titleStyleClass="bleu">
+										<p:inplace editor="true" emptyLabel="N.C." event="dblclick" >
+											<p:ajax event="save" listener="#{panierBean.enregistreModificationPanierAccueil}" />
+											<f:facet name="output">
+												<h:outputText value="N.C." rendered="#{panierBean.selectedPanierActifAccueil.client.codePostalLivraison == null or panierBean.selectedPanierActifAccueil.client.codePostalLivraison == ''}"/>
+												
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresseLivraison}" /><br/>
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresse2Livraison}" /><br/>
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.codePostalLivraison}" />
+												<h:outputText value=" #{panierBean.selectedPanierActifAccueil.client.villeLivraison}" /><br/>
+												<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.paysLivraison}" />
+											</f:facet>
+											<f:facet name="input">
+												<h:outputText value="Adresse 1" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.adresseLivraison}" />
+												<h:outputText value="Adresse 2" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.adresse2Livraison}" />
+												<h:outputText value="Code postal" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.codePostalLivraison}" />
+												<h:outputText value="Ville" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.villeLivraison}" />
+												<h:outputText value="Pays" />
+												<h:inputText value="#{panierBean.selectedPanierActifAccueil.client.paysLivraison}" />
+											</f:facet>
+										</p:inplace>
+										<!--  
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresseLivraison}" /><br/>
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.adresse2Livraison}" /><br/>
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.codePostalLivraison}" />
+										<h:outputText value=" #{panierBean.selectedPanierActifAccueil.client.villeLivraison}" /><br/>
+										<h:outputText value="#{panierBean.selectedPanierActifAccueil.client.paysLivraison}" />
+										-->
+									</p:tab>
+								</p:tabView>
+							</p:panel>			
+							
+						</p:tab>
+
+					</p:tabView>
+
+					<p:accordionPanel
+						rendered="#{rechercheCarteGriseBean.rv.infosAAA != null}">
+
+						<p:tab>
+
+							<p:tabView id="tabViewAstuceMoteur" var="moteur"
+								value="#{rechercheCarteGriseBean.rv.tabsAstuceMoteur}">
+								<p:tab title="#{moteur.typeMoteur}"
+									titleStyleClass="#{!moteur.compatible ? 'vert' : 'jaune'}">
+									
+									<h:outputText value="#{moteur.commentaire}" escape="false" />
+									<br />
+									<br />
+									<p:commandButton value="Ajouter une astuce pour ce moteur : #{moteur.typeMoteur}-CNIT(#{rechercheCarteGriseBean.rv.infosAAA.type}-#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Annee})" styleClass="bleu"/>
+									<br />
+									<p:commandButton value="Stock de #{moteur.typeMoteur}"
+										onclick="window.open('#{request.contextPath}/stock_une_ref_careco_template.xhtml?parameter=#{moteur.typeMoteur}')"/>
+									<br/>
+									 
+									<h:outputText value="#{moteur.compatMoteurClub}" rendered="#{not empty moteur.compatMoteurClub}" styleClass="bleu"/>
+
+								</p:tab>
+							</p:tabView>
+
+							<f:facet name="title">
+								<!-- surcharge du title du tab pour ajouter l'image -->
+								<h:graphicImage library="images" name="btn-moteur.png"
+									width="30" height="25" />
+								<h:outputText
+									value="Astuce moteur du CNIT #{rechercheCarteGriseBean.rv.infosAAA.type} de #{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Mois}/#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Annee}" />
+							</f:facet>
+
+						</p:tab>
+
+						<p:tab>
+							<p:tabView id="tabViewAstuceBoite" var="boite"
+								value="#{rechercheCarteGriseBean.rv.tabsAstuceBoite}">
+								<p:tab title="#{boite.refBoite}"
+									titleStyleClass="#{!boite.compatible ? 'vert' : 'jaune'}">
+
+									<h:outputText value="#{boite.commentaire}" escape="false" />
+									<br />
+									<p:commandButton value="Ajouter une astuce pour cette boite" styleClass="bleu"/>
+									<br />
+									<p:commandButton value="Stock de #{boite.refBoite}"
+									onclick="window.open('#{request.contextPath}/stock_une_ref_careco_template.xhtml?parameter=#{boite.refBoite}')"/>
+									<br />
+					
+									<h:outputText value="#{boite.compatMoteurClub}" rendered="#{not empty boite.compatMoteurClub}" styleClass="bleu"/>
+
+								</p:tab>
+							</p:tabView>
+
+							<f:facet name="title">
+								<!-- surcharge du title du tab pour ajouter l'image -->
+								<h:graphicImage library="images" name="btn-boite-vitesses.png"
+									width="30" height="25" />
+								<h:outputText
+									value="Astuce boite de vitesse du CNIT #{rechercheCarteGriseBean.rv.infosAAA.type} de #{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Mois}/#{rechercheCarteGriseBean.rv.infosAAA.date_1er_Cir_Annee}" />
+							</f:facet>
+						</p:tab>
+						
+						<p:tab>
+							<p:tabView id="tabViewAstucePneu">
+								<p:tab title="Pneu">
+									<p:dataTable var="ligneResultat" resizableColumns="true"
+									value="#{rechercheCarteGriseBean.rv.infosAAA.findListeDimensionPneu()}">
+
+											<p:column>
+												<f:facet name="header">
+												<h:outputText value="Dimension" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.dimensionComplete}" />
+											</p:column>
+											
+																<p:column>
+												<f:facet name="header">
+												<h:outputText value="Largeur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.largeur}" />
+											</p:column>
+											
+																			<p:column>
+												<f:facet name="header">
+												<h:outputText value="Hauteur" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.hauteur}" />
+											</p:column>
+											
+																<p:column>
+												<f:facet name="header">
+												<h:outputText value="Strucuture du pneu" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.strucutureDuPneu}" />
+											</p:column>
+								
+											<p:column>
+												<f:facet name="header">
+												<h:outputText value="Diametre" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.diametre}" />
+											</p:column>
+											
+																	<p:column>
+												<f:facet name="header">
+												<h:outputText value="Indice de charge" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.indiceCharge}" />
+											</p:column>
+											
+																	<p:column>
+												<f:facet name="header">
+												<h:outputText value="Indice de vitesse" />
+											</f:facet>
+											<h:outputText value="#{ligneResultat.indiceVitesse}" />
+											</p:column>
+									</p:dataTable>
+									
+								</p:tab>
+							</p:tabView>
+
+							<f:facet name="title">
+								<!-- surcharge du title du tab pour ajouter l'image -->
+								<h:graphicImage library="images" name="bouton/btn-roues.png"
+									width="30" height="25" />
+								<h:outputText
+									value="Montage Pneus Homologués" />
+							</f:facet>
+						</p:tab>
+					</p:accordionPanel>
+
+				</p:panel>
+
+				<p:panel id="id_boite_mail" header="Boite Mail" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="panel2">
+					<p:commandLink action="/messages_careco_template.xhtml">
+						<h:outputText value="Boite mail" rendered="#{messageBean.getNbNouveauMessage() == null or messageBean.getNbNouveauMessage() == 0}"/>
+						<h:outputText value="Boite mail (#{messageBean.getNbNouveauMessage()})" rendered="#{messageBean.getNbNouveauMessage() != null and  messageBean.getNbNouveauMessage() != 0}"/>
+					</p:commandLink>
+				</p:panel>
+
+				<p:panel id="id_carnet_adresse" header="Carnet d'adresses ITcar"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel2d">
+					<h:outputText value="Nom ou société " />
+					<p:autoComplete value="#{rechercheCarteGriseBean.annuaire}" style="width:100%"
+						completeMethod="#{rechercheCarteGriseBean.autoCompleteAnnuaire}" />
+				</p:panel>
+
+				<p:panel id="id_mon_compte" header="Mon compte" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="pane5">
+					<h:outputText value="Bonjour : #{auth.user.prenom} #{auth.user.nom} (#{auth.username})" /><br/>
+					<h:outputText value="Entreprise : #{auth.user.userCompany.nom}" />
+				</p:panel>
+
+				<p:panel id="id_mes_achats" header="Mes achats" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="pane6">
+					<p:commandLink action="/mes_achats_careco_template.xhtml">
+						<h:outputText value="Mes achats" rendered="#{achatBean.nbAchatsEnCours == null}"/>
+						<h:outputText value="Mes achats (#{achatBean.nbAchatsEnCours})" rendered="#{achatBean.nbAchatsEnCours != null}"/>
+					</p:commandLink>
+				</p:panel>
+
+				<p:panel id="id_mes_ventes" header="Mes ventes" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="pane7">
+					<p:commandLink action="/mes_ventes_careco_template.xhtml">
+						<h:outputText value="Mes ventes" rendered="#{venteBean.nbVentesEnCours == null}"/>
+						<h:outputText value="Mes ventes (#{venteBean.nbVentesEnCours})" rendered="#{venteBean.nbVentesEnCours != null}"/>
+					</p:commandLink>
+				</p:panel>
+				
+				<p:panel id="id_detail_panier_actif" header="Panier actif" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="pane8" >
+					<p:commandButton value="Choisir un panier" oncomplete="PF('dialogPanierWidget').show()" 
+						process="@this" update=":form:growl, :form:id_dialogPanierWidget, :id_form_cart">	
+					</p:commandButton> <br/>
+					<h:outputText value="Panier N° #{panierBean.selectedPanierActifAccueil.id}" /><br />
+					<h:outputText value="Client : #{panierBean.selectedPanierActifAccueil.client.nom} #{panierBean.selectedPanierActifAccueil.client.prenom}" /><br />
+					<h:outputText value="Date panier : "/>
+					<h:outputText value="#{panierBean.selectedPanierActifAccueil.datePanier}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText><br />
+					<h:outputText value="Immat : #{panierBean.selectedPanierActifAccueil.client.immatriculation}" /><br />
+					<h:outputText value="Vendeur : #{panierBean.selectedPanierActifAccueil.vendeur.nom} #{panierBean.selectedPanierActifAccueil.vendeur.prenom}" /><br />
+					<h:outputText value="Nombre de pièce dans le panier : #{panierBean.selectedPanierActifAccueil.nbPiece}" /><br />
+					<h:outputText value="Prix HT : #{panierBean.selectedPanierActifAccueil.prixHT}" />
+				</p:panel>
+
+			</p:dashboard>
+
+			<p:dashboard id="board2" model="#{dashboardResultBean.model}">
+
+
+				<!--  
+				<p:panel id="id_resultat_vendeur_pro"
+					header="Résultats de la recherche" toggleable="true"
+					toggleSpeed="500" closeSpeed="500" widgetVar="panel3p9"
+					rendered="#{auth.hasRole('utilisateur')}">
+					<p:accordionPanel id="main_panel_result_vendeur_pro"
+						rendered="#{rechercheCarteGriseBean.rv.infosAAA != null}">
+						<p:tab title="Mon stock vendeur pro">
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+-->
+
+				<p:panel id="id_resultat" header="Résultats de la recherche"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel3d">
+
+					<p:accordionPanel id="main_panel_result"
+						rendered="#{
+						(rechercheCarteGriseBean.rv.infosAAA != null) 
+						or (not empty rechercheCarteGriseBean.listeResultatMonStock)
+						or (not empty rechercheCarteGriseBean.listeResultatCarecoNational)
+						}">
+
+						<p:tab title="Mon stock (#{rechercheCarteGriseBean.listeResultatMonStock.size()} pièces)">
+
+							<p:commandButton value="Alerte en cas de disponibilite"
+								styleClass="rouge"
+								actionListener="#{rechercheCarteGriseBean.rechercheWS}"
+								rendered="#{empty rechercheCarteGriseBean.listeResultatMonStock}" />
+
+							<p:dataTable id="dataTableMonStock" var="ligneResultat" resizableColumns="true"
+								value="#{rechercheCarteGriseBean.listeResultatMonStock}"
+								rowKey="#{ligneResultat.id}" paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+								rendered="#{not empty rechercheCarteGriseBean.listeResultatMonStock}">
+								 <!-- lazy="true" bloque le tri -->
+
+								<p:column selectionMode="single" style="width:18px" />
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single" sinon selectionMode="multiple" -->
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur"/>
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}" filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.numLivrePolice}" filterBy="#{ligneResultat.numLivrePolice}">
+									<f:facet name="header">
+										<h:outputText value="Num. Livre Police" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.numLivrePolice}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									<p:commandLink 
+										process="@this" oncomplete="PF('dialogPanierWidget').show()" 
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif, :form:id_dialogPanierWidget" rendered="#{rechercheCarteGriseBean.immatriculation ==null  or rechercheCarteGriseBean.immatriculation==''}">
+										<f:setPropertyActionListener value="#{ligneResultat}" target="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat}" />
+										
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_go.png" title="Choisir un panier" alt="Choisir un panier" height="16"/>
+									</p:commandLink>
+									
+									<p:commandLink 
+										actionListener="#{panierBean.ajoutPanier}"
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif" rendered="#{rechercheCarteGriseBean.immatriculation !=null and rechercheCarteGriseBean.immatriculation!=''}">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+										<f:attribute name="idPanierActif" value="#{panierBean.selectedPanierActifAccueil.id}" />
+
+										<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16"/>
+									</p:commandLink>
+									
+									<p:graphicImage library="famfamfam_icons" name="icons/lock.png.png" title="Transaction en cours" alt="Transaction en cours" height="16" rendered="#{ligneResultat.status == 'transaction'}"/>
+									<p:overlayPanel id="chartPanel2" for="chartBtn2" hideEffect="fade" > <!-- dynamic="true" -->  
+        								<h:outputText value="Pièce N° #{ligneResultat.id}" /><br/>
+        								
+        								<h:outputText value="Cette pièce est présente dans #{panierBean.findNbPanierContientPiece(ligneResultat.id)} panier(s)." /><br/>
+        								<!--  
+        								<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500" collapsed="true">
+        									<p:dataTable var="ligneResultat" resizableColumns="true"
+												value="#{panierBean.findPanierContientPiece(ligneResultat.id)}">
+												<p:column>
+													<f:facet name="header">
+														<h:outputText value="N° panier" />
+													</f:facet>
+													<h:outputText value="#{ligneResultat.id}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+										-->
+									</p:overlayPanel>  
+									
+									<p:commandLink id="chartBtn2">
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_error.png" title="Déjà dans un panier" alt="Déjà dans un panier" height="16" rendered="#{ligneResultat.status == 'panier'}"/>
+									</p:commandLink>
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+								</p:column>
+
+							</p:dataTable>
+						</p:tab>
+
+
+						<p:tab title="Mon stock multi site (#{rechercheCarteGriseBean.listeResultatMultiSiteStock.size()} pièces)">
+
+							<p:dataTable id="dataTableMultiSite" var="ligneResultat" resizableColumns="true"
+								value="#{rechercheCarteGriseBean.listeResultatMultiSiteStock}"
+								rowKey="#{ligneResultat.id}" paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								 <!-- lazy="true" bloque le tri -->
+
+								<p:column selectionMode="single" style="width:18px" />
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single" sinon selectionMode="multiple" -->
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}" filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.vendeur}" filterBy="#{ligneResultat.vendeur}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.vendeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.prixAmi}" filterBy="#{ligneResultat.prixAmi}">
+									<f:facet name="header">
+										<p:graphicImage  library="famfamfam_icons" name="icons/group.png" />
+										<h:outputText value="Prix remisé" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixAmi}" />
+									<!--  
+									<h:outputText value=" (-#{ligneResultat.reductionAmie.pourcentageReduction}%)" />
+									-->
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									<p:commandLink 
+										process="@this" oncomplete="PF('dialogPanierWidget').show()" 
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif, :form:id_dialogPanierWidget" rendered="#{rechercheCarteGriseBean.immatriculation ==null  or rechercheCarteGriseBean.immatriculation==''}">
+										<f:setPropertyActionListener value="#{ligneResultat}" target="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat}" />
+										
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_go.png" title="Choisir un panier" alt="Choisir un panier" height="16"/>
+									</p:commandLink>
+									
+									<p:commandLink 
+										actionListener="#{panierBean.ajoutPanier}"
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif" rendered="#{rechercheCarteGriseBean.immatriculation !=null and rechercheCarteGriseBean.immatriculation!=''}">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<f:attribute name="idSocieteAmieRemise" value="#{ligneResultat.reductionAmie}" />
+										<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+										<f:attribute name="idPanierActif" value="#{panierBean.selectedPanierActifAccueil.id}" />
+
+										<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16"/>
+									</p:commandLink>
+									
+									
+									<p:graphicImage library="famfamfam_icons" name="icons/lock.png" title="Transaction en cours" alt="Transaction en cours" height="16" rendered="#{ligneResultat.status == 'transaction'}"/>
+									
+									<p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" > <!-- dynamic="true" -->  
+        								<h:outputText value="Pièce N° #{ligneResultat.id}" /><br/>
+        								
+        								<h:outputText value="Cette pièce est présente dans #{panierBean.findNbPanierContientPiece(ligneResultat.id)} panier(s)." /><br/>
+        								<!--  
+        								<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500" collapsed="true">
+        									<p:dataTable var="ligneResultat" resizableColumns="true"
+												value="#{panierBean.findPanierContientPiece(ligneResultat.id)}">
+												<p:column>
+													<f:facet name="header">
+														<h:outputText value="N° panier" />
+													</f:facet>
+													<h:outputText value="#{ligneResultat.id}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+										-->
+									</p:overlayPanel>  
+									
+									<p:commandLink id="chartBtn">
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_error.png" title="Déjà dans un panier" alt="Déjà dans un panier" height="16" rendered="#{ligneResultat.status == 'panier'}"/>
+									</p:commandLink>
+									
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+									
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab title="Mon stock amis (#{rechercheCarteGriseBean.listeResultatAmisStock.size()} pièces)">
+
+							<p:dataTable id="dataTableAmie" var="ligneResultat" resizableColumns="true"
+								value="#{rechercheCarteGriseBean.listeResultatAmisStock}"
+								rowKey="#{ligneResultat.id}" paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								 <!-- lazy="true" bloque le tri -->
+								
+								<p:column selectionMode="single" style="width:18px" />
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single" sinon selectionMode="multiple" -->
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}" filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.vendeur}" filterBy="#{ligneResultat.vendeur}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.vendeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+								
+								<p:column sortBy="#{ligneResultat.prixAmi}" filterBy="#{ligneResultat.prixAmi}">
+									<f:facet name="header">
+										<p:graphicImage  library="famfamfam_icons" name="icons/group.png" />
+										<h:outputText value="Prix remisé" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixAmi}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									<p:commandLink 
+										process="@this" oncomplete="PF('dialogPanierWidget').show()" 
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif, :form:id_dialogPanierWidget" rendered="#{rechercheCarteGriseBean.immatriculation ==null  or rechercheCarteGriseBean.immatriculation==''}">
+										<f:setPropertyActionListener value="#{ligneResultat}" target="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat}" />
+										
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_go.png" title="Choisir un panier" alt="Choisir un panier" height="16"/>
+									</p:commandLink>
+									
+									<p:commandLink 
+										actionListener="#{panierBean.ajoutPanier}"
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif" rendered="#{rechercheCarteGriseBean.immatriculation !=null and rechercheCarteGriseBean.immatriculation!=''}">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<f:attribute name="idSocieteAmieRemise" value="#{ligneResultat.reductionAmie}" />
+										<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+										<f:attribute name="idPanierActif" value="#{panierBean.selectedPanierActifAccueil.id}" />
+
+										<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16"/>
+									</p:commandLink>
+									
+									
+									<p:graphicImage library="famfamfam_icons" name="icons/lock.png" title="Transaction en cours" alt="Transaction en cours" height="16" rendered="#{ligneResultat.status == 'transaction'}"/>
+									
+									<p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" > <!-- dynamic="true" -->  
+        								<h:outputText value="Pièce N° #{ligneResultat.id}" /><br/>
+        								
+        								<h:outputText value="Cette pièce est présente dans #{panierBean.findNbPanierContientPiece(ligneResultat.id)} panier(s)." /><br/>
+        								<!--  
+        								<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500" collapsed="true">
+        									<p:dataTable var="ligneResultat" resizableColumns="true"
+												value="#{panierBean.findPanierContientPiece(ligneResultat.id)}">
+												<p:column>
+													<f:facet name="header">
+														<h:outputText value="N° panier" />
+													</f:facet>
+													<h:outputText value="#{ligneResultat.id}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+										-->
+									</p:overlayPanel>  
+									
+									<p:commandLink id="chartBtn">
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_error.png" title="Déjà dans un panier" alt="Déjà dans un panier" height="16" rendered="#{ligneResultat.status == 'panier'}"/>
+									</p:commandLink>
+									
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+									
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+
+						<p:tab title="Stock national ITcar (#{rechercheCarteGriseBean.listeResultatCarecoNational.size()} pièces)">
+
+							<p:dataTable id="dataTable" var="ligneResultat" resizableColumns="true"
+								widgetVar="widgetDataTable"
+								value="#{rechercheCarteGriseBean.listeResultatCarecoNational}"
+								rowKey="#{ligneResultat.id}"
+								selection="#{rechercheCarteGriseBean.selectedElementResultatRechercheStockNationalCareco}"
+								paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								 <!-- lazy="true" bloque le tri -->
+
+								<f:facet name="header">
+									<p:outputPanel>
+										<h:outputText value="Recherche globale :" />
+										<h:inputText id="globalFilter"
+											onkeyup="PF('widgetDataTable').filter()" />
+									</p:outputPanel>
+								</f:facet>
+
+
+								<p:column selectionMode="single" style="width:18px" />
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single" sinon selectionMode="multiple" -->
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}"> <!--style="display:none"-->
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}" filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.vendeur}" filterBy="#{ligneResultat.vendeur}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.vendeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									<p:commandLink 
+										process="@this" oncomplete="PF('dialogPanierWidget').show()" 
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif, :form:id_dialogPanierWidget" rendered="#{rechercheCarteGriseBean.immatriculation ==null  or rechercheCarteGriseBean.immatriculation==''}">
+										<f:setPropertyActionListener value="#{ligneResultat}" target="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat}" />
+										
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_go.png" title="Choisir un panier" alt="Choisir un panier" height="16"/>
+									</p:commandLink>
+									
+									<p:commandLink 
+										actionListener="#{panierBean.ajoutPanier}"
+										update=":form:growl, :id_form_cart, :form:id_detail_panier_actif" rendered="#{rechercheCarteGriseBean.immatriculation !=null and rechercheCarteGriseBean.immatriculation!=''}">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+										<f:attribute name="idPanierActif" value="#{panierBean.selectedPanierActifAccueil.id}" />
+
+										<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16"/>
+									</p:commandLink>
+									
+									
+									<p:graphicImage library="famfamfam_icons" name="icons/lock.png" title="Transaction en cours" alt="Transaction en cours" height="16" rendered="#{ligneResultat.status == 'transaction'}"/>
+									
+									<p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" > <!-- dynamic="true" -->  
+        								<h:outputText value="Pièce N° #{ligneResultat.id}" /><br/>
+        								
+        								<h:outputText value="Cette pièce est présente dans #{panierBean.findNbPanierContientPiece(ligneResultat.id)} panier(s)." /><br/>
+        								<!--  
+        								<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500" collapsed="true">
+        									<p:dataTable var="ligneResultat" resizableColumns="true"
+												value="#{panierBean.findPanierContientPiece(ligneResultat.id)}">
+												<p:column>
+													<f:facet name="header">
+														<h:outputText value="N° panier" />
+													</f:facet>
+													<h:outputText value="#{ligneResultat.id}" />
+												</p:column>
+											</p:dataTable>
+										</p:fieldset>
+										-->
+									</p:overlayPanel>  
+									
+									<p:commandLink id="chartBtn">
+										<p:graphicImage library="famfamfam_icons" name="icons/cart_error.png" title="Déjà dans un panier" alt="Déjà dans un panier" height="16" rendered="#{ligneResultat.status == 'panier'}"/>
+									</p:commandLink>
+									
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+									
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+
+			</p:dashboard>
+			
+			
+			<!-- 
+			appendToBody="true" 
+			modal="true" 
+			 -->
+			<p:dialog id="id_dialogPanierWidget" widgetVar="dialogPanierWidget" 
+				height="350" width="800" 
+				closable="true"
+				header="Recherche sans immatriculation, veuillez choisir un panier actif ou en créé un nouveau">
+				
+				<div style="width:780px">
+					<p:commandButton value="Nouveau panier vide" oncomplete="PF('dialogPanierWidget').show()" 
+						actionListener="#{panierBean.nouveauPanierVide}" update=":form:growl, :form:id_dialogPanierWidget, :id_form_cart">
+					</p:commandButton>
+					<!--  
+					<h:outputText value="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.id}" />
+					-->
+					
+					<p:commandButton value="Valider la mise en panier de la pièce #{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.id}"
+						actionListener="#{panierBean.ajoutPanier}"
+						oncomplete="PF('dialogPanierWidget').hide()"
+						rendered="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat!=null}"
+						update=":form:growl, :id_form_cart, :form:id_detail_panier_actif">
+						<f:attribute name="idPiece" value="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.id}" />
+						<f:attribute name="idSocieteAmieRemise" value="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.reductionAmie}" />
+						<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+						<f:attribute name="idPanierActif" value="#{panierBean.selectedPanierActifAccueil.id}" />
+						<!--  
+						<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16" />
+						-->
+					</p:commandButton>
+										
+					<h:outputText value="" /><br/><br/>
+					<ui:include src="/tables_panier_careco_dyn.xhtml">
+						<ui:param name="tagLine" value="_dialog" />
+					</ui:include>
+					
+					<p:commandButton value="Valider" oncomplete="PF('dialogPanierWidget').hide()" update=":id_form_cart" rendered="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat==null}"/>
+				
+					<br/>
+					<p:commandButton value="Valider la mise en panier de la pièce #{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.id}"
+						actionListener="#{panierBean.ajoutPanier}"
+						oncomplete="PF('dialogPanierWidget').hide()"
+						rendered="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat!=null}"
+						update=":form:growl, :id_form_cart, :form:id_detail_panier_actif">
+						<f:attribute name="idPiece" value="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.id}" />
+						<f:attribute name="idSocieteAmieRemise" value="#{rechercheCarteGriseBean.pieceSelectionPourPanierSansImmat.reductionAmie}" />
+						<f:attribute name="immatRecherche" value="#{rechercheCarteGriseBean.immatriculation}" />
+						<f:attribute name="idPanierActif" value="#{panierBean.selectedPanierActifAccueil.id}" />
+						<!--  
+						<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16" />
+						-->
+					</p:commandButton>
+				</div>
+				
+			</p:dialog>
+			 
+	 
+			<p:defaultCommand target=":form:id_accordion_recherche:recherche_cartegrise_ajax" />
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

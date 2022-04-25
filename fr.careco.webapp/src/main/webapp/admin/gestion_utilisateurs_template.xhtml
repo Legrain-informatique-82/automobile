@@ -1,0 +1,274 @@
+<ui:composition template="./index_admin_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="title">
+        Gestion des utilisateurs
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newUserDialog.hide(); 
+	            userDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<h:form id="form">
+		
+		<p:growl id="growl" showDetail="true" />
+
+			<p:dataTable id="dataTable" var="user" widgetVar="dataTableW"
+				value="#{userController.values}"
+				resizableColumns="true"
+				rowKey="#{user.id}"
+				selection="#{userController.selectedUsers}"
+				paginator="true" rows="30"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				 rowsPerPageTemplate="3,6,30"
+				emptyMessage="No users found with given criteria" >
+				<!--
+				lazy="true"
+				enlever car sinon empeche les filtres de fonctionner 
+				 -->
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Utilisateur" />
+						<br />
+						<h:outputText value="Rechercher : " />
+						<p:inputText id="globalFilter" onkeyup="dataTableW.filter()"
+							style="width:150px" />
+					</p:outputPanel>
+				</f:facet>
+
+				<!--  
+				<f:facet name="header">  
+           			Utilisateur
+        		</f:facet>
+        		-->
+
+				<p:column selectionMode="multiple" style="width:18px" />
+				<!-- ajouter sur le datatable pour une seule ligne selectionMode="single"-->
+
+				<p:column sortBy="#{user.id}" filterBy="#{user.id} ">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<p:commandLink value="#{user.id}"
+						update=":userDetailForm:display"
+						oncomplete="userDialog.show()" title="View">
+						<f:setPropertyActionListener value="#{user}"
+							target="#{userController.selectedUser}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column sortBy="#{user.username}" filterBy="#{user.username}">
+					<f:facet name="header">
+						<h:outputText value="Login" />
+					</f:facet>
+					<h:outputText value="#{user.username}" />
+				</p:column>
+				
+				<p:column sortBy="#{user.nom}" filterBy="#{user.nom}">
+					<f:facet name="header">
+						<h:outputText value="Nom" />
+					</f:facet>
+					<h:outputText value="#{user.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{user.prenom}" filterBy="#{user.prenom}">
+					<f:facet name="header">
+						<h:outputText value="Prénom" />
+					</f:facet>
+					<h:outputText value="#{user.prenom}" />
+				</p:column>
+				
+				<p:column sortBy="#{user.email}" filterBy="#{user.email}">
+					<f:facet name="header">
+						<h:outputText value="Email" />
+					</f:facet>
+					<h:outputText value="#{user.email}" />
+				</p:column>
+				
+				<p:column sortBy="#{user.passwd}">
+					<f:facet name="header">
+						<h:outputText value="Mot de passe (Hash)" />
+					</f:facet>
+					<h:outputText value="#{user.passwd}" />
+				</p:column>
+				
+				<p:column >
+					<f:facet name="header">
+						<h:outputText value="Role" />
+					</f:facet>
+					<ui:repeat value="${user.roles}" var="item">
+						<h:outputText value="#{item.userRoles.role}, " />
+					</ui:repeat>
+				</p:column>
+				
+				<p:column sortBy="#{user.dernierAcces}">
+					<f:facet name="header">
+						<h:outputText value="Dernier accés" />
+					</f:facet>
+					<h:outputText value="#{user.dernierAcces}" />
+				</p:column>
+
+				<p:column sortBy="#{user.userCompany.nom}" filterBy="#{user.userCompany.nom}">
+					<f:facet name="header">
+						<h:outputText value="Entreprise" />
+					</f:facet>
+					<h:outputText value="#{user.userCompany.nom}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Actions" />
+					</f:facet>
+							<p:commandLink actionListener="#{userController.resetPassword}" update=":form:growl" value="reset pwd">
+							<f:attribute name="idUser" value="#{user.id}" />
+							<!--  
+							<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16" />
+							<p:confirm header="Confirmation" message="Etes vous sur de vouloir réinitialisé le mot de passe de c'est utilisateur ?" icon="ui-icon-alert" />  
+							-->
+						</p:commandLink>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Nouveau"
+						oncomplete="newUserDialog.show()" icon="ui-icon-star"
+						title="Céer un nouvel utilisateur" />
+					<p:commandButton value="Supprimer"
+						actionListener="#{userController.doDeleteUsers}"
+						update="dataTable" icon="ui-icon-trash" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Détail" widgetVar="userDialog" resizable="false"
+			id="userDlg">
+			<h:form id="userDetailForm">
+				<p:panelGrid id="display" columns="2" cellpadding="4">
+					<f:validateBean disabled="true">
+						<h:outputText value="ID :"></h:outputText>
+						<h:outputText
+							value="#{userController.selectedUser.id}" />
+
+						<h:outputText value="Login :"></h:outputText>
+						<h:inputText
+							value="#{userController.selectedUser.username}"
+							required="true" requiredMessage="Nom obligatoire!" />
+							
+						<h:outputText value="Nom" />
+						<p:inputText value="#{userController.selectedUser.nom}" />
+						
+						<h:outputText value="Prénom" />
+						<p:inputText value="#{userController.selectedUser.prenom}" />
+
+						<h:outputText value="Email" />
+						<p:inputText value="#{userController.selectedUser.email}" />
+							
+						<h:outputText value="Mot de passe" />
+						<!--  
+						<h:inputText value="#{userController.selectedUser.passwd}" />
+						-->
+						<p:commandLink actionListener="#{userController.resetPassword}" update=":form:growl" value="Réinitialiser ('careco')">
+							<f:attribute name="idUser" value="#{userController.selectedUser.id}" />
+							<!--  
+							<p:graphicImage library="images" name="reserve_part.png" title="+ panier" alt="+ panier" height="16" />
+							-->
+							<p:confirm header="Confirmation" message="Etes vous sur de vouloir réinitialisé le mot de passe de c'est utilisateur ?" icon="ui-icon-alert" />  
+						</p:commandLink>
+						
+						<h:outputText value="Entreprise" />
+						<p:selectOneMenu value="#{userController.selectedUser.userCompany}">
+							<f:selectItems value="#{userController.userCompanyList}" var="uc" itemLabel="#{uc.nom}" itemValue="#{uc}"/>  
+						</p:selectOneMenu>
+				 
+						<h:outputText value="Role" />
+						<p:pickList id="pickList" converter="aaa" value="#{userController.roles}" var="r"  itemLabel="#{r.role}" itemValue="#{r}"/>  
+							
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Mettre à jour"
+							update=":form:dataTable, :growl"
+							oncomplete="handleSubmitRequest(xhr, status, args, 'userDlg','newUserForm'); "
+							actionListener="#{userController.doUpdateUser}" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nouveau" onLoad="reset()"
+			widgetVar="newUserDialog" resizable="false" id="newUserDlg">
+			<h:form id="newUserForm">
+				<p:panelGrid id="displayNewUser" columns="2" cellpadding="4"
+					style="margin:0 auto;">
+					<f:validateBean disabled="true">
+						<!--  
+						<h:outputText value="ID :"></h:outputText>
+						<p:inputText
+							value="#{userController.newUser.id}"
+							required="true" requiredMessage="ID obligatoire!" />
+					-->
+						<h:outputText value="Login :"></h:outputText>
+						<p:inputText value="#{userController.newUser.username}"
+							required="true" requiredMessage="Nom obligatoire!" />
+
+						<h:outputText value="Nom" />
+						<p:inputText value="#{userController.newUser.nom}" />
+
+						<h:outputText value="Prénom" />
+						<p:inputText value="#{userController.newUser.prenom}" />
+
+						<h:outputText value="Email" />
+						<p:inputText value="#{userController.newUser.email}" />
+						
+						<h:outputText value="Mot de passe" />
+						<p:inputText value="#{userController.newUser.passwd}"/>
+						
+						<h:outputText value="Entreprise" />
+						<p:selectOneMenu value="#{userController.newUser.userCompany}">
+							<f:selectItems value="#{userController.userCompanyList}" var="uc" itemLabel="#{uc.nom}" itemValue="#{uc}"/>  
+						</p:selectOneMenu>
+				 
+						<h:outputText value="Role" />
+						<p:pickList id="pickList" converter="aaa" value="#{userController.roles}" var="r"  itemLabel="#{r.role}" itemValue="#{r}"/>  
+
+
+					</f:validateBean>
+
+					<f:facet name="footer">
+						<p:commandButton value="Valider" update=":form:dataTable, :growl"
+							oncomplete=" handleSubmitRequest(xhr, status, args, 'newUserDlg','newUserForm');"
+							actionListener="#{userController.doCreateUser}" />
+						<p:commandButton type="reset" value="Vider"></p:commandButton>
+					</f:facet>
+				</p:panelGrid>
+				
+			</h:form>
+		</p:dialog>
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+			<p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

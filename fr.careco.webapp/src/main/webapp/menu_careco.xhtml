@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<h:form>
+
+		<p:growl id="messages" />
+		
+		<p:menubar id="menu_careco">
+		
+			<p:menuitem value="Recherche" url="/accueil_careco_template.xhtml" />
+			
+			<p:submenu label="Mes ventes" icon="ui-icon-gear">
+				<p:menuitem value="En cours" url="/mes_ventes_careco_template.xhtml" />
+				<!--  
+				<p:menuitem value="Valider" url="/mes_ventes_careco_template.xhtml" />
+				-->
+				<p:menuitem value="Historique" url="/mes_ventes_historique_careco_template.xhtml" />
+			</p:submenu>
+			
+			<p:submenu label="Mes achats" icon="ui-icon-gear" >
+				<p:menuitem value="En cours" url="/mes_achats_careco_template.xhtml" />
+				<p:menuitem value="Historique" url="/mes_achats_historique_careco_template.xhtml" />
+			</p:submenu>
+			
+			<p:submenu label="Gestion des stocks" icon="ui-icon-gear">
+				<p:menuitem value="Mon stock" url="/mon_stock_careco_template.xhtml" />
+				<p:menuitem value="Expertise VHU" 
+				onclick="window.open('#{request.contextPath}/expertise_vhu_careco_template.xhtml')"/>
+				<p:menuitem value="Nouveau moteur" 
+				onclick="window.open('#{request.contextPath}/ajout_moteur_careco_template.xhtml')"/>
+				<p:menuitem value="Nouvelle boîte" 
+				onclick="window.open('#{request.contextPath}/ajout_boite_vitesse_careco_template.xhtml')"/>
+			</p:submenu>
+			
+			<p:menuitem value="Panier" 
+				onclick="window.open('#{request.contextPath}/panier_careco_template.xhtml')"/>
+				
+			<p:submenu label="Communication" icon="ui-icon-gear">
+				<p:menuitem value="Composer message" url="/envoye_message_careco_template.xhtml" />
+				<p:menuitem value="Mes mails en cours" url="/messages_careco_template.xhtml" />
+			</p:submenu>
+			
+			<p:submenu label="Administration" icon="ui-icon-gear">
+				<p:menuitem value="Utilisateur" url="/mon_compte_careco_template.xhtml" />
+				<p:submenu label="Administration société" rendered="#{auth.hasRole('admin') or auth.hasRole('manager')}">
+					<p:menuitem value="Mes sociétés amies / Multi Site" url="/admin/mes_gestion_remises_template.xhtml" />
+				</p:submenu>
+				
+				<p:submenu label="Développement" icon="ui-icon-gear" rendered="#{auth.isDev()}">
+					<!-- rendered="#{auth.hasRole('admin')}" -->
+					<p:menuitem value="Developpement - test" onclick="window.open('#{request.contextPath}/dev_careco_template.xhtml')" />
+					<p:submenu label="Administration société" rendered="#{auth.isDev()}">
+						
+						<p:menuitem value="Importation de stock Moteur Club" onclick="window.open('#{request.contextPath}/import_stock_careco_template.xhtml')"/>
+						<!--  
+							<p:menuitem value="Gestion doublon Stock" onclick="window.open('#{request.contextPath}/admin/gestion_doublon_template.xhtml')"/>
+						-->
+					</p:submenu>
+					
+					<p:submenu label="Administration application" rendered="#{auth.isDev()}">
+						<p:menuitem value="Admin utilisateurs" url="/admin/gestion_utilisateurs_template.xhtml" />
+						<p:menuitem value="Admin roles" url="/admin/gestion_roles_template.xhtml" />
+						<p:separator/>
+						<p:menuitem value="Admin réseau entreprises" url="/admin/gestion_groupement_template.xhtml" />
+						<p:menuitem value="Admin adhérents" url="/admin/gestion_adherent_template.xhtml" />
+						<p:menuitem value="Admin entreprises" url="/admin/gestion_entreprises_template.xhtml" />
+						<p:menuitem value="Admin remises" url="/admin/gestion_remises_template.xhtml" />
+						<p:separator/>
+						<p:menuitem value="Admin Fiches infos" url="/admin/gestion_fiches_infos_template.xhtml" />
+						<p:separator/>
+						<p:menuitem value="Admin cache AAA" url="/admin/gestion_cache_aaa_template.xhtml" />
+						<p:separator/>
+						<p:menuitem value="Admin URL" url="/admin/gestion_acces_url_template.xhtml" />
+						<p:separator/>
+						<p:menuitem value="Monitoring" onclick="window.open('#{request.contextPath}/monitoring')" rendered="#{auth.isDevLgr()}"/>
+						<p:separator/>
+						<p:menuitem value="WS AAA" url="/wsaaa/" rendered="#{auth.isDevLgr()}"/>
+					</p:submenu>
+				</p:submenu>
+				
+				<p:menuitem value="Déconnexion" actionListener="#{auth.logout}" icon="ui-icon-extlink" />
+			</p:submenu>
+			
+		</p:menubar>
+		
+		<ui:remove>
+
+		<p:panelMenu id="menu_careco" style="width:200px">  
+		
+			<p:menuitem value="Recherche" url="/accueil_careco_template.xhtml" />
+			
+			<p:submenu label="Mes ventes" icon="ui-icon-gear">
+				<p:menuitem value="En cours" url="/" />
+				<p:menuitem value="Valider" url="/" />
+				<p:menuitem value="Historique" url="/" />
+			</p:submenu>
+			
+			<p:submenu label="Mes achats" icon="ui-icon-gear" >
+				<p:menuitem value="En cours" url="/" />
+				<p:menuitem value="Historique" url="/" />
+			</p:submenu>
+			
+			<p:submenu label="Gestion des stocks" icon="ui-icon-gear">
+				<p:menuitem value="Mon stock" url="/" />
+				<p:menuitem value="Expertise VHU" url="/" />
+			</p:submenu>
+			
+			<p:submenu label="Communication" icon="ui-icon-gear">
+				<p:menuitem value="Composer message" url="/" />
+				<p:menuitem value="Mes mails en cours" url="/" />
+			</p:submenu>
+			
+			<p:submenu label="Administration" icon="ui-icon-gear" rendered="#{auth.hasRole('admin')}">
+				<p:menuitem value="Utilisateur" url="/" />
+				<p:menuitem value="Test URL menu que admin" url="/" />
+				<p:menuitem  value="Déconnexion" actionListener="#{auth.logout}" icon="ui-icon-extlink" />
+			</p:submenu>
+			
+        </p:panelMenu>
+	
+		 </ui:remove>
+
+	</h:form>
+	
+</ui:composition>

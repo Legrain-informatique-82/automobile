@@ -1,0 +1,12 @@
+apache CXF
+
+./wsdl2java -impl -server -p fr.careco.bleuway.ws2 -d /donnees/Projet/Java/Eclipse/Careco/fr.careco.ejb/src/main/java/fr/careco/bleuway/ws2 "/home/nicolas/Bureau/Careco/Pack Careco/WSDL_B2C.wsdl"
+
+
+
+<wsdl:binding name = "ProxyWsAAAB2CBinding" type = "tns:ProxyWsAAAB2CPortType">
+  ===>      <wsp:PolicyReference URI = "#ProxyWsAAAB2CBinding_policy"/>
+        <soap:binding style = "document" transport = "http://schemas.xmlsoap.org/soap/http"/>
+        
+        
+        

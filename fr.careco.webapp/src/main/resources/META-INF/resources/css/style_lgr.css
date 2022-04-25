@@ -1,0 +1,192 @@
+
+div#loginDiv {
+	/*centrer le div de login*/
+    width: 416px;
+    margin : auto;
+
+}
+
+div#loginDiv img{
+    margin-top:100px
+}
+    
+#logo, #logo_template {
+    /*background: url("#{resource['images/logo.png']}") no-repeat scroll left center rgba(0, 0, 0, 0);*/  
+    background: url("#{resource['images:logo.png']}") no-repeat scroll left center rgba(0, 0, 0, 0); 
+}
+
+#logo {
+    border: 0 none;
+    border-top-left-radius: 4px;
+    height: 24px;
+    padding: 5px 0 0 15px;
+    width: 224px;
+}
+
+
+
+#logo, #logo a {
+    font-size: 20px;
+    font-weight: 700;
+    text-decoration: none;
+    width: 99%;
+    color: #D64141;
+    text-shadow: 0 -1px 0 #999999;
+}
+
+/***************************************************************************/
+/*style pour notification bar */
+.top {
+	z-index:1000;
+    opacity: 0.7;
+    padding: 50px 0 0 50px;
+    width:50%
+}
+
+.ui-panel, div.ui-state-hover {
+ margin: 2px;
+ /*width:50%;*/
+}
+
+.ui-dashboard-column {
+ width:50%;
+}
+
+
+#form\:board2 .ui-dashboard-column {
+ width:100%;
+}
+
+#id_immatriculation {
+	position: relative;
+}
+
+.ajax_status_immatriculation {
+	position: absolute;
+	top : 21px;
+	right: 13px;
+}
+/*
+.immatriculation {
+    background: url("#{resource['images:immat.jpg']}") repeat scroll rgba(0, 0, 0, 0); 
+    height: 58px;
+    margin: 0 auto auto;
+    width: 240px;
+}
+*/
+.vert {
+    background-color: #A2E8A2 !important;
+}
+
+.bleu {
+	background-color: #A8F0F0 !important;
+}
+
+.jaune {
+    background-color: yellow !important;
+}
+
+.rouge {
+	background-color: rgb(240, 204, 204) !important;
+}
+
+.lien_ajout_panier {
+	background-image: url("#{resource['images:reserve_part.png']}");
+}
+
+.lien_charge {
+	background-image: url("#{resource['images:show.jpg']}");
+}
+
+.lien_selection {
+	background-image: url("#{resource['images:select.png']}");
+}
+
+.lien_supprimer {
+	background-image: url("#{resource['images:delete.png']}");
+}
+
+.lien_update {
+	background-image: url("#{resource['images:update.gif']}");
+}
+
+.text_colone_vert {
+	color: rgb(0, 187, 0); !important;
+}
+
+.text_colone_bleu {
+    color: rgb(51, 51, 136) !important;
+    font-weight: bold !important;
+}
+
+.infosAAARed {
+	font-weight: bold !important; 
+	color:red !important;
+}
+
+.infosAAAGreen {
+	font-weight: bold !important; 
+	color:green !important; 
+}
+
+.infosAAABleu {
+	font-weight: bold !important; 
+	color:blue !important; 
+}
+
+
+/* Mofifs css base */
+.ui-widget-content {
+
+  /*border: 1px solid #a8a8a8;
+  background: #ffffff;*/
+  color: #4f4f4f;
+
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-selected {
+  background: #E7E7E7;
+  border-bottom: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+ box-shadow: none;
+
+}
+
+.ui-widget .ui-widget {
+  font-size: 1em;
+}
+
+/* Notifications */
+.ui-growl{
+	right: 0;
+	width:320px;
+}
+div.ui-growl-item{
+	background:#fff;
+	color:#000;
+	padding:10px 0 10px 15px;
+}
+.ui-growl-image{
+	/*background: url("#{resource['css_careco:images/notif.jpg']}");*/
+	background: url("#{resource['css_careco:images/notif_itcar.jpg']}");
+	
+	float:right;
+	width:67px;
+	height:74px;
+	
+}
+.ui-growl-message{
+	float:left;
+}
+.ui-dashboard-column {
+    padding-bottom: 10px;
+}
+
+/*oNGLET ACTIF*/
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a{
+	text-decoration: underline;
+	font-weight: bold;
+	font-style: italic;
+}

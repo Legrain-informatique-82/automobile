@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>fr.careco</groupId>
+	<artifactId>fr.careco.ear</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>ear</packaging>
+
+	<parent>
+		<groupId>fr.careco</groupId>
+		<artifactId>fr.careco.parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../fr.careco.parent/pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- Dependencies on the ejb and web modules so that they can be found 
+			by the ear plugin -->
+
+		<dependency>
+			<groupId>fr.careco</groupId>
+			<artifactId>fr.careco.webapp</artifactId>
+			<type>war</type>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>fr.careco</groupId>
+			<artifactId>fr.careco.ejb</artifactId>
+			<type>ejb</type>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+	<groupId>net.bull.javamelody</groupId>
+	<artifactId>javamelody-core</artifactId>
+	<version>1.49.0</version>
+</dependency>
+            
+
+	</dependencies>
+
+
+	<build>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.jboss.as.plugins</groupId>
+					<artifactId>jboss-as-maven-plugin</artifactId>
+					<version>7.4.Final</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<defaultLibBundleDir>/lib</defaultLibBundleDir>
+					<!-- <modules> <jarModule> <groupId>artifactGroupId</groupId> <artifactId>artifactId</artifactId> 
+						<bundleDir>/</bundleDir> </jarModule> </modules> -->
+				</configuration>
+			</plugin>
+
+			<!-- <plugin> <groupId>org.jboss.as.plugins</groupId> <artifactId>jboss-as-maven-plugin</artifactId> 
+				<version>7.4.Final</version> <!- -> <executions> <execution> <phase>install</phase> 
+				<goals> <goal>deploy</goal> </goals> </execution> </executions> <configuration> 
+				<jbossHome>${jboss.directory}</jbossHome> <serverName>dummyserver-standard</serverName> 
+				<hostName>localhost</hostName> <port>8080</port> <fileNames> <fileName>${basedir}/target/DummyDemo-ear-1.0-SNAPSHOT.ear</fileName> 
+				</fileNames> </configuration> <!- -> </plugin> -->
+		</plugins>
+	</build>
+</project>

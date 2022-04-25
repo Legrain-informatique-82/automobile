@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+                     "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> 
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1" viewBox="0 0 220 180">
+  <title>Left arrow</title>
+
+  <style>
+    g {
+        stroke-linecap: round;
+        fill: none;
+    }
+
+    g.background {
+        stroke: #ab3e00;
+        stroke-width: 50;
+        filter: url('#shadow');
+    }
+
+    g.foreground {
+        stroke: #ebe5d8;
+        stroke-width: 35;
+    }
+  </style>
+
+  <defs>
+    <linearGradient id="gradient" gradientUnits="userSpaceOnUse"
+                    x1="0" y1="0" x2="100%" y2="0">
+      <stop offset="5%" stop-color="#f7d5a6" />
+      <stop offset="95%" stop-color="#f7cc91" />
+    </linearGradient>
+
+    <line id="line" x1="30" y1="90" x2="150" y2="90" />
+    <path id="hat" d="
+      M 105 150
+      L 175  90
+      L 105  30
+      " />
+
+    <filter id="shadow" filterUnits="userSpaceOnUse">
+      <feColorMatrix in="SourceGraphic" result="saturateOut" type="saturate" values="0" />
+      <feGaussianBlur in="saturateOut" result="blurOut" stdDeviation="4" />
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+    </filter>
+  </defs>
+
+  <g class="background">
+    <use xlink:href="#line" />
+    <use xlink:href="#hat" />
+  </g>
+
+  <g class="foreground">
+    <use xlink:href="#line" />
+    <use xlink:href="#hat" />
+  </g>
+</svg>

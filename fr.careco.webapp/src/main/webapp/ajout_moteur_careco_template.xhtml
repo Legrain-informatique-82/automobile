@@ -1,0 +1,161 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form" prependId="true">
+		<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+
+			<p:dashboard id="board2" model="#{dashboardPopUpBean.model}">
+				
+				<p:panel id="id_complements"
+					header=""
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel1">
+
+					<p:accordionPanel id="accordionPiece" disabled="true">
+						
+		
+						
+						<p:tab id="tabAjoutMoteur" title="Ajout rapide d'un moteur en stock">
+							<p:panelGrid columns="2" >
+							
+							<h:outputText value="Le moteur est il démonté ?" />
+							<p:selectBooleanCheckbox value="#{expertiseVHUBean.moteur.demonte}" /> 
+							
+							<h:outputText value="Moteur de plus de 299Kg ?" />
+							<p:selectBooleanCheckbox value="#{expertiseVHUBean.moteur.pieceLourde}" />  
+							
+							<h:outputText value="Eplacement casier" />
+							<!-- 
+							<h:inputText  value="#{expertiseVHUBean.moteur.emplacementCasier}" />
+							 -->
+							<p:autoComplete value="#{expertiseVHUBean.moteur.emplacementCasier}"
+									completeMethod="#{expertiseVHUBean.autoCompleteCasier}" />
+						
+							<h:outputText value="Code/Type Moteur " />
+							<!--  
+							<h:inputText id="typeMoteur" value="#{expertiseVHUBean.moteur.refConstructeur}" readonly="true" />
+							-->
+							<p:autoComplete value="#{expertiseVHUBean.moteur.refConstructeur}"
+									completeMethod="#{rechercheCarteGriseBean.autoCompleteTypeMoteur}" />
+							
+							<h:outputText value="Pour: Export/Multirex ?" />
+							<p:selectBooleanCheckbox value="#{expertiseVHUBean.moteur.export}" />  
+							
+							<h:outputText value="Garantie" />
+							<p:selectOneMenu value="#{expertiseVHUBean.moteur.garantie}">
+								<f:selectItem itemLabel="0" itemValue="0" />
+								<f:selectItem itemLabel="3" itemValue="3" />
+								<f:selectItem itemLabel="6" itemValue="6" />
+								<f:selectItem itemLabel="12" itemValue="12" />
+								<f:selectItem itemLabel="24" itemValue="24" />
+							</p:selectOneMenu>
+
+							<h:outputText value="Disponibilité" />
+							<p:selectBooleanCheckbox value="#{expertiseVHUBean.moteur.disponibilite}" />  
+							
+							<h:outputText value="N° de série du moteur " />
+							<h:inputText  value="#{expertiseVHUBean.moteur.numeroDeSeriePiece}"  />
+							
+							<h:outputText value="Prix minima *" />
+							<h:inputText  value="#{expertiseVHUBean.moteur.prixMinimum}" />
+							
+							<h:outputText value="N° de livre de police VHU" />
+							<h:inputText  value="#{expertiseVHUBean.moteur.numLivrePolice}" />
+							
+							<h:outputText value="Kilométrage moteur *" />
+							<h:inputText  value="#{expertiseVHUBean.moteur.kms}" />
+							
+							<h:outputText value="Prix de vente conseillé HT *" />
+							<h:inputText  value="#{expertiseVHUBean.moteur.prixVente}">
+								<p:ajax event="blur" update="id_prix_careco_moteur" />  
+							</h:inputText>
+							
+							<h:outputText value="Prix Caréco" />
+							<h:inputText  id="id_prix_careco_moteur" value="#{expertiseVHUBean.moteur.prixCareco}" readonly="true"/>
+							
+							<h:outputText value="Commentaire interne pour Moteur" />
+							<p:editor value="#{expertiseVHUBean.moteur.commentaireInterne}"/>  
+							
+							<h:outputText value="Commentaire commercial pour ce moteur (visible par l'acheteur)" />
+							<p:editor value="#{expertiseVHUBean.moteur.commentaireCommercial}"/>  
+							
+							</p:panelGrid>
+							
+							<p:commandButton value="Je valide ma mise en stock de ce moteur"
+								actionListener="#{expertiseVHUBean.stockMoteurOrphelin}" update=":form:growl, :form:accordionPiece:id_photo_moteur"/> 
+						</p:tab>
+						
+						<p:tab id="id_photo_moteur" title="Photo du moteur">
+								
+								<p:panel rendered="#{expertiseVHUBean.moteurEnregistre}">
+							<!--  
+									<p:photoCam widgetVar="pc" listener="#{photoCamBean.oncapture}" update="photos"/>  
+        							<p:commandButton type="button" value="Photo" onclick="pc.capture()"/>  
+        					-->
+        				 
+        							<p:fileUpload fileUploadListener="#{photoCamBean.handleFileUpload}" 
+        							mode="advanced" dragDropSupport="true"  auto="true" label="Choisir"
+            						update=":form:growl, :form:accordionPiece:photos_moteur"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/" >  
+            							<f:attribute name="idPiece" value="#{expertiseVHUBean.moteur.id}" />
+            						</p:fileUpload>
+        					
+        							<h:outputText value="Images du moteur (visible dans le détail de la pièce)" />
+        							<!--
+        							rendered="#{photoCamBean.piece.images != null}" 
+        							 -->
+        							 
+									<p:galleria id="photos_moteur" value="#{photoCamBean.piece.images}" 
+										var="image" panelWidth="500" panelHeight="313"
+										showCaption="true">
+										<p:graphicImage value="/images_piece/#{image.chemin}"
+											alt="Image Description for #{image.description}" title="#{image.chemin}" />
+									</p:galleria>
+									
+								</p:panel>
+								
+						</p:tab>
+		
+					</p:accordionPanel>
+
+				</p:panel>
+
+			</p:dashboard>
+			
+			
+			
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

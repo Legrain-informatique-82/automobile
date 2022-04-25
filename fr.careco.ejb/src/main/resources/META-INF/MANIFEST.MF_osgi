@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.legrain.bdg.ejb
+Bundle-SymbolicName: fr.legrain.bdg.ejb
+Bundle-Version: 1.0.0.qualifier
+Export-Package: fr.legrain.gestCom.global,
+ fr.legrain.tiers.dao,
+ fr.legrain.tiers.dao.jpa,
+ fr.legrain.tiers.service
+Require-Bundle: fr.legrain.bdg.ejb.osgi;bundle-version="1.0.0"

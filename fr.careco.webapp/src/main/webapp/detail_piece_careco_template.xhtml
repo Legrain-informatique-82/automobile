@@ -1,0 +1,624 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+
+
+	<ui:define name="content">
+	
+		<f:metadata>
+			<f:viewParam name="parameter" value="#{detailPieceBean.parameter}"/>
+			<f:event type="preRenderView" listener="#{detailPieceBean.refresh}" />
+		</f:metadata>
+
+		<h:form id="form" prependId="true">
+		<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+
+
+
+			<p:dashboard id="board" model="#{dashboardDetailPieceBean.model}">
+				
+
+				<p:panel id="id_complements"
+					header="Compléments d'information tete haute du véhicule : #{rechercheCarteGriseBean.infosAAA != null ? rechercheCarteGriseBean.immatriculation : ''}"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel1">
+					
+					<p:ajax event="close" listener="#{panelBean.handleClose}"
+						update="growl" />
+					<p:ajax event="toggle" listener="#{panelBean.handleToggle}"
+						update="growl" />
+
+					<p:tabView id="tabView">
+
+						<p:tab id="tab_info_AAA" title="info-AAA">
+
+							<h:outputText value="Marque: " styleClass="infosAAARed" />
+							<h:outputText value="#{detailPieceBean.rv.infosAAA.marque}" />
+							<br />
+
+							<h:outputText value="Modèle redressé APRF: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.modele_Etude}" />
+							<br />
+							<h:outputText value="Version: " styleClass="infosAAARed" />
+							<h:outputText value="#{detailPieceBean.rv.infosAAA.version}" />
+							<br />
+							<h:outputText value="Energie: " styleClass="infosAAARed" />
+							<h:outputText value="#{detailPieceBean.rv.infosAAA.energie}" />
+							<br />
+							<h:outputText value="Date de première circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.date_1er_Cir_Jour}/#{detailPieceBean.rv.infosAAA.date_1er_Cir_Mois}/#{detailPieceBean.rv.infosAAA.date_1er_Cir_Annee}" />
+							<br />
+							<!--  
+							<h:outputText value="Premier mois de circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.date_1er_Cir_Mois}" />
+							<br />
+							<h:outputText value="Jour de première circulation: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.date_1er_Cir_Jour}" />
+							<br />
+							-->
+							<h:outputText value="Présence de turbo: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.turbo_Compr}" />
+							<br />
+							<h:outputText value="Nb soupapes: " styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.nb_Soupapes}" />
+							<br />
+							<h:outputText value="Type boîte de vitesses: "
+								styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.tp_Boite_Vit}" />
+							<br />
+							<h:outputText
+								value="Codification précise du véhicule selon la codification du VIN: "
+								styleClass="infosAAAGreen" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.codif_Vin_Pref}" />
+							<br />
+							<h:outputText value="Code moteur: " styleClass="infosAAAGreen" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.code_Moteur}" />
+							<br />
+							<h:outputText value="Type CNIT ou Mine: "
+								styleClass="infosAAARed" />
+							<h:outputText value="#{detailPieceBean.rv.infosAAA.type}" />
+							<br />
+							<h:outputText value="Nb cylindres: " styleClass="infosAAARed" />
+							<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.nb_Cylind}" />
+							<br />
+							<h:outputText value="Cylindrée: " styleClass="infosAAARed" />
+							<h:outputText value="#{detailPieceBean.rv.infosAAA.cylindree}" />
+							<br />
+
+							<p:fieldset legend="Détails" toggleable="true" toggleSpeed="500"
+								collapsed="true">
+								
+								<h:outputText value="Immatriculation: " styleClass="infosAAAGreen" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.immat_SIV}" /><br />
+							
+								<h:outputText value="Nb vitesses: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.nb_Vitesse}" /><br />
+								
+								<h:outputText value="Mode injection: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.mode_Inject}" /><br />
+								
+								<h:outputText value="Type boîte de vitesses: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.tp_Boite_Vit}" /><br />
+								
+								<h:outputText value="Genre: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.genre}" /><br />
+								
+								<h:outputText value="Genre VCg: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.genre_V_CG}" /><br />
+								
+								<h:outputText value="Modèle de la carte grise: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.modele}" /><br />
+								
+								<h:outputText value="Codification précise du véhicule selon la codification du VIN: " styleClass="infosAAAGreen" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.codif_Vin_Pref}" /><br />
+								
+								<h:outputText value="Code moteur: " styleClass="infosAAAGreen" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.code_Moteur}" /><br />
+								
+								<h:outputText value="Poids à vide: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.poids_Vide}" /><br />
+								
+								<h:outputText value="Numéro de série: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.n_Serie}" /><br />
+								
+								<h:outputText value="Propulsion: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.propulsion}" /><br />
+								
+								<h:outputText value="Type VIN: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.type_Vin_Cg}" /><br />
+								
+								<h:outputText value="Modèle d'usage commun: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.modele_Etude}" /><br />
+								
+								<h:outputText value="Emissions de CO2 en g par km: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.CO2}" /><br />
+								
+								<br />
+								<h:outputText value="Libellé Carrosserie: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.carrosserie}" /><br />
+								
+								<h:outputText value="Couleur: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.couleur_Vehic}" /><br />
+								
+								<h:outputText value="Carrosserie CG: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.carrosserie_CG}" /><br />
+								
+								<h:outputText value="Nb places assises ou charge utile: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.nb_Pl_Ass}" /><br />
+								
+								<h:outputText value="Poids: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.ptr}" /><br />
+								
+								<h:outputText value="Poids total roulant tel qu'indiqué sur la CG: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.ptr_Prf}" /><br />
+								
+								<h:outputText value="Empattement: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.empat}" /><br />
+								
+								<h:outputText value="Dispositif de dépollution: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.depollution}" /><br />
+								
+								<h:outputText value="Marque de la carrosserie du véhicule: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.marque_Carros}" /><br />
+								
+								<h:outputText value="Marque: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.marque}" /><br />
+								
+								<h:outputText value="Modèle redressé APRF: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.modele_Prf}" /><br />
+								
+								<h:outputText value="Version: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.version}" /><br />
+								
+								<h:outputText value="Nb portes: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.nb_Portes}" /><br />
+								
+								<h:outputText value="Energie: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.energie}" /><br />
+								
+								<h:outputText value="Nb volumes: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.nb_Volumes}" /><br />
+								
+								<br />
+								<h:outputText value="Largeur: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.largeur}" /><br />
+								
+								<h:outputText value="Hauteur: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.hauteur}" /><br />
+								
+								<h:outputText value="Nb cylindres: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.nb_Cylind}" /><br />
+								
+								<h:outputText value="Cylindrée: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.cylindree}" /><br />
+								
+								<h:outputText value="Date de première circulation: " styleClass="infosAAARed" />
+								<h:outputText
+								value="#{detailPieceBean.rv.infosAAA.date_1er_Cir_Jour}/#{detailPieceBean.rv.infosAAA.date_1er_Cir_Mois}/#{detailPieceBean.rv.infosAAA.date_1er_Cir_Annee}" /><br />
+								<!--  
+								<h:outputText value="Premier mois de circulation: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.date_1er_Cir_Mois}" /><br />
+								
+								<h:outputText value="Jour de première circulation: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.date_1er_Cir_Jour}" /><br />
+								-->
+								
+								<h:outputText value="Date Dcg: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.date_Dcg_Jour}/#{detailPieceBean.rv.infosAAA.date_Dcg_Mois}/#{detailPieceBean.rv.infosAAA.date_Dcg_Annee}" /><br />
+								<!-- 
+								<h:outputText value="Date Dcg mois: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.date_Dcg_Mois}" /><br />
+								
+								<h:outputText value="Date Dcg jour: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.date_Dcg_Jour}" /><br />
+								 -->
+								 
+								<h:outputText value="Puissance réelle en chevaux vapeur: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.puis_Ch}" /><br />
+								
+								<h:outputText value="Puissance fiscale en chevaux fiscaux: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.puis_Fisc}" /><br />
+								
+								<h:outputText value="Présence de turbo: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.turbo_Compr}" /><br />
+								
+								<h:outputText value="Nb soupapes: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.nb_Soupapes}" /><br />
+								
+								<h:outputText value="Longueur: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.longueur}" /><br />
+								
+								<h:outputText value="Type CNIT ou Mine: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.type}" /><br />
+
+<!--  	
+
+								<br />
+								<h:outputText value="Consommation en zone urbaine: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.cons_Urb}" /><br />
+								
+								<h:outputText value="Consommation dans les conditions de circulation générale: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.cons_Mixte}" /><br />
+								
+								<h:outputText value="Consommation du véhicule en zone urbanisée: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.cons_Exurb}" /><br />
+								
+								<h:outputText value="SIREN (Système d’identification du répertoire des entreprises): " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.siren}" /><br />
+					
+								<h:outputText value="Type Variante Version: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.type_Var_Ver_Prf}" /><br />
+								
+								<h:outputText value="Prix catalogue des véhicules (T.T.C. de base sans options), issu du fichier de l'Argus: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.prix_Vehic}" /><br />
+								
+								<h:outputText value="Puissance du véhicule exprimée en KW : " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.puis_Kw}" /><br />
+								
+								<h:outputText value="Montes de pneus compatibles: " styleClass="infosAAARed" />
+								<h:outputText value="#{detailPieceBean.rv.infosAAA.pneu}" /><br />
+-->
+
+							</p:fieldset>
+						</p:tab>
+						
+					</p:tabView>
+
+					<p:accordionPanel
+						rendered="#{detailPieceBean.rv.infosAAA != null}" >
+						
+						<p:tab>
+						
+							<p:tabView id="tabViewAstuceMoteur" var="moteur"
+								value="#{detailPieceBean.rv.tabsAstuceMoteur}" >
+							<p:tab title="#{moteur.typeMoteur}"  titleStyleClass="#{!moteur.compatible ? 'vert' : 'jaune'}">
+									
+			
+										<h:outputText value="#{moteur.commentaire}" escape="false"/><br/><br/>
+				
+							
+								</p:tab>
+							</p:tabView>
+							
+							<f:facet name="title">
+								<!-- surcharge du title du tab pour ajouter l'image -->
+								<h:graphicImage library="images" name="btn-moteur.png" width="30" height="25"/>
+								<h:outputText value="Astuce moteur du CNIT #{detailPieceBean.rv.infosAAA.type} de #{detailPieceBean.rv.infosAAA.date_1er_Cir_Mois}/#{detailPieceBean.rv.infosAAA.date_1er_Cir_Annee}" />
+							</f:facet>
+
+						</p:tab>
+
+						<p:tab>
+							<p:tabView id="tabViewAstuceBoite" var="boite"
+								value="#{detailPieceBean.rv.tabsAstuceBoite}" >
+							<p:tab title="#{boite.refBoite}" titleStyleClass="#{!boite.compatible ? 'vert' : 'jaune'}">
+			
+										<h:outputText value="#{boite.commentaire}" escape="false"/> <br/>
+							
+								</p:tab>
+							</p:tabView>
+							
+							<f:facet name="title">
+								<!-- surcharge du title du tab pour ajouter l'image -->
+								<h:graphicImage library="images" name="btn-boite-vitesses.png" width="30" height="25"/>
+								<h:outputText value="Astuce boite de vitesse du CNIT #{detailPieceBean.rv.infosAAA.type} de #{detailPieceBean.rv.infosAAA.date_1er_Cir_Mois}/#{detailPieceBean.rv.infosAAA.date_1er_Cir_Annee}" />
+							</f:facet>
+						</p:tab>
+					</p:accordionPanel>
+
+				</p:panel>
+				
+<!--  
+				<p:panel id="id_detail"
+					header=""
+					toggleSpeed="500" closeSpeed="500">
+				</p:panel>
+				-->
+				
+				<p:panel id="id_detail"
+					header=""
+					toggleable="true" toggleSpeed="500" closeSpeed="500">
+					
+					<p:accordionPanel id="id_accordion_detail_piece_voiture">
+						<p:tab title="Administration de voiture">
+							<h:outputText value="Firme : " /><h:outputText value="#{detailPieceBean.piece.vendeur}" /><br/>
+							<h:outputText value="Emplacement : " />
+							<h:outputText value="#{detailPieceBean.piece.emplacementCasier}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+			
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<p:autoComplete value="#{detailPieceBean.piece.emplacementCasier}"
+									completeMethod="#{expertiseVHUBean.autoCompleteCasier}" />
+								
+							</p:inplace>
+							
+							<br/>
+							<h:outputText value="Dossier : " />
+							<h:outputText value="#{detailPieceBean.piece.numLivrePolice}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.numLivrePolice}"/>
+							</p:inplace>
+							<br/>
+							<h:outputText value="Année : " /><h:outputText value="#{detailPieceBean.piece.date1erMiseEnCirculation}" /><br/>
+							<h:outputText value="Kilométrage : " />
+							<h:outputText value="#{detailPieceBean.piece.kms}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.kms}"/>
+							</p:inplace>
+							<br/>
+							<h:outputText value="Tyme mine : " /><h:outputText value="#{detailPieceBean.piece.CNITTypeMine}" /><br/><br/>
+							<h:outputText value="VIN : " /><h:outputText value="#{detailPieceBean.piece.vin}" /><br/>
+							<h:outputText value="Puissance fiscale : " /><br/>
+							<h:outputText value="Commentaire commercial : " />
+							
+							<h:outputText value="#{detailPieceBean.piece.commentaireCommercial}" escape="false" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<f:facet name="output">
+									<h:outputText value="#{detailPieceBean.piece.commentaireCommercial}" escape="false" rendered="#{detailPieceBean.piece.commentaireCommercial != null and detailPieceBean.piece.commentaireCommercial != ''}"/>
+									<h:outputText value="N.C." rendered="#{detailPieceBean.piece.commentaireCommercial == null or detailPieceBean.piece.commentaireCommercial == ''}"/>
+								</f:facet>
+								<f:facet name="input">
+									<p:editor value="#{detailPieceBean.piece.commentaireCommercial}" />
+								</f:facet>
+							</p:inplace>
+							
+							<br/>
+							<h:outputText value="Commentaire Interne : " rendered="#{detailPieceBean.piece.idStockOrigine.id == detailPieceBean.user.userCompany.id}"/>
+							<h:outputText value="#{detailPieceBean.piece.commentaireInterne}" escape="false" rendered="#{detailPieceBean.piece.idStockOrigine.id == detailPieceBean.user.userCompany.id and !detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." rendered="#{(detailPieceBean.piece.idStockOrigine.id == detailPieceBean.user.userCompany.id) and detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<f:facet name="output">
+									<h:outputText value="#{detailPieceBean.piece.commentaireInterne}" escape="false" rendered="#{detailPieceBean.piece.commentaireInterne != null and detailPieceBean.piece.commentaireInterne != ''}"/>
+									<h:outputText value="N.C." rendered="#{detailPieceBean.piece.commentaireInterne == null or detailPieceBean.piece.commentaireInterne == ''}"/>
+								</f:facet>
+								<f:facet name="input">
+									<p:editor value="#{detailPieceBean.piece.commentaireInterne}" />
+								</f:facet>
+							</p:inplace>
+							
+	
+							
+						</p:tab>
+						<p:tab title="Voiture caractéristique">
+							<h:outputText value="Marque : " /><h:outputText value="#{detailPieceBean.piece.marque}" /><br/>
+							<h:outputText value="Modèle : " /><h:outputText value="#{detailPieceBean.piece.modele}" /><br/>
+							<h:outputText value="Version : " /><h:outputText value="#{detailPieceBean.piece.version}" /><br/>
+							<h:outputText value="Carrosserie : " /><br/>
+							<h:outputText value="Moteur version : " /><br/>
+							<h:outputText value="Volume : " /><br/>
+							<h:outputText value="Puissance : "/><br/>
+							<h:outputText value="Cylindre : " /><br/>
+							<h:outputText value="Soupape : " /><br/>
+							<h:outputText value="Genre de boite à vitesse : " /><br/>
+						</p:tab>
+						<p:tab id="id_detail_piece" title="Détail de la pièce">	
+							<h:outputText value="Moteur / Boite : " /> 
+							<h:outputText value="#{detailPieceBean.piece.typeDePiece}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/> 
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<p:selectOneMenu value="#{detailPieceBean.piece.typeDePiece}">
+									<f:selectItem itemLabel="Moteur" itemValue="Moteur" />
+									<f:selectItem itemLabel="Boite" itemValue="Boite" />
+								</p:selectOneMenu>
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Code : " />
+							<h:outputText value="#{detailPieceBean.piece.refConstructeur}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.refConstructeur}"/>
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Numéro de série : " />
+							<h:outputText value="#{detailPieceBean.piece.numeroDeSeriePiece}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.numeroDeSeriePiece}"/>
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Demonte : " />
+							<p:selectBooleanCheckbox value="#{detailPieceBean.piece.demonte}" disabled="true" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<p:selectBooleanCheckbox value="#{detailPieceBean.piece.demonte}" />
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Export : " />
+							<p:selectBooleanCheckbox value="#{detailPieceBean.piece.export}" disabled="true" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<p:selectBooleanCheckbox value="#{detailPieceBean.piece.export}" />
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Statut : " />
+							<h:outputText value="#{detailPieceBean.piece.status}"/>
+							<!--  
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value=""/>
+							</p:inplace>
+							-->
+
+						</p:tab>
+						<p:tab id="id_detail_prix" title="Prix et garantie">
+							<h:outputText value="Prix d'achat : " />
+							<h:outputText value="#{detailPieceBean.piece.prixAchat}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.prixAchat}"/>
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Cout du transport : " />
+							<h:outputText value="" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value=""/>
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Date d'achat : " />
+							<h:outputText value="#{detailPieceBean.piece.dateAchat}" rendered="#{!detailPieceBean.autoriseModifPiece()}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								
+								
+								<f:facet name="output">
+									<h:outputText value="#{detailPieceBean.piece.dateAchat}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:calendar value="#{detailPieceBean.piece.dateAchat}" id="popupButtonCal" showOn="button" pattern="dd/MM/yyyy" />
+								</f:facet>
+							
+								
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Garantie fournisseur : " />
+							<h:outputText value="" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<p:selectOneMenu value="#{detailPieceBean.piece.garantie}">
+									<f:selectItem itemLabel="0" itemValue="0" />
+									<f:selectItem itemLabel="3" itemValue="3" />
+									<f:selectItem itemLabel="6" itemValue="6" />
+									<f:selectItem itemLabel="12" itemValue="12" />
+									<f:selectItem itemLabel="24" itemValue="24" />
+								</p:selectOneMenu>
+							</p:inplace>							
+							<br/>
+							
+							<h:outputText value="Prix de vente : " />
+							<h:outputText value="#{detailPieceBean.piece.prixVente}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.prixVente}"/>
+							</p:inplace>
+							<br/>
+							
+							<h:outputText value="Prix minimum : " />
+							<h:outputText value="#{detailPieceBean.piece.prixMinimum}" rendered="#{!detailPieceBean.autoriseModifPiece()}"/>
+							
+							<p:inplace editor="true" emptyLabel="N.C." event="dblclick" rendered="#{detailPieceBean.autoriseModifPiece()}">
+								<p:ajax event="save" listener="#{detailPieceBean.enregistreModification}" />
+								<h:inputText value="#{detailPieceBean.piece.prixMinimum}"/>
+							</p:inplace>
+
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+				
+				<p:panel id="id_photo_piece"
+					header="Photos de la pièce"
+					toggleable="true" toggleSpeed="500" closeSpeed="500">
+
+					<!--  
+						<p:photoCam widgetVar="pc" listener="#{photoCamBean.oncapture}" update="photos" rendered="#{detailPieceBean.autoriseModifPiece()}"/>  
+        				<p:commandButton type="button" value="Photo" onclick="pc.capture()" rendered="#{detailPieceBean.autoriseModifPiece()}"/>  
+        			-->
+        			
+					<p:fileUpload fileUploadListener="#{photoCamBean.handleFileUpload}" rendered="#{detailPieceBean.autoriseModifPiece()}"
+						mode="advanced" dragDropSupport="true" auto="true" label="#{msg.file_upload_selectfile}"
+						update=":form:growl, :form:photos"
+						
+						 allowTypes="/(\.|\/)(gif|jpe?g|png)$/">
+						<f:attribute name="idPiece" value="#{detailPieceBean.piece.id}" />
+					</p:fileUpload>
+
+					<p:galleria id="photos" value="#{detailPieceBean.piece.images}" 
+						var="image" panelWidth="500" panelHeight="313" showCaption="true">
+						<p:graphicImage value="/images_piece/#{image.chemin}" alt="Image Description for #{image.description}" title="#{image.chemin}" />
+						<!-- 
+						<p:commandButton  value="#{image.chemin}" rendered="#{detailPieceBean.autoriseModifPiece()}"/>  
+						 -->
+					</p:galleria>
+									
+				</p:panel>
+				<p:panel id="id_photo_vehicule"
+					header="Photos du véhicule d'origine N° de police ou NOGO"
+					toggleable="true" toggleSpeed="500" closeSpeed="500">
+									
+				</p:panel>
+				
+				<p:panel id="id_photo_piece_neuve"
+					header="Photos pièce neuve after market de votre fournisseur de voiture favori"
+					toggleable="true" toggleSpeed="500" closeSpeed="500">
+				</p:panel>
+				
+				
+
+			</p:dashboard>
+			
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

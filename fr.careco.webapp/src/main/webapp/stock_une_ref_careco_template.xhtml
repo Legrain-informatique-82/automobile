@@ -1,0 +1,569 @@
+<ui:composition template="./popup_careco_template_jsf.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">
+        <h:outputText value="#{msg.page_title_default}" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<h:outputText value="#{msg.copyrights_careco}" />
+	</ui:define>
+
+	<ui:define name="scriptjs">
+		function handleSubmitRequest(xhr, status, args, dialogName, formName) {  
+	            dialog = jQuery('#'+dialogName);
+	        if(args.validationFailed) {  
+	            dialog.effect("shake", { times:3 }, 100);  
+	        } else {
+	            clearForm(formName);
+	            newligneResultatDialog.hide(); 
+	            ligneResultatDialog.hide(); 
+	        }  
+	    }
+	</ui:define>
+	
+
+
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewParam name="parameter" value="#{unStockBean.parameter}"/>
+			<f:event type="preRenderView" listener="#{unStockBean.refresh}" />
+		</f:metadata>
+
+		<h:form id="form" prependId="true">
+		<!-- false pour le selector du CSS -->
+
+			<p:growl id="growl" showDetail="true" />
+
+
+			<p:dashboard id="board2" model="#{dashboardResultBean.model}">
+
+
+				<p:panel id="id_resultat" header="Résultats de la recherche pour #{unStockBean.parameter}"
+					toggleable="true" toggleSpeed="500" closeSpeed="500"
+					widgetVar="panel3d">
+
+					<p:accordionPanel id="main_panel_result">
+
+						<p:tab title="Mon stock (#{unStockBean.listeResultatMonStock.size()} pièces)">
+
+							<p:commandButton value="Alerte en cas de disponibilite"
+								styleClass="rouge"
+								actionListener="#{rechercheCarteGriseBean.rechercheWS}"
+								rendered="#{empty unStockBean.listeResultatMonStock}" />
+
+							<p:dataTable id="dataTableMonStock" var="ligneResultat"
+								value="#{unStockBean.listeResultatMonStock}" resizableColumns="true"
+								rowKey="#{ligneResultat.id}" paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+								selectionMode="single"
+								rendered="#{not empty unStockBean.listeResultatMonStock}">
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.empl}" filterBy="#{ligneResultat.empl}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.numLivrePolice}" filterBy="#{ligneResultat.numLivrePolice}">
+									<f:facet name="header">
+										<h:outputText value="Num. Livre Police" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.numLivrePolice}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									<!--  
+									<p:commandLink value="+ panier"
+										actionListener="#{panierBean.ajoutPanier}"
+										update=":form:growl">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<f:attribute name="immatRecherche"
+											value="#{rechercheCarteGriseBean.immatriculation}" />
+									</p:commandLink>
+									-->
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+								</p:column>
+
+							</p:dataTable>
+						</p:tab>
+
+						<p:tab title="Mon stock multi site (#{unStockBean.listeResultatMultiSiteStock.size()} pièces)">
+
+							<p:dataTable id="dataTableMultiSite" var="ligneResultat" resizableColumns="true"
+								value="#{unStockBean.listeResultatMultiSiteStock}"
+								rowKey="#{ligneResultat.id}" paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								 <!-- lazy="true" bloque le tri -->
+
+								<p:column selectionMode="single" style="width:18px" />
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single" sinon selectionMode="multiple" -->
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}" filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.vendeur}" filterBy="#{ligneResultat.vendeur}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.vendeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+									
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab title="Mon stock amis (#{unStockBean.listeResultatAmisStock.size()} pièces)">
+							<p:dataTable id="dataTableAmie" var="ligneResultat" resizableColumns="true"
+								value="#{unStockBean.listeResultatAmisStock}"
+								rowKey="#{ligneResultat.id}" paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+								 <!-- lazy="true" bloque le tri -->
+
+								<p:column selectionMode="single" style="width:18px" />
+								<!-- ajouter sur le datatable pour une seule ligne selectionMode="single" sinon selectionMode="multiple" -->
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.emplacementCasier}" filterBy="#{ligneResultat.emplacementCasier}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.emplacementCasier}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.vendeur}" filterBy="#{ligneResultat.vendeur}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.vendeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+									
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+
+						<p:tab title="Stock national ITcar (#{unStockBean.listeResultatCarecoNational.size()} pièces)">
+
+							<p:dataTable id="dataTable" var="ligneResultat"
+								value="#{unStockBean.listeResultatCarecoNational}"
+								rowKey="#{ligneResultat.id}" resizableColumns="true"
+								selection="#{unStockBean.selectedElementResultatRechercheStockNationalCareco}"
+								paginator="true" 
+								rows="#{msg.modele_datatable_ligne_par_page_debut}"
+								paginatorTemplate="#{msg.modele_datatable_paginator}"
+								rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+								emptyMessage="#{msg.message_datatable_vide}"
+								currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+								selectionMode="single">
+
+								<p:column sortBy="#{ligneResultat.disponibilite}" filterBy="#{ligneResultat.disponibilite}">
+									<f:facet name="header">
+										<h:outputText value="Disponibilité" />
+									</f:facet>
+									<p:selectBooleanCheckbox value="#{ligneResultat.disponibilite}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.typeDePiece}" filterBy="#{ligneResultat.typeDePiece}">
+									<f:facet name="header">
+										<h:outputText value="Type de pièce" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.typeDePiece}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.refConstructeur}" filterBy="#{ligneResultat.refConstructeur}">
+									<f:facet name="header">
+										<h:outputText value="Ref constructeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.refConstructeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.CNITTypeMine}" filterBy="#{ligneResultat.CNITTypeMine}">
+									<f:facet name="header">
+										<h:outputText value="CNIT / Type mine" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.CNITTypeMine}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.marque}" filterBy="#{ligneResultat.marque}">
+									<f:facet name="header">
+										<h:outputText value="Marque" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.marque}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.modele}" filterBy="#{ligneResultat.modele}">
+									<f:facet name="header">
+										<h:outputText value="Modèle" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.modele}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.version}" filterBy="#{ligneResultat.version}">
+									<f:facet name="header">
+										<h:outputText value="Version" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.version}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.kms}" filterBy="#{ligneResultat.kms}">
+									<f:facet name="header">
+										<h:outputText value="Kms" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.kms}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.empl}" filterBy="#{ligneResultat.empl}">
+									<f:facet name="header">
+										<h:outputText value="Empl." />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.empl}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.vendeur}" filterBy="#{ligneResultat.vendeur}">
+									<f:facet name="header">
+										<h:outputText value="Vendeur" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.vendeur}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.garantie}" filterBy="#{ligneResultat.garantie}">
+									<f:facet name="header">
+										<h:outputText value="Garantie (mois)" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.garantie}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixCareco}" filterBy="#{ligneResultat.prixCareco}">
+									<f:facet name="header">
+										<p:graphicImage  library="images" name="itcar/favicon.ico" />
+										<h:outputText value="Prix ITcar " />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixCareco}" />
+								</p:column>
+
+								<p:column sortBy="#{ligneResultat.prixVente}" filterBy="#{ligneResultat.prixVente}">
+									<f:facet name="header">
+										<h:outputText value="Prix vente" />
+									</f:facet>
+									<h:outputText value="#{ligneResultat.prixVente}" />
+								</p:column>
+
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Actions" />
+									</f:facet>
+									<!--  
+									<p:commandLink value="+ panier"
+										actionListener="#{panierBean.ajoutPanier}"
+										update=":form:growl, :id_form_cart">
+										<f:attribute name="idPiece" value="#{ligneResultat.id}" />
+										<f:attribute name="immatRecherche"
+											value="#{rechercheCarteGriseBean.immatriculation}" />
+											<f:attribute name="immatRechercheTest"
+											value="#{rechercheCarteGriseBean.immatriculationTest}" />
+									</p:commandLink>
+									-->
+									<p:commandLink onclick="window.open('#{request.contextPath}/detail_piece_careco_template.xhtml?parameter=#{ligneResultat.id}')">
+										<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16"/>
+									</p:commandLink>
+								</p:column>
+
+							</p:dataTable>
+						</p:tab>
+					</p:accordionPanel>
+				</p:panel>
+
+			</p:dashboard>
+			
+			
+			
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

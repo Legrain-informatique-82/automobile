@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form>
+
+		<p:growl id="messages" />
+		<p:menubar>
+			<p:menuitem value="Accueil JSF" url="/index_template_jsf.xhtml" />
+			<p:menuitem value="Accueil HTML" url="/index.html" />
+		
+			<p:submenu label="Paramètres" icon="ui-icon-gear">
+				<p:submenu label="Tiers" icon="ui-icon-contact">
+					<p:menuitem value="Type civilité" url="/tiers/type_civilite_template.xhtml" />
+					<p:menuitem value="Type tiers" url="/tiers/type_tiers_template.xhtml" />
+				</p:submenu>
+			</p:submenu>
+			
+			<p:menuitem value="Login" url="/admin/index_admin_template_jsf.xhtml" />
+			<p:menuitem  value="Logout" actionListener="#{auth.logout}" icon="ui-icon-extlink" />
+			
+
+		<!--
+        <p:submenu label="Actions" icon="ui-icon-gear">  
+            <p:submenu label="Ajax" icon="ui-icon-refresh">  
+                <p:menuitem value="Save" actionListener="#{menuBean.save}" icon="ui-icon-disk" update="messages"/>  
+                <p:menuitem value="Update" actionListener="#{menuBean.update}" icon="ui-icon-arrowrefresh-1-w" update="messages"/>  
+            </p:submenu>  
+            <p:submenu label="Non-Ajax" icon="ui-icon-newwin">  
+                <p:menuitem value="Delete" actionListener="#{menuBean.delete}" icon="ui-icon-close" update="messages" ajax="false"/>  
+            </p:submenu>  
+        </p:submenu>  
+  
+        <p:menuitem value="Quit" url="http://www.primefaces.org" icon="ui-icon-close" />  
+  
+        <f:facet name="options">  
+            <p:inputText style="margin-right:10px"/>  
+            <p:commandButton type="button" value="Logout" icon="ui-icon-extlink" />  
+        </f:facet>  
+         -->
+         
+		</p:menubar>
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,278 @@
+#cart{
+	position:fixed;
+	right:-300px;
+	bottom:10px;
+	z-index:9999;
+	opacity: 1;
+ 
+}
+
+.cart-itemsss{
+	width:337px;
+}
+
+.cart-itemsss::selection{
+	background: white;
+	color:#222;
+}
+
+.cart-info{
+	background:red;
+	width:37px;
+	height:122px;
+	background: #E20019 url(images/cart-info-bgr.png) 0 0 no-repeat;
+	text-align: center;
+	padding-top:40px;
+	cursor:pointer;
+	
+}
+
+.en .cart-info{
+	background: #E20019 url(images/cart-info-bgr-en.png) 0 0 no-repeat !important;
+}
+
+.cart-info-active{
+	background:red;
+	width:37px;
+	height:122px;
+	background: #E20019 url(images/cart-info-bgr.png) top right no-repeat;/*8bb20a */
+	text-align: center;
+	padding-top:40px;
+	cursor:pointer;
+}
+/*
+.en .cart-info-active{
+	background: #E20019 url(images/cart-info-bgr-en.png) top right no-repeat !important;
+}
+
+.total-itemsss{
+	font-weight: bold;
+}
+.img#led-off.led-off{
+  background: #E20019 url(images/led-off.png) top right no-repeat !important;
+    width : "14px";
+  height : "14px";
+} 
+.img#led-off{
+  background: #E20019 url(images/led-off.png) top right no-repeat !important;
+    width : "14px";
+  height : "14px";
+}
+#led-off.led-off{
+  background: #DDDDDD;
+  
+}*/
+.led-off{
+  /*background: #DDDDDD;*/
+  background:  url(images/LI310_status_LED_OFF_cut_14px.png);
+    
+}
+.led-green{
+  /*background: #00E23F;*/
+  background:  url(images/LI310_status_LED_ON_cut_14px.png);
+    
+}
+.led-red{
+  /*background: #E20019;*/
+  background:  url(images/LI310_status_LED_no_GPRS_cut_14px.gif);
+}
+
+
+.itemsss{
+	width:278px;
+	background:#E20019;
+	min-height: 299px;/*152px */
+	padding:5px 10px;
+	border-left: 1px solid white;
+	color: white;
+	
+}
+
+.itemsss ul li{
+	padding:10px;
+	border-bottom:1px solid white;
+	overflow: hidden;
+}
+
+.itemsss ul li p{
+	margin-bottom: 5px;
+}
+
+.total-items-price{
+	color:white;
+	margin-bottom:0px;
+}
+
+.total-price{
+	color:white;
+	padding:10px 10px 0 0;
+	font-weight:bold;
+}
+
+.delete-items{
+	cursor:pointer;
+	color:white;
+}
+
+.empty-cart{
+	cursor:pointer;
+}
+
+/*	Viewcart	*/
+.viewcart{
+	padding:20px;
+}
+
+#cart-table{
+	width:100%;
+	text-align: left;
+}
+
+#cart-table thead{
+	background:red;
+}
+
+#cart-table thead th{
+	height:40px;
+	background:#3a3f42 url(images/cart-head-bgr.png) 0 0 repeat-x;
+	color:white;
+}
+
+#cart-table th.pic{
+	width:120px !important;
+}
+
+#cart-table th.code{
+	width:100px !important;
+}
+
+#cart-table th.ttl{
+	/*width:350px !important;*/
+}
+
+#cart-table th.qt{
+	width:100px !important;
+	text-align: right !important;
+}
+
+#cart-table th.prc{
+	width:115px !important;
+	text-align: right !important;
+}
+
+#cart-table th.act,#subtable td.act{
+	width:150px;
+	text-align: center;
+}
+
+
+#cart-table tbody td{
+	background: #d9dbdc url(images/cart-td-bgr.png) 0 0 repeat-x;
+	border-bottom: 1px solid white;
+}
+
+#cart-table td.qt, #cart-table td.prc{
+	text-align: right;
+}
+
+#cart-table td.ttl{
+	
+}
+
+#cart-table td.act{
+	text-align: center;
+}
+
+#cart-table td.pic img{
+	margin:5px;
+	border:1px solid #8f9499;
+}
+
+tfoot td{
+	padding-top:50px;
+	vertical-align: text-top;
+}
+
+#emptycart{
+	padding:100px 20px;
+	
+}
+
+.subtable{
+	margin-top:20px;
+}
+
+.leftinfo{
+	width:470px;
+	padding:10px;
+	float:left;
+}
+
+.rightinfo{
+	width:435px;
+	float:right;
+	padding:10px 0;
+}
+
+.rightinfo span.topinfo strong{
+	width:165px;
+	padding-left:20px;
+	display: block;
+	float:left;
+}
+
+#subtable .emptyrow td{
+	padding:20px 0;
+}
+
+#subtable .totalrow td{
+	background:#f1f1f2;
+	font-size: 16px;
+	padding:10px 0;
+	border-top: 1px solid #939698;
+	border-bottom: 1px solid #939698;
+}
+
+#subtable td.firstcol{
+	padding-left:20px;
+}
+
+#subtable td.btns{
+	padding-top:20px;
+}
+
+.button.delete-items{
+	padding-left: 17px;
+	background-image: url(images/del-items.png);
+	background-position: 5px 9px;
+	background-repeat: no-repeat;
+}
+
+.button.largebtn{
+	font-size:16px;
+	padding:10px 15px;
+}
+
+#printbtn{
+	padding-right: 30px;
+	background-image: url(images/printbtn.png);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+.responsediv{
+	margin:10px 0 50px 0px;
+	padding:10px;
+	border-radius: 6px;
+	cursor:pointer;
+}
+
+#sent-div{
+	border: 1px solid green;
+	background: #ceffb6
+}
+
+#not-sent-div{
+	border: 1px solid red;
+	background: #ffbcbc
+}

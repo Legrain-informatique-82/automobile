@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<div id="nav-menu">
+    <div id="van">
+        <ul id="van-top">
+            <li class="i_question" onclick="#">
+                <a class="home" href="#{request.contextPath}/accueil_careco_template.xhtml"><span>Recherche</span></a>
+            </li>
+				
+            <li class="i_money"><a class="source"><span>Mes Ventes</span></a>
+                <ul class="sub-menu">
+                    <li><a href="#{request.contextPath}/mes_ventes_careco_template.xhtml"><span>En cours <code>( 0 )</code></span></a></li>
+                    <!--  
+                    <li><a href="#{request.contextPath}/mes_ventes_careco_template.xhtml"><span>Valider <code>( 0 )</code></span></a></li>
+                    -->
+                    <li><a href="#{request.contextPath}/mes_ventes_historique_careco_template.xhtml"><span>Historique <code>( 0 )</code></span></a></li>
+                </ul>
+            </li>
+            <li class="i_shopping_cart"><a class="literature"><span>Mes Achats</span></a>
+                <ul class="sub-menu">
+                    <li><a href="#{request.contextPath}/mes_achats_careco_template.xhtml"><span>En cours <code>( 0 )</code></span></a></li>
+                    <li><a href="#{request.contextPath}/mes_achats_historique_careco_template.xhtml"><span>Historique <code>( 0 )</code></span></a></li>
+                </ul>
+            </li>
+
+            <li class="i_car"><a class="blog"><span>Gestion des Stock</span></a>
+                <ul class="sub-menu">
+                    <li><a href="#{request.contextPath}/mon_stock_careco_template.xhtml"><span>Mon stock</span></a></li>
+                    <li><a href="#" onclick="window.open('#{request.contextPath}/expertise_vhu_careco_template.xhtml')"><span>Expertise VHU</span></a></li>
+                    <li><a href="#" onclick="window.open('#{request.contextPath}/ajout_moteur_careco_template.xhtml')"><span>Nouveau moteur</span></a></li>
+                    <li><a href="#" onclick="window.open('#{request.contextPath}/ajout_boite_vitesse_careco_template.xhtml')"><span>Nouvelle boîte</span></a></li>
+                    <!--  
+                    <li><a href="#" onclick="#"><span>Expertise pièces M-B</span></a></li>
+                    <li><a href="#" onclick="#"><span>Nouveau moteur</span></a></li>
+                    <li><a href="#" onclick="#"><span>Nouvelle boîte</span></a></li>
+                    <li><a href="#"><span>Importer un fichier de Lot</span></a></li>
+                    -->
+                </ul>
+            </li>
+        </ul>
+        <ul id="van-bottom">
+            <li class="i_globe"><a class="contact"><span>Communication</span></a>
+                <ul>
+                    <li><a href="#{request.contextPath}/envoye_message_careco_template.xhtml"><span>Composer message</span></a></li>
+                    <li><a href="#{request.contextPath}/messages_careco_template.xhtml"><span>Mes Mails en cours</span></a></li>
+                    <!--  
+                    <li><a href="#"><span>Mes Messages vocaux</span></a></li>
+                    <li><a href="#"><span>Chat</span></a></li>
+                    <li><a href="#"><span>Téléphone</span></a></li>
+                    <li><a href="#"><span>Historique de mes<br />Communications</span></a></li>
+                    -->
+                </ul>
+            </li>
+
+            <li class="i_cog_3"><a class="event"><span>Administration</span></a>
+                <ul class="sub-menu">
+                <li><a href="#{request.contextPath}/mon_compte_careco_template.xhtml"><span>Utilisateur</span></a></li>
+                 
+                <li>
+                <p:commandLink id="id_lien" actionListener="#{auth.logout}" styleClass="none">
+                	<span><h:outputText value="Déconnexion"/></span>
+                </p:commandLink>
+                </li>
+                
+                <!--  
+                    <li><a href="#"><span>Configuration</span></a></li>
+                    <li><a href="#"><span>Contacts</span></a></li>
+                    <li><a href="#"><span>Adhérents</span></a></li>
+                    <li><a href="#"><span>Utilisateur</span></a></li>
+                    <li><a href="#"><span>Insérez utilisateurs</span></a></li>
+                    <li><a href="#"><span>Liste des sociétés</span></a></li>
+                    <li><a href="#"><span>Insérez société</span></a></li>
+                    <li><a href="#"><span>Modifier les données société</span></a></li>
+                    <li><a href="#"><span>Vue personnalisée</span></a></li>
+                    <li><a href="#"><span>Remises</span></a></li>
+                    <li><a href="#"><span>Contrats PE</span></a></li>
+                    <li><a href="#"><span>Grille tarifaire des PE</span></a></li>
+                    <li><a href="#"><span>Contacter le service technique</span></a></li>
+                    <li><a href="#"><span>Support</span></a></li>
+                    <li><a href="Logout"><span>Déconnexion</span></a></li>
+                    -->
+                </ul>
+            </li>
+            
+            <li class="i_question"><a href="#" class="about"><span>Aides</span></a>
+                <ul class="sub-menu">
+                	<li><a href="#"><span>Aide</span></a></li>
+                	<!--  
+                	<li><a href="#" onclick="window.open('http://icareco.fr')"><span>Aide</span></a></li>
+                	-->
+                	<!-- 
+						<li>
+						<p:lightBox iframe="true" height="768" width="1024">
+								<h:outputLink value="http://icareco.fr" title="iCareco">
+									<h:outputText value="iCareco" />
+								</h:outputLink>
+							</p:lightBox>
+							</li>
+					 -->
+						<!--  
+                    <li><a href="#" ><span>Affiches m&amp;b <code></code></span></a></li>
+                    <li><a href="#" ><span>Videos de Formation <code>( 3 )</code></span></a></li>
+                     -->
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+</div>
+	
+</ui:composition>
